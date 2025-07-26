@@ -36,7 +36,10 @@ int main() {
               .withSpeedController(BlackMagic::SpeedController{})
           )
       )
-      .withAutonomousRoutine("Routine 1", demofunc);
+      .withAutonomousRoutine("Routine 1", demofunc)
+      .withAutonomousRoutine("Routine 2", []() {
+
+      });
 
   // Don't leave scope to avoid destroying the robot object
   while (1) {

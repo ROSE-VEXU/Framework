@@ -7,7 +7,7 @@ Drivetrain::Drivetrain(PID pid): ControlledSubsystem(pid),
   //   driveControl(new TankDriveControl()),
                                     //   autonomousControlPipeline(),
                                     kA(0.0),
-                                    driveMode(driveModes[STRAIGHT_MODE]) {
+                                    selectedDriveMode(STRAIGHT_MODE) {
 }
 
 void Drivetrain::opControl() {
