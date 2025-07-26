@@ -3,7 +3,7 @@
 namespace BlackMagic {
 
 // Public
-Drivetrain::Drivetrain(PID pid): ControlledSubsystem(pid),
+Drivetrain::Drivetrain(): MotorizedSubsystem<Drivetrain>(),
   //   driveControl(new TankDriveControl()),
                                     //   autonomousControlPipeline(),
                                     kA(0.0),
@@ -11,22 +11,17 @@ Drivetrain::Drivetrain(PID pid): ControlledSubsystem(pid),
 }
 
 void Drivetrain::opControl() {
-    
+    // TODO - set left & right speeds
 }
 
-Drivetrain& Drivetrain::withControllerMovement(DriveControllerMovement controllerMovement) {
-    // driveControl = std::make_unique<BlackMagic::DriveControllerMovement>(std::move(controllerMovement));
-    return *this;
+Drivetrain&& Drivetrain::withAutonomousPipeline(AutonomousPipeline& pipeline) {
+    autonomousControlPipeline = std::make_unique<BlackMagic::AutonomousPipeline>(std::move(pipeline));
+    return std::move(*this);
 }
 
-Drivetrain& Drivetrain::withAutonomousPipeline(AutonomousPipeline pipeline) {
-    // autonomousControlPipeline = std::move(pipeline);
-    return *this;
-}
-
-Drivetrain& Drivetrain::withAlignmentCorrection(float alignmentConstant) {
+Drivetrain&& Drivetrain::withAlignmentCorrection(float alignmentConstant) {
     kA = alignmentConstant;
-    return *this;
+    return std::move(*this);
 }
 
 int driveTask() {

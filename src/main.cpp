@@ -24,10 +24,11 @@ vex::competition competitionController;
 int main() {
   setup(); // pre_auton replacement since robot handles game lifecycle
 
-  BlackMagic::Robot robot =
+  BlackMagic::Robot& robot =
   BlackMagic::Robot{competitionController}
     .withSubsystem(
-      BlackMagic::Drivetrain{BlackMagic::PID{0.0, 0.0, 0.0}}
+      BlackMagic::Drivetrain{}
+        .withPID(BlackMagic::PID{0.0, 0.0, 0.0})
         .withAlignmentCorrection(0.4)
         .withAutonomousPipeline(
           BlackMagic::AutonomousPipeline{}

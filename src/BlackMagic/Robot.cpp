@@ -1,6 +1,5 @@
-#include <vector>
-
 #include "vex.h"
+#include <string>
 
 namespace BlackMagic {
 
@@ -25,16 +24,11 @@ void Robot::driverControl(void) {
 
     while(true) {
         for (auto& subsystem : Robot::currentReference->subsystems) {
-            subsystem.opControl();
+            subsystem->opControl();
         }
 
         vex::wait(VEX_SLEEP_MSEC);
     }
-}
-
-Robot& Robot::withSubsystem(Subsystem subsystem) {
-    this->subsystems.push_back(std::move(subsystem));
-    return *this;
 }
 
 Robot& Robot::withAutonomousRoutine(const std::string& name, std::function<void()> routine) {

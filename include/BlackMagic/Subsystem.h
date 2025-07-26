@@ -9,7 +9,7 @@ class Subsystem {
 public:
     Subsystem& onPress(vex::controller::button& button, const std::function<void()> callback);
     Subsystem& onRelease(vex::controller::button& button, const std::function<void()> callback);
-    void opControl();
+    virtual void opControl() = 0;
 };
 
 };
