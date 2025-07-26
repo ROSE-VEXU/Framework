@@ -15,7 +15,5 @@ Subsystem& Subsystem::onRelease(vex::controller::button& button, const std::func
     });
     return *this;
 }
-
-void Subsystem::opControl() {}
     
 };

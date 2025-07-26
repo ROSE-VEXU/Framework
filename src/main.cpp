@@ -24,17 +24,25 @@ vex::competition competitionController;
 int main() {
   setup(); // pre_auton replacement since robot handles game lifecycle
 
-  BlackMagic::Robot robot =
-  BlackMagic::Robot{competitionController}
-    .withSubsystem(
-      BlackMagic::Drivetrain{BlackMagic::PID{0.0, 0.0, 0.0}}
-        .withAlignmentCorrection(0.4)
-        .withAutonomousPipeline(
-          BlackMagic::AutonomousPipeline{}
-            .withOdometrySource(BlackMagic::OdometryPipelineStage{})
-            .withLocalizationSource(BlackMagic::LocalizationPipelineStage{})
-            .withSpeedController(BlackMagic::SpeedController{})
-        )
-    )
-    .withAutonomousRoutine("Routine 1", demofunc);
+  BlackMagic::Robot& robot =
+    BlackMagic::Robot{competitionController}
+      .withSubsystem(
+        BlackMagic::Drivetrain{BlackMagic::PID{0.0, 0.0, 0.0}}
+          .withAlignmentCorrection(0.4)
+          .withAutonomousPipeline(
+            BlackMagic::AutonomousPipeline{}
+              .withOdometrySource(BlackMagic::OdometryPipelineStage{})
+              .withLocalizationSource(BlackMagic::LocalizationPipelineStage{})
+              .withSpeedController(BlackMagic::SpeedController{})
+          )
+      )
+      .withAutonomousRoutine("Routine 1", demofunc)
+      .withAutonomousRoutine("Routine 2", []() {
+
+      });
+
+  // Don't leave scope to avoid destroying the robot object
+  while (1) {
+    vex::wait(100, msec);
+  }
 }
