@@ -15,6 +15,8 @@ protected:
 };
 
 class TankDriveControl: public DriveControllerMovement {
+public:
+    TankDriveControl(const vex::controller& mainController);
     float getLeftSpeed() override;
     float getRightSpeed() override;
 };

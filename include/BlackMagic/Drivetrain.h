@@ -18,13 +18,13 @@ namespace BlackMagic {
 
 class Drivetrain: public MotorizedSubsystem<Drivetrain> {
 public:
-    Drivetrain();
+    Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, const double& wheelDiameterInches, PID&& pid);
 
     void opControl();
 
     template<typename ControllerMovementType>
     Drivetrain&& withControllerMovement(ControllerMovementType&& controllerMovement) {
-        VERIFY_SUBCLASS(DriveControllerMovement, ControllerMovementType, "withControllerMovement", "controllerMovement", "DriveControllerMovement");
+        VERIFY_SUBCLASS(ControllerMovementType, DriveControllerMovement, "withControllerMovement", "controllerMovement", "DriveControllerMovement");
         driveControl = std::make_unique<std::decay_t<ControllerMovementType>>(std::forward<ControllerMovementType>(controllerMovement));
         return std::move(*this);
     };
@@ -34,6 +34,9 @@ public:
     int driveTask();
 
 private:
+    vex::motor_group& leftMotors;
+    vex::motor_group& rightMotors;
+    const float wheelDiameterInches;
     std::unique_ptr<DriveControllerMovement> driveControl;
     std::unique_ptr<AutonomousPipeline> autonomousControlPipeline;
     float kA;

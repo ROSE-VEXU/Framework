@@ -3,15 +3,20 @@
 namespace BlackMagic {
 
 // Public
-Drivetrain::Drivetrain(): MotorizedSubsystem<Drivetrain>(),
-  //   driveControl(new TankDriveControl()),
-                                    //   autonomousControlPipeline(),
-                                    kA(0.0),
-                                    driveMode(driveModes[STRAIGHT_MODE]) {
+Drivetrain::Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, const double& wheelDiameterInches, PID&& pid): MotorizedSubsystem<Drivetrain>(),
+    leftMotors(leftMotors),
+    rightMotors(rightMotors),
+    wheelDiameterInches(wheelDiameterInches),
+    kA(0.0),
+    driveMode(driveModes[STRAIGHT_MODE]) {
+    this->pid = std::make_unique<PID>(std::move(pid));
 }
 
 void Drivetrain::opControl() {
-    // TODO - set left & right speeds
+    if (driveControl != nullptr) {
+        driveLeft(driveControl->getLeftSpeed());
+        driveRight(driveControl->getRightSpeed());
+    }
 }
 
 Drivetrain&& Drivetrain::withAutonomousPipeline(AutonomousPipeline& pipeline) {
@@ -24,17 +29,23 @@ Drivetrain&& Drivetrain::withAlignmentCorrection(float alignmentConstant) {
     return std::move(*this);
 }
 
-int driveTask() {
+int Drivetrain::driveTask() {
+    while(true) {
+        driveMode->run();
+
+        vex::wait(VEX_SLEEP_MSEC);
+    }
+
     return 0;
 }
 
 // Private
 void Drivetrain::driveLeft(float speedPercent) {
-
+    leftMotors.spin(vex::directionType::fwd, MV(speedPercent), vex::voltageUnits::mV);
 }
 
 void Drivetrain::driveRight(float speedPercent) {
-
+    rightMotors.spin(vex::directionType::fwd, MV(speedPercent), vex::voltageUnits::mV);
 }
 
 void Drivetrain::driveStraight(float inches) {
