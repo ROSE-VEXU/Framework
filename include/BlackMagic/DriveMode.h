@@ -6,6 +6,7 @@ namespace BlackMagic {
 // template <typename T>
 class DriveMode {
 public:
+    DriveMode();
     // virtual void setTarget(T target) = 0;
     virtual void run() = 0;
     virtual void hasSettled() = 0;

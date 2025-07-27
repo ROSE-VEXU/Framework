@@ -8,7 +8,7 @@ Drivetrain::Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMo
     rightMotors(rightMotors),
     wheelDiameterInches(wheelDiameterInches),
     kA(0.0),
-    driveMode(driveModes[STRAIGHT_MODE]) {
+    selectedDriveMode(STRAIGHT_MODE) {
     this->pid = std::make_unique<PID>(std::move(pid));
 }
 
@@ -31,7 +31,7 @@ Drivetrain&& Drivetrain::withAlignmentCorrection(float alignmentConstant) {
 
 int Drivetrain::driveTask() {
     while(true) {
-        driveMode->run();
+        driveModes[selectedDriveMode]->run();
 
         vex::wait(VEX_SLEEP_MSEC);
     }

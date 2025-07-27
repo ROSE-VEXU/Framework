@@ -57,7 +57,7 @@ int main() {
             .withSpeedController(BlackMagic::SpeedController{})
         )
     )
-    .withAutonomousRoutine("Routine 1", demofunc);
+    .withAutonomousRoutine("Routine 1", demofunc)
     .withAutonomousRoutine("Routine 2", []() {
 
     });
