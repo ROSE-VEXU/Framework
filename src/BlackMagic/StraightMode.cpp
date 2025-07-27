@@ -10,4 +10,8 @@ void StraightMode::run() {
     
 }
 
+void StraightMode::hasSettled() {
+
+}
+
 };

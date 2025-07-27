@@ -1,4 +1,5 @@
 #include "vex.h"
+#include <string>
 
 namespace BlackMagic {
 

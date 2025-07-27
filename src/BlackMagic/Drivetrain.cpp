@@ -3,43 +3,49 @@
 namespace BlackMagic {
 
 // Public
-Drivetrain::Drivetrain(PID pid): ControlledSubsystem(pid),
-  //   driveControl(new TankDriveControl()),
-                                    //   autonomousControlPipeline(),
-                                    kA(0.0),
-                                    selectedDriveMode(STRAIGHT_MODE) {
+Drivetrain::Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, const double& wheelDiameterInches, PID&& pid): MotorizedSubsystem<Drivetrain>(),
+    leftMotors(leftMotors),
+    rightMotors(rightMotors),
+    wheelDiameterInches(wheelDiameterInches),
+    kA(0.0),
+    selectedDriveMode(STRAIGHT_MODE) {
+    this->pid = std::make_unique<PID>(std::move(pid));
 }
 
 void Drivetrain::opControl() {
-    
+    if (driveControl != nullptr) {
+        driveLeft(driveControl->getLeftSpeed());
+        driveRight(driveControl->getRightSpeed());
+    }
 }
 
-Drivetrain& Drivetrain::withControllerMovement(DriveControllerMovement controllerMovement) {
-    // driveControl = std::make_unique<BlackMagic::DriveControllerMovement>(std::move(controllerMovement));
-    return *this;
+Drivetrain&& Drivetrain::withAutonomousPipeline(AutonomousPipeline& pipeline) {
+    autonomousControlPipeline = std::make_unique<BlackMagic::AutonomousPipeline>(std::move(pipeline));
+    return std::move(*this);
 }
 
-Drivetrain& Drivetrain::withAutonomousPipeline(AutonomousPipeline pipeline) {
-    // autonomousControlPipeline = std::move(pipeline);
-    return *this;
-}
-
-Drivetrain& Drivetrain::withAlignmentCorrection(float alignmentConstant) {
+Drivetrain&& Drivetrain::withAlignmentCorrection(float alignmentConstant) {
     kA = alignmentConstant;
-    return *this;
+    return std::move(*this);
 }
 
-int driveTask() {
+int Drivetrain::driveTask() {
+    while(true) {
+        driveModes[selectedDriveMode]->run();
+
+        vex::wait(VEX_SLEEP_MSEC);
+    }
+
     return 0;
 }
 
 // Private
 void Drivetrain::driveLeft(float speedPercent) {
-
+    leftMotors.spin(vex::directionType::fwd, MV(speedPercent), vex::voltageUnits::mV);
 }
 
 void Drivetrain::driveRight(float speedPercent) {
-
+    rightMotors.spin(vex::directionType::fwd, MV(speedPercent), vex::voltageUnits::mV);
 }
 
 void Drivetrain::driveStraight(float inches) {

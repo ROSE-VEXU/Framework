@@ -10,4 +10,8 @@ void TurnMode::run() {
     
 }
 
+void TurnMode::hasSettled() {
+
+}
+
 };

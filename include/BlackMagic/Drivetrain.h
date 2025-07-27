@@ -5,7 +5,8 @@
 #include "Direction.h"
 #include "DriveControllerMovement.h"
 #include "DriveMode.h"
-#include "ControlledSubsystem.h"
+#include "MotorizedSubsystem.h"
+#include <algorithm>
 #include <memory>
 
 #define STRAIGHT_MODE 0
@@ -15,18 +16,29 @@
 
 namespace BlackMagic {
 
-class Drivetrain: public ControlledSubsystem {
+class Drivetrain: public MotorizedSubsystem<Drivetrain> {
 public:
-    Drivetrain(PID pid);
+    Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, const double& wheelDiameterInches, PID&& pid);
+
     void opControl();
-    Drivetrain& withControllerMovement(DriveControllerMovement controllerMovement);
-    Drivetrain& withAutonomousPipeline(AutonomousPipeline pipeline);
-    Drivetrain& withAlignmentCorrection(float kA);
+
+    template<typename ControllerMovementType>
+    Drivetrain&& withControllerMovement(ControllerMovementType&& controllerMovement) {
+        VERIFY_SUBCLASS(ControllerMovementType, DriveControllerMovement, "withControllerMovement", "controllerMovement", "DriveControllerMovement");
+        driveControl = std::make_unique<std::decay_t<ControllerMovementType>>(std::forward<ControllerMovementType>(controllerMovement));
+        return std::move(*this);
+    };
+
+    Drivetrain&& withAutonomousPipeline(AutonomousPipeline& pipeline);
+    Drivetrain&& withAlignmentCorrection(float kA);
     int driveTask();
 
 private:
-    // std::unique_ptr<DriveControllerMovement> driveControl;
-    // std::unique_ptr<AutonomousPipeline> autonomousControlPipeline;
+    vex::motor_group& leftMotors;
+    vex::motor_group& rightMotors;
+    const float wheelDiameterInches;
+    std::unique_ptr<DriveControllerMovement> driveControl;
+    std::unique_ptr<AutonomousPipeline> autonomousControlPipeline;
     float kA;
     std::shared_ptr<DriveMode> driveModes[4] = { std::make_unique<StraightMode>(), std::make_unique<TurnMode>(), std::make_unique<ArcMode>(), std::make_unique<PipelineMode>() };
     int selectedDriveMode;

@@ -10,4 +10,8 @@ void PipelineMode::run() {
     
 }
 
+void PipelineMode::hasSettled() {
+
+}
+
 };
