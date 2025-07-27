@@ -40,8 +40,8 @@ private:
     std::unique_ptr<DriveControllerMovement> driveControl;
     std::unique_ptr<AutonomousPipeline> autonomousControlPipeline;
     float kA;
-    DriveMode* driveModes[4] = { new StraightMode(), new TurnMode(), new ArcMode(), new PipelineMode() };
-    DriveMode* driveMode;
+    std::shared_ptr<DriveMode> driveModes[4] = { std::make_unique<StraightMode>(), std::make_unique<TurnMode>(), std::make_unique<ArcMode>(), std::make_unique<PipelineMode>() };
+    int selectedDriveMode;
 
     void driveLeft(float speedPercent);
     void driveRight(float speedPercent);

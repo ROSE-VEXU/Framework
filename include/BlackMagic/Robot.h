@@ -26,7 +26,8 @@ public:
         return *this;
     }
 
-    Robot& withAutonomousRoutine(const std::string& name, std::function<void()> routine);
+    Robot& withAutonomousRoutine(const std::string& name, const std::function<void()>& routine);
+  
 private:
     vex::competition& competitionController;
     AutonomousSelector autoSelector;

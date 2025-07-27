@@ -58,4 +58,12 @@ int main() {
         )
     )
     .withAutonomousRoutine("Routine 1", demofunc);
+    .withAutonomousRoutine("Routine 2", []() {
+
+    });
+
+  // Don't leave scope to avoid destroying the robot object
+  while (1) {
+    vex::wait(100, msec);
+  }
 }

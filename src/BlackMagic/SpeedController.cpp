@@ -2,7 +2,9 @@
 
 namespace BlackMagic {
 
-SpeedController::SpeedController() {}
+SpeedController::SpeedController() {
+    
+}
 
 void SpeedController::update() {
 
