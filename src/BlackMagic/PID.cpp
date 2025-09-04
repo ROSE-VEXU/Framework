@@ -19,7 +19,7 @@ PID::PID(float kP, float kI, float kD, float accelSlewStep, float decelSlewStep)
 }
 
 float PID::slew(float prevValue, float value) {
-    bool valueDelta = fabs(value) - fabs(prevValue);
+    float valueDelta = fabs(value) - fabs(prevValue);
     if (fabs(prevValue) < fabs(value)) { // Accelerating
         if (valueDelta >= accelSlewStep) { // Limit output delta to config'ed step if accelerating too fast
             value = prevValue + direction(value)*accelSlewStep;
@@ -29,6 +29,8 @@ float PID::slew(float prevValue, float value) {
             value = prevValue - direction(value)*decelSlewStep;
         }
     }
+
+    return value;
 }
 
 float PID::getNextValue(float err) {
@@ -49,6 +51,10 @@ void PID::reset() {
     prevError = 0;
     totalError = 0;
     prevOutput = 0;
+}
+
+const int PID::direction(float value) {
+    return (value < 0) ? -1 : 1;
 }
     
 };

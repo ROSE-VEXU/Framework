@@ -21,6 +21,8 @@ private:
     float totalError;
     float prevError;
     float prevOutput;
+
+    const int direction(float value);
 };
 
 };
