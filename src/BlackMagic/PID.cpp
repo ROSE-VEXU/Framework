@@ -2,7 +2,7 @@
 
 namespace BlackMagic {
 
-PID::PID(float kP, float kI, float kD) {
+PID::PID(float kP, float kI, float kD): prevError(0), totalError(0), prevOutput(0) {
     this->kP = kP;
     this->kI = kI;
     this->kD = kD;
@@ -10,7 +10,7 @@ PID::PID(float kP, float kI, float kD) {
     this->decelSlewStep = STEP_DISABLE;
 }
 
-PID::PID(float kP, float kI, float kD, float accelSlewStep, float decelSlewStep) {
+PID::PID(float kP, float kI, float kD, float accelSlewStep, float decelSlewStep): prevError(0), totalError(0), prevOutput(0) {
     this->kP = kP;
     this->kI = kI;
     this->kD = kD;
