@@ -10,8 +10,8 @@ void PipelineMode::run() {
     
 }
 
-void PipelineMode::hasSettled() {
-
+bool PipelineMode::hasSettled() {
+    return false;
 }
 
 };

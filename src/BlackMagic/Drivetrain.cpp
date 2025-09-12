@@ -49,27 +49,35 @@ void Drivetrain::driveRight(float speedPercent) {
 }
 
 void Drivetrain::driveStraight(float inches) {
-
-}
-
-void Drivetrain::driveStraightAsync() {
-
+    stop();
+    resetEncoders();
+    setBrake(vex::brakeType::hold);
+    selectedDriveMode = STRAIGHT_MODE;
+    std::shared_ptr<StraightMode> straightMode = std::static_pointer_cast<StraightMode>(driveModes[selectedDriveMode]);
+    straightMode->setTarget(inches);
+    while(!(driveModes[selectedDriveMode]->hasSettled())) vex::wait(VEX_SLEEP_MSEC);
+    stop();
 }
 
 void Drivetrain::driveTurn(float heading) {
-
-}
-
-void Drivetrain::driveTurnAsync() {
-
+    stop();
+    resetEncoders();
+    setBrake(vex::brakeType::hold);
+    selectedDriveMode = TURN_MODE;
+    std::shared_ptr<TurnMode> turnMode = std::static_pointer_cast<TurnMode>(driveModes[selectedDriveMode]);
+    turnMode->setTarget(heading);
+    while(!(driveModes[selectedDriveMode]->hasSettled())) vex::wait(VEX_SLEEP_MSEC);
+    stop();
 }
 
 void Drivetrain::driveArc(float radius, float degrees, Direction direction) {
-
-}
-
-void Drivetrain::driveArcAsync() {
-
+    stop();
+    resetEncoders();
+    setBrake(vex::brakeType::hold);
+    selectedDriveMode = ARC_MODE;
+    // std::shared_ptr<ArcMode> arcMode = std::static_pointer_cast<ArcMode>(driveModes[selectedDriveMode]);
+    while(!(driveModes[selectedDriveMode]->hasSettled())) vex::wait(VEX_SLEEP_MSEC);
+    stop();
 }
 
 void Drivetrain::driveUsingController(float targetX, float targetY) {
@@ -85,7 +93,8 @@ bool Drivetrain::hasSettled() {
 }
 
 void Drivetrain::resetEncoders() {
-
+    leftMotors.resetPosition();
+    rightMotors.resetPosition();
 }
 
 void Drivetrain::stop() {

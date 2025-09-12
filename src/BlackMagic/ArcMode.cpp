@@ -10,8 +10,8 @@ void ArcMode::run() {
     
 }
 
-void ArcMode::hasSettled() {
-
+bool ArcMode::hasSettled() {
+    return false;
 }
 
 };

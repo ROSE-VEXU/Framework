@@ -6,12 +6,17 @@ TurnMode::TurnMode() {
 
 }
 
+void TurnMode::setTarget(float targetHeading) {
+    this->targetHeading = targetHeading;
+}
+
+
 void TurnMode::run() {
     
 }
 
-void TurnMode::hasSettled() {
-
+bool TurnMode::hasSettled() {
+    return false;
 }
 
 };

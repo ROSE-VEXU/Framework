@@ -6,12 +6,16 @@ StraightMode::StraightMode() {
 
 }
 
+void StraightMode::setTarget(float targetInches) {
+    this->targetInches = targetInches;
+}
+
 void StraightMode::run() {
     
 }
 
-void StraightMode::hasSettled() {
-
+bool StraightMode::hasSettled() {
+    return false;
 }
 
 };
