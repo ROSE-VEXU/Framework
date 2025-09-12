@@ -89,11 +89,13 @@ void Drivetrain::resetEncoders() {
 }
 
 void Drivetrain::stop() {
-
+    leftMotors.stop();
+    rightMotors.stop();
 }
 
 void Drivetrain::setBrake(vex::brakeType brakeMode) {
-
+    leftMotors.setStopping(brakeMode);
+    rightMotors.setStopping(brakeMode);
 }
 
 float Drivetrain::getHeading() {
@@ -101,11 +103,11 @@ float Drivetrain::getHeading() {
 }
 
 float Drivetrain::getLeftDegrees() {
-    return 0;
+    return leftMotors.position(vex::rotationUnits::deg);
 }
 
 float Drivetrain::getRightDegrees() {
-    return 0;
+    return rightMotors.position(vex::rotationUnits::deg);
 }
 
 };
