@@ -44,7 +44,7 @@ float PID::getNextValue(float err) {
     }
 
     prevOutput = result;
-    return result; // TODO - Implement PID logic
+    return result;
 }
 
 void PID::reset() {
