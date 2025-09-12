@@ -10,7 +10,7 @@ void StraightMode::setTarget(float targetInches) {
     this->targetInches = targetInches;
 }
 
-void StraightMode::run() {
+void StraightMode::run(std::shared_ptr<PID> pid) {
     
 }
 

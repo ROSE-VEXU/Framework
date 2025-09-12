@@ -6,7 +6,7 @@ ArcMode::ArcMode() {
 
 }
 
-void ArcMode::run() {
+void ArcMode::run(std::shared_ptr<PID> pid) {
     
 }
 

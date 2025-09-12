@@ -11,7 +11,7 @@ void TurnMode::setTarget(float targetHeading) {
 }
 
 
-void TurnMode::run() {
+void TurnMode::run(std::shared_ptr<PID> pid) {
     
 }
 

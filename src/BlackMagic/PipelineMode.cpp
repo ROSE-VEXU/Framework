@@ -6,7 +6,7 @@ PipelineMode::PipelineMode() {
 
 }
 
-void PipelineMode::run() {
+void PipelineMode::run(std::shared_ptr<PID> pid) {
     
 }
 

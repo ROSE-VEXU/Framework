@@ -3,14 +3,12 @@
 namespace BlackMagic {
 
 // Public
-Drivetrain::Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, const double& wheelDiameterInches, PID&& pid): MotorizedSubsystem<Drivetrain>(),
+Drivetrain::Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, const double& wheelDiameterInches, PID&& pid): Subsystem(),
     leftMotors(leftMotors),
     rightMotors(rightMotors),
     wheelDiameterInches(wheelDiameterInches),
     kA(0.0),
-    selectedDriveMode(STRAIGHT_MODE) {
-    this->pid = std::make_unique<PID>(std::move(pid));
-}
+    selectedDriveMode(STRAIGHT_MODE) {}
 
 void Drivetrain::opControl() {
     if (driveControl != nullptr) {
@@ -31,12 +29,27 @@ Drivetrain&& Drivetrain::withAlignmentCorrection(float alignmentConstant) {
 
 int Drivetrain::driveTask() {
     while(true) {
-        driveModes[selectedDriveMode]->run();
+        driveModes[selectedDriveMode]->run(drivePIDs[selectedDriveMode]);
 
         vex::wait(VEX_SLEEP_MSEC);
     }
 
     return 0;
+}
+
+Drivetrain& Drivetrain::withStraightPID(PID&& pid) {
+    this->drivePIDs[STRAIGHT_MODE] = std::make_unique<PID>(std::move(pid));
+    return *this;
+}
+
+Drivetrain& Drivetrain::withTurnPID(PID&& pid) {
+    this->drivePIDs[TURN_MODE] = std::make_unique<PID>(std::move(pid));
+    return *this;
+}
+
+Drivetrain& Drivetrain::withArcPID(PID&& pid) {
+    this->drivePIDs[ARC_MODE] = std::make_unique<PID>(std::move(pid));
+    return *this;
 }
 
 // Private
@@ -81,10 +94,6 @@ void Drivetrain::driveArc(float radius, float degrees, Direction direction) {
 }
 
 void Drivetrain::driveUsingController(float targetX, float targetY) {
-
-}
-
-void Drivetrain::driveUsingControllerAsync() {
 
 }
 
