@@ -6,12 +6,12 @@ PipelineMode::PipelineMode() {
 
 }
 
-void PipelineMode::run(std::shared_ptr<PID> pid) {
+void PipelineMode::run() {
     
 }
 
-bool PipelineMode::hasSettled() {
-    return false;
+void PipelineMode::hasSettled() {
+
 }
 
 };

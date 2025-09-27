@@ -1,14 +1,13 @@
 #include "vex.h"
-#include <iostream>
 #include <string>
 
 namespace BlackMagic {
 
 // Init static member
-Robot* Robot::currentReference = nullptr;
+std::unique_ptr<Robot> Robot::currentReference = nullptr;
 
 Robot::Robot(vex::competition& competitionController): competitionController(competitionController) {
-    Robot::currentReference = this;
+    Robot::currentReference.reset(this);
 
     competitionController.autonomous(Robot::currentReference->auton);
     competitionController.drivercontrol(Robot::currentReference->driverControl);
@@ -24,10 +23,8 @@ void Robot::driverControl(void) {
     // TODO: - Likely needs task shutdown/restart as a cover for auto problems preventing task shutdowns before driver control
 
     while(true) {
-        if (Robot::currentReference == nullptr) continue;
-
-        for (int i=0; i<Robot::currentReference->subsystems.size(); i++) {
-            Robot::currentReference->subsystems[i]->opControl();
+        for (auto& subsystem : Robot::currentReference->subsystems) {
+            subsystem->opControl();
         }
 
         vex::wait(VEX_SLEEP_MSEC);
