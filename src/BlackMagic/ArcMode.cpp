@@ -6,12 +6,12 @@ ArcMode::ArcMode() {
 
 }
 
-void ArcMode::run() {
+void ArcMode::run(std::shared_ptr<PID> pid) {
     
 }
 
-void ArcMode::hasSettled() {
-
+bool ArcMode::hasSettled() {
+    return false;
 }
 
 };
