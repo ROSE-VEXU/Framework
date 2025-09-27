@@ -2,11 +2,13 @@
 #define ROBOT_H
 
 #include <functional>
+#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
 
 #include "AutonomousSelector.h"
+#include "Drivetrain.h"
 #include "Subsystem.h"
 
 namespace BlackMagic {
@@ -15,14 +17,14 @@ class Robot {
 public:
     Robot(vex::competition& competitionController);
 
-    static std::unique_ptr<Robot> currentReference; // required to run auton & driver control due to vex needing function ptr (can't pass 'this')
+    static Robot* currentReference; // required to run auton & driver control due to vex needing function ptr (can't pass 'this')
     static void auton(void);
     static void driverControl(void);
 
     template<typename SubsystemType>
     Robot& withSubsystem(SubsystemType&& subsystem) {
-        VERIFY_SUBCLASS(SubsystemType, Subsystem, "withSubsystem", "subsystem", "Subsystem");
-        subsystems.push_back(std::make_unique<std::decay_t<SubsystemType>>(std::forward<SubsystemType>(subsystem)));
+        VERIFY_SUBCLASS(std::decay_t<SubsystemType>, Subsystem, "withSubsystem", "subsystem", "Subsystem");
+        this->subsystems.emplace_back(std::make_unique<std::decay_t<SubsystemType>>(std::forward<SubsystemType>(subsystem)));//std::move(ptr));//std::make_unique<SubsystemType>(std::forward<Args>(args)...));
         return *this;
     }
 
