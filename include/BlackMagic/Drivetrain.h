@@ -5,8 +5,7 @@
 #include "Direction.h"
 #include "DriveControllerMovement.h"
 #include "DriveMode.h"
-#include "PID.h"
-#include "Subsystem.h"
+#include "MotorizedSubsystem.h"
 #include <algorithm>
 #include <memory>
 
@@ -17,7 +16,7 @@
 
 namespace BlackMagic {
 
-class Drivetrain: public Subsystem {
+class Drivetrain: public MotorizedSubsystem<Drivetrain> {
 public:
     Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, const double& wheelDiameterInches, PID&& pid);
 
@@ -34,10 +33,6 @@ public:
     Drivetrain&& withAlignmentCorrection(float kA);
     int driveTask();
 
-    Drivetrain& withStraightPID(PID&& pid);
-    Drivetrain& withTurnPID(PID&& pid);
-    Drivetrain& withArcPID(PID&& pid);
-
 private:
     vex::motor_group& leftMotors;
     vex::motor_group& rightMotors;
@@ -45,18 +40,19 @@ private:
     std::unique_ptr<DriveControllerMovement> driveControl;
     std::unique_ptr<AutonomousPipeline> autonomousControlPipeline;
     float kA;
-
-    // All 0-value PIDs will lead to no movement, a graceful failure in the unconfigured case.
-    std::shared_ptr<PID> drivePIDs[4] = { std::make_shared<PID>(0, 0, 0), std::make_shared<PID>(0, 0, 0), std::make_shared<PID>(0, 0, 0), std::make_shared<PID>(0, 0, 0) };
     std::shared_ptr<DriveMode> driveModes[4] = { std::make_unique<StraightMode>(), std::make_unique<TurnMode>(), std::make_unique<ArcMode>(), std::make_unique<PipelineMode>() };
     int selectedDriveMode;
 
     void driveLeft(float speedPercent);
     void driveRight(float speedPercent);
     void driveStraight(float inches);
+    void driveStraightAsync();
     void driveTurn(float heading);
+    void driveTurnAsync();
     void driveArc(float radius, float degrees, Direction direction);
+    void driveArcAsync();
     void driveUsingController(float targetX, float targetY);
+    void driveUsingControllerAsync();
     bool hasSettled();
     void resetEncoders();
     void stop();
