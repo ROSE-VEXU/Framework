@@ -6,12 +6,16 @@ StraightMode::StraightMode() {
 
 }
 
-void StraightMode::run() {
-    
+void StraightMode::setTarget(float targetInches) {
+    this->targetInches = targetInches;
 }
 
-void StraightMode::hasSettled() {
+void StraightMode::run(std::shared_ptr<PID> pid) {
 
+}
+
+bool StraightMode::hasSettled() {
+    return false;
 }
 
 };

@@ -6,12 +6,16 @@ TurnMode::TurnMode() {
 
 }
 
-void TurnMode::run() {
-    
+void TurnMode::setTarget(float targetHeading) {
+    this->targetHeading = targetHeading;
 }
 
-void TurnMode::hasSettled() {
+void TurnMode::run(std::shared_ptr<PID> pid) {
 
+}
+
+bool TurnMode::hasSettled() {
+    return false;
 }
 
 };
