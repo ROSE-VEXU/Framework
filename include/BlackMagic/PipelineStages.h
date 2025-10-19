@@ -6,26 +6,24 @@
 
 namespace BlackMagic {
 
-class OdometryPipelineStage: PositionProvider {
+class IOdometryPipelineStage: IPositionProvider {
 public:
-    OdometryPipelineStage();
-    void update();
+    virtual void update() = 0;
+    virtual void calibrate() = 0;
     float getX() override;
     float getY() override;
 };
 
-class LocalizationPipelineStage: PositionProvider {
+class ILocalizationPipelineStage: IPositionProvider {
 public:
-    LocalizationPipelineStage();
-    void update();
+    virtual void update() = 0;
     float getX() override;
     float getY() override;
 };
 
-class SpeedController: DriveSpeedProvider {
+class ISpeedController: IDriveSpeedProvider {
 public:
-    SpeedController();
-    void update();
+    virtual void update() = 0;
     float getLeftSpeed() override;
     float getRightSpeed() override;
 };

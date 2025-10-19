@@ -5,7 +5,7 @@
 
 namespace BlackMagic {
 
-class DriveControllerMovement: DriveSpeedProvider {
+class DriveControllerMovement: IDriveSpeedProvider {
 public:
     DriveControllerMovement(const vex::controller& mainController);
     float getLeftSpeed() = 0;

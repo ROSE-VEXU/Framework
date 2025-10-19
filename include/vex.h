@@ -7,6 +7,7 @@
 #include "v5_vcs.h"
 
 #include "BlackMagic/BlackMagic.h"
+#include "RotationalOdometry.h"
 
 #define waitUntil(condition)                                                   \
   do {                                                                         \

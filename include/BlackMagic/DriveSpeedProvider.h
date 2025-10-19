@@ -3,7 +3,7 @@
 
 namespace BlackMagic {
 
-class DriveSpeedProvider {
+class IDriveSpeedProvider {
 public:
     virtual float getLeftSpeed() = 0;
     virtual float getRightSpeed() = 0;

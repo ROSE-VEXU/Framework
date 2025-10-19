@@ -3,7 +3,7 @@
 
 namespace BlackMagic {
 
-class PositionProvider {
+class IPositionProvider {
 public:
     virtual float getX() = 0;
     virtual float getY() = 0;
