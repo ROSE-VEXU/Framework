@@ -49,13 +49,14 @@ int main() {
       BlackMagic::Drivetrain(
         vex::motor_group(left1, left2, left3, left4),
         vex::motor_group(right1, right2, right3, right4),
-        WHEEL_DIAM_INCHES,
-        BlackMagic::PID(0.0, 0.0, 0.0)
+        imu_1,
+        WHEEL_DIAM_INCHES
       )
         .withControllerMovement(BlackMagic::TankDriveControl(mainController))
         .withAutonomousPipeline(
           BlackMagic::AutonomousPipeline()
             .withOdometrySource(RotationalOdometry(vert_tracking, hori_tracking, imu_1, imu_2))
+            .withSpeedController(DriveToPoseSpeedController())
         )
     );
 

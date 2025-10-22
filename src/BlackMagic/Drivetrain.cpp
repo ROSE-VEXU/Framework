@@ -3,12 +3,20 @@
 namespace BlackMagic {
 
 // Public
-Drivetrain::Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, const double& wheelDiameterInches, PID&& pid): Subsystem(),
+Drivetrain::Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, vex::inertial&& imu, const double& wheelDiameterInches): Subsystem(),
     leftMotors(leftMotors),
     rightMotors(rightMotors),
+    imu(imu),
     wheelDiameterInches(wheelDiameterInches),
-    kA(0.0),
     selectedDriveMode(STRAIGHT_MODE) {}
+
+Drivetrain::Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, vex::inertial& imu, const double& wheelDiameterInches): Subsystem(),
+    leftMotors(leftMotors),
+    rightMotors(rightMotors),
+    imu(imu),
+    wheelDiameterInches(wheelDiameterInches),
+    selectedDriveMode(STRAIGHT_MODE) {}
+
 
 void Drivetrain::opControl() {
     if (driveControl != nullptr) {
@@ -29,33 +37,22 @@ Drivetrain&& Drivetrain::withAutonomousPipeline(AutonomousPipeline& pipeline) {
     return std::move(*this);
 }
 
-Drivetrain&& Drivetrain::withAlignmentCorrection(float alignmentConstant) {
-    kA = alignmentConstant;
-    return std::move(*this);
-}
-
 int Drivetrain::driveTask() {
     while(true) {
-        driveModes[selectedDriveMode]->run(drivePIDs[selectedDriveMode]);
-
+        driveModes[selectedDriveMode]->run(linearPID, angularPID);
         vex::wait(VEX_SLEEP_MSEC);
     }
 
     return 0;
 }
 
-Drivetrain& Drivetrain::withStraightPID(PID&& pid) {
-    this->drivePIDs[STRAIGHT_MODE] = std::make_unique<PID>(std::move(pid));
+Drivetrain& Drivetrain::withLinearPID(PID&& pid) {
+    this->linearPID = std::make_unique<PID>(std::move(pid));
     return *this;
 }
 
-Drivetrain& Drivetrain::withTurnPID(PID&& pid) {
-    this->drivePIDs[TURN_MODE] = std::make_unique<PID>(std::move(pid));
-    return *this;
-}
-
-Drivetrain& Drivetrain::withArcPID(PID&& pid) {
-    this->drivePIDs[ARC_MODE] = std::make_unique<PID>(std::move(pid));
+Drivetrain& Drivetrain::withAngularPID(PID&& pid) {
+    this->angularPID = std::make_unique<PID>(std::move(pid));
     return *this;
 }
 
@@ -100,8 +97,16 @@ void Drivetrain::driveArc(float radius, float degrees, Direction direction) {
     stop();
 }
 
-void Drivetrain::driveUsingController(float targetX, float targetY) {
-
+void Drivetrain::drivePipeline(float targetX, float targetY, float targetHeading) {
+    stop();
+    resetEncoders();
+    setBrake(vex::brakeType::hold);
+    if (autonomousControlPipeline != nullptr) {
+        selectedDriveMode = PIPELINE_MODE;
+        std::shared_ptr<PipelineMode> pipelineMode = std::static_pointer_cast<PipelineMode>(driveModes[selectedDriveMode]);
+        while(!(driveModes[selectedDriveMode]->hasSettled())) vex::wait(VEX_SLEEP_MSEC);
+    }
+    stop();
 }
 
 bool Drivetrain::hasSettled() {

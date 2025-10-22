@@ -6,7 +6,7 @@
 
 namespace BlackMagic {
 
-class AutonomousPipeline {
+class AutonomousPipeline: IPositionProvider, IDriveSpeedProvider {
 public:
     AutonomousPipeline();
 
@@ -33,9 +33,27 @@ public:
         return *this;
     }
 
+    void setTarget(float targetXPosition, float targetYPosition, float targetHeading);
+    int runPipeline();
+
+    float getX() override;
+    float getY() override;
+    float getLeftSpeed() override;
+    float getRightSpeed() override;
+
 private:
     std::unique_ptr<ILocalizationPipelineStage> localizationSource;
     std::unique_ptr<ISpeedController> speedController;
+
+    float targetXPosition;
+    float targetYPosition;
+
+    float rawXPosition;
+    float rawYPosition;
+    float localizedXPosition;
+    float localizedYPosition;
+    float outputLeftSpeed;
+    float outputRightSpeed;
 };
 
 };

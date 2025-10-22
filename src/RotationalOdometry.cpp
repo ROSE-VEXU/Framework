@@ -44,20 +44,41 @@ void RotationalOdometry::update() {
     float delta_hori = hori-prev_hori;
     float delta_heading = heading-prev_heading;
 
-    float vert_chord_length = (fabs(delta_heading) < 0.015) ? delta_vert
-                                                            : (2.0 * (delta_vert/delta_heading) * sin(delta_heading/2.0));
+    float vert_chord_length = (delta_heading == 0.0) ? delta_vert
+                                                     : (2.0 * (delta_vert/delta_heading) * sin(delta_heading/2.0));
     float vert_delta_x = vert_chord_length * cos(heading);
     float vert_delta_y = vert_chord_length * sin(heading);
 
-    float hori_heading = delta_heading + (M_PI/2.0);
-    float hori_chord_length = (fabs(delta_heading) < 0.015) ? delta_hori
-                                                            : 2.0 * (delta_hori/hori_heading) * sin(hori_heading/2.0);
+    float hori_heading = delta_heading;// + (M_PI/2.0);
+    float hori_chord_length = (delta_heading == 0.0) ? delta_hori
+    // -4.0 is the inch offset of the hori tracking wheel
+                                                     : 2.0 * ((delta_hori/hori_heading) + -2.0) * sin(hori_heading/2.0);
     // float hori_chord_theta = (M_PI-hori_heading) / 2.0;
     float hori_delta_x = hori_chord_length * -sin(heading);
     float hori_delta_y = hori_chord_length * cos(heading);
 
-    xPosition += vert_delta_x + hori_delta_x;
-    yPosition += vert_delta_y + hori_delta_y;
+
+
+    float local_polar_angle;
+    float local_polar_length;
+
+    if (hori_chord_length == 0 && vert_chord_length == 0){
+        local_polar_angle = 0;
+        local_polar_length = 0;
+    } else {
+        local_polar_angle = atan2(vert_chord_length, hori_chord_length); 
+        local_polar_length = sqrt(pow(hori_chord_length, 2) + pow(vert_chord_length, 2)); 
+    }
+
+    float global_polar_angle = local_polar_angle - prev_heading - (delta_heading/2);
+
+    float X_position_delta = local_polar_length*cos(global_polar_angle); 
+    float Y_position_delta = local_polar_length*sin(global_polar_angle);
+
+    // xPosition += vert_delta_x + hori_delta_x;
+    // yPosition += vert_delta_y + hori_delta_y;
+    xPosition += X_position_delta;
+    yPosition += Y_position_delta;
 
     // Update values
     prev_vert = vert;

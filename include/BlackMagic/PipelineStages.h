@@ -23,7 +23,9 @@ public:
 
 class ISpeedController: IDriveSpeedProvider {
 public:
-    virtual void update() = 0;
+    // use updateTarget to do things like generate a new path
+    virtual void updateTarget(float positionX, float positionY, float heading) = 0;
+    virtual void update(float positionX, float positionY, float heading) = 0;
     float getLeftSpeed() override;
     float getRightSpeed() override;
 };
