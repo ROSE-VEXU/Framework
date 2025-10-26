@@ -3,18 +3,16 @@
 namespace BlackMagic {
 
 // Public
-Drivetrain::Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, vex::inertial&& imu, const double& wheelDiameterInches): Subsystem(),
+Drivetrain::Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, vex::inertial&& imu): Subsystem(),
     leftMotors(leftMotors),
     rightMotors(rightMotors),
     imu(imu),
-    wheelDiameterInches(wheelDiameterInches),
     selectedDriveMode(STRAIGHT_MODE) {}
 
-Drivetrain::Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, vex::inertial& imu, const double& wheelDiameterInches): Subsystem(),
+Drivetrain::Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, vex::inertial& imu): Subsystem(),
     leftMotors(leftMotors),
     rightMotors(rightMotors),
     imu(imu),
-    wheelDiameterInches(wheelDiameterInches),
     selectedDriveMode(STRAIGHT_MODE) {}
 
 

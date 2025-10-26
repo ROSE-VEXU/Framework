@@ -37,9 +37,6 @@ vex::rotation hori_tracking = rotation(PORT19, true);
 vex::inertial imu_1 = inertial(PORT6);
 vex::inertial imu_2 = inertial(PORT5);
 
-
-const float WHEEL_DIAM_INCHES = 2.75;
-
 int main() {
   setup(); // pre_auton replacement since robot handles game lifecycle
 
@@ -49,13 +46,12 @@ int main() {
       BlackMagic::Drivetrain(
         vex::motor_group(left1, left2, left3, left4),
         vex::motor_group(right1, right2, right3, right4),
-        imu_1,
-        WHEEL_DIAM_INCHES
+        imu_1
       )
         .withControllerMovement(BlackMagic::TankDriveControl(mainController))
         .withAutonomousPipeline(
           BlackMagic::AutonomousPipeline()
-            .withOdometrySource(RotationalOdometry(vert_tracking, hori_tracking, imu_1, imu_2))
+            .withOdometrySource(RotationalOdometry(vert_tracking, hori_tracking, imu_1, imu_2, { .vert_tracker_offset=0.0, .hori_tracker_offset=-2.0 }))
             .withSpeedController(DriveToPoseSpeedController())
         )
     );

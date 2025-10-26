@@ -19,8 +19,8 @@ namespace BlackMagic {
 
 class Drivetrain: public Subsystem {
 public:
-    Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, vex::inertial&& imu, const double& wheelDiameterInches);
-    Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, vex::inertial& imu, const double& wheelDiameterInches);
+    Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, vex::inertial&& imu);
+    Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, vex::inertial& imu);
 
     void opControl();
 
@@ -42,7 +42,6 @@ private:
     vex::motor_group& leftMotors;
     vex::motor_group& rightMotors;
     vex::inertial& imu;
-    const float wheelDiameterInches;
     std::unique_ptr<DriveControllerMovement> driveControl;
     std::unique_ptr<AutonomousPipeline> autonomousControlPipeline;
 

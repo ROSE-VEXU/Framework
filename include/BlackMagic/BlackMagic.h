@@ -6,6 +6,8 @@
 #define VEX_SLEEP_MSEC 10, vex::timeUnits::msec
 #define STD_SLEEP_MSEC std::chrono::milliseconds(10)
 
+#include "Config.h"
+
 #include "AutonomousRoutine.h"
 #include "Direction.h"
 #include "DriveControllerMovement.h"
