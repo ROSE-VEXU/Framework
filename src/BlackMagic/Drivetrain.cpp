@@ -83,7 +83,7 @@ void Drivetrain::driveArc(float radius, float degrees, Direction direction) {
     resetEncoders();
     setBrake(vex::brakeType::hold);
     selectedDriveMode = ARC_MODE;
-    // std::shared_ptr<ArcMode> arcMode = std::static_pointer_cast<ArcMode>(driveModes[selectedDriveMode]);
+    std::shared_ptr<ArcMode> arcMode = std::static_pointer_cast<ArcMode>(driveModes[selectedDriveMode]);
     while(!(driveModes[selectedDriveMode]->hasSettled())) vex::wait(VEX_SLEEP_MSEC);
     stop();
 }
@@ -120,7 +120,7 @@ void Drivetrain::setBrake(vex::brakeType brakeMode) {
 }
 
 float Drivetrain::getHeading() {
-    return 0;
+    return imu.heading(vex::rotationUnits::deg);
 }
 
 float Drivetrain::getLeftDegrees() {
