@@ -29,6 +29,7 @@ public:
     }
 
     Robot& withAutonomousRoutine(const std::string& name, const std::function<void()>& routine);
+    Robot& withAutonomousDemoButton(const vex::controller::button button);
   
 private:
     vex::competition& competitionController;

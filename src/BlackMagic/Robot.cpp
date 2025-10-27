@@ -16,7 +16,10 @@ Robot::Robot(vex::competition& competitionController): competitionController(com
 
 // Static
 void Robot::auton(void) {
+    if (Robot::currentReference == nullptr) return;
 
+    AutonomousRoutine selectedAuto = Robot::currentReference->autoSelector.getSelectedRoutine();
+    selectedAuto.routine();
 }
 
 // Static
@@ -40,6 +43,17 @@ Robot& Robot::withAutonomousRoutine(const std::string& name, const std::function
         .routine = routine
     };
     autoSelector.addRoutine(newRoutine);
+
+    return *this;
+}
+
+Robot& Robot::withAutonomousDemoButton(const vex::controller::button button) {
+    button.pressed([]() {
+        if (Robot::currentReference == nullptr) return;
+
+        AutonomousRoutine selectedAuto = Robot::currentReference->autoSelector.getSelectedRoutine();
+        selectedAuto.routine();
+    });
 
     return *this;
 }

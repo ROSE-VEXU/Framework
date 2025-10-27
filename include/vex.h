@@ -9,6 +9,8 @@
 #include "BlackMagic/BlackMagic.h"
 #include "DriveToPoseSpeedController.h"
 #include "RotationalOdometry.h"
+#include "extern.h"
+#include "autos.h"
 
 #define waitUntil(condition)                                                   \
   do {                                                                         \

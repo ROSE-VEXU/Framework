@@ -2,7 +2,7 @@
 
 namespace BlackMagic {
 
-StraightMode::StraightMode() {
+StraightMode::StraightMode(const DriveModeUtilFunctions& utils): DriveMode(utils) {
 
 }
 

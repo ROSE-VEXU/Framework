@@ -2,7 +2,7 @@
 
 namespace BlackMagic {
 
-TurnMode::TurnMode() {
+TurnMode::TurnMode(const DriveModeUtilFunctions& utils): DriveMode(utils) {
 
 }
 

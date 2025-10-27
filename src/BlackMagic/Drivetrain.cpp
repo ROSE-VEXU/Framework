@@ -21,13 +21,6 @@ void Drivetrain::opControl() {
         driveLeft(driveControl->getLeftSpeed());
         driveRight(driveControl->getRightSpeed());
     }
-    if (autonomousControlPipeline != nullptr) {
-        if (autonomousControlPipeline->odometrySource != nullptr) {
-            autonomousControlPipeline->odometrySource->update();
-            printf("X coord: %.2f\n", autonomousControlPipeline->odometrySource->getX());
-            printf("Y coord: %.2f\n", autonomousControlPipeline->odometrySource->getY());
-        }
-    }
 }
 
 Drivetrain&& Drivetrain::withAutonomousPipeline(AutonomousPipeline& pipeline) {

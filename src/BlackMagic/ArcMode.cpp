@@ -2,7 +2,7 @@
 
 namespace BlackMagic {
 
-ArcMode::ArcMode() {
+ArcMode::ArcMode(const DriveModeUtilFunctions& utils): DriveMode(utils) {
 
 }
 

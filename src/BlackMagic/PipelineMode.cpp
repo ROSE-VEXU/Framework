@@ -2,7 +2,7 @@
 
 namespace BlackMagic {
 
-PipelineMode::PipelineMode() {
+PipelineMode::PipelineMode(const DriveModeUtilFunctions& utils): DriveMode(utils) {
 
 }
 

@@ -17,10 +17,8 @@ void setup() {
 
 }
 
-void demofunc() {}
-
-vex::competition competitionController;
-vex::controller mainController;
+vex::competition comp_controller;
+vex::controller main_controller;
 
 vex::motor left1 = motor(vex::PORT15, true);
 vex::motor left2 = motor(vex::PORT16);
@@ -37,24 +35,26 @@ vex::rotation hori_tracking = rotation(PORT19, true);
 vex::inertial imu_1 = inertial(PORT6);
 vex::inertial imu_2 = inertial(PORT5);
 
+BlackMagic::Drivetrain robot_drivetrain = BlackMagic::Drivetrain(vex::motor_group(left1, left2, left3, left4), vex::motor_group(right1, right2, right3, right4), imu_1);
+
 int main() {
   setup(); // pre_auton replacement since robot handles game lifecycle
 
-  static BlackMagic::Robot robot(competitionController);
+  static BlackMagic::Robot robot(comp_controller);
   robot
     .withSubsystem(
-      BlackMagic::Drivetrain(
-        vex::motor_group(left1, left2, left3, left4),
-        vex::motor_group(right1, right2, right3, right4),
-        imu_1
-      )
-        .withControllerMovement(BlackMagic::TankDriveControl(mainController))
+      robot_drivetrain
+        .withLinearPID(BlackMagic::PID(0.0, 0.0, 0.0, 5.0, 5.0))
+        .withAngularPID(BlackMagic::PID(0.0, 0.0, 0.0, 5.0, 5.0))
+        .withControllerMovement(BlackMagic::TankDriveControl(main_controller))
         .withAutonomousPipeline(
           BlackMagic::AutonomousPipeline()
             .withOdometrySource(RotationalOdometry(vert_tracking, hori_tracking, imu_1, imu_2, { .vert_tracker_offset=0.0, .hori_tracker_offset=-2.0 }))
             .withSpeedController(DriveToPoseSpeedController())
         )
-    );
+    )
+    .withAutonomousRoutine("Auto 1", auto1)
+    .withAutonomousDemoButton(main_controller.ButtonUp);
 
   // Don't leave scope to avoid destroying the robot object
   while (1) {

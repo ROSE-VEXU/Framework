@@ -10,8 +10,6 @@ class AutonomousPipeline: IPositionProvider, IDriveSpeedProvider {
 public:
     AutonomousPipeline();
 
-    std::unique_ptr<IOdometryPipelineStage> odometrySource;
-
     template<typename OdometryImplementationType>
     AutonomousPipeline& withOdometrySource(OdometryImplementationType&& odometrySource) {
         VERIFY_SUBCLASS(std::decay_t<OdometryImplementationType>, IOdometryPipelineStage, "withOdometrySource", "odometrySource", "IOdometryPipelineStage");
@@ -42,6 +40,7 @@ public:
     float getRightSpeed() override;
 
 private:
+    std::unique_ptr<IOdometryPipelineStage> odometrySource;
     std::unique_ptr<ILocalizationPipelineStage> localizationSource;
     std::unique_ptr<ISpeedController> speedController;
 

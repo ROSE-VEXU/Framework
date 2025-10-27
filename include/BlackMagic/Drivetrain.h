@@ -38,19 +38,6 @@ public:
     Drivetrain& withLinearPID(PID&& pid);
     Drivetrain& withAngularPID(PID&& pid);
 
-private:
-    vex::motor_group& leftMotors;
-    vex::motor_group& rightMotors;
-    vex::inertial& imu;
-    std::unique_ptr<DriveControllerMovement> driveControl;
-    std::unique_ptr<AutonomousPipeline> autonomousControlPipeline;
-
-    // All 0-value PIDs will lead to no movement, a graceful failure in the unconfigured case.
-    std::shared_ptr<PID> linearPID = std::make_shared<PID>(0, 0, 0);
-    std::shared_ptr<PID> angularPID = std::make_shared<PID>(0, 0, 0);
-    std::shared_ptr<DriveMode> driveModes[4] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<ArcMode>(), std::make_shared<PipelineMode>() };
-    int selectedDriveMode;
-
     void driveLeft(float speedPercent);
     void driveRight(float speedPercent);
     void driveStraight(float inches);
@@ -64,6 +51,24 @@ private:
     float getHeading();
     float getLeftDegrees();
     float getRightDegrees();
+
+private:
+    vex::motor_group& leftMotors;
+    vex::motor_group& rightMotors;
+    vex::inertial& imu;
+    std::unique_ptr<DriveControllerMovement> driveControl;
+    std::unique_ptr<AutonomousPipeline> autonomousControlPipeline;
+
+    // All 0-value PIDs will lead to no movement, a graceful failure in the unconfigured case.
+    const DriveModeUtilFunctions utils = {
+        .getLeftDegrees = [this]() -> float { return this->getLeftDegrees(); }, 
+        .getRightDegrees = [this]() -> float { return this->getRightDegrees(); }, 
+        .getHeading = [this]() -> float { return this->getHeading(); }
+    };
+    std::shared_ptr<PID> linearPID = std::make_shared<PID>(0, 0, 0);
+    std::shared_ptr<PID> angularPID = std::make_shared<PID>(0, 0, 0);
+    std::shared_ptr<DriveMode> driveModes[4] = { std::make_shared<StraightMode>(utils), std::make_shared<TurnMode>(utils), std::make_shared<ArcMode>(utils), std::make_shared<PipelineMode>(utils) };
+    int selectedDriveMode;
 };
 
 };
