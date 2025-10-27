@@ -101,7 +101,7 @@ void Drivetrain::drivePipeline(float targetX, float targetY, float targetHeading
 }
 
 bool Drivetrain::hasSettled() {
-    return true;
+    return driveModes[selectedDriveMode]->hasSettled();
 }
 
 void Drivetrain::resetEncoders() {
