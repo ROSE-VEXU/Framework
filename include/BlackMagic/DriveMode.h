@@ -14,52 +14,48 @@ struct DriveModeUtilFunctions {
     const std::function<float()>& getHeading;
 };
 
-class DriveMode {
+class IDriveMode {
 public:
-    DriveMode(const DriveModeUtilFunctions& utils);
-
-    virtual void run(std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) = 0;
+    virtual void run(const DriveModeUtilFunctions& utils, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) = 0;
     virtual bool hasSettled() = 0;
-protected:
-    DriveModeUtilFunctions utils;
 };
 
-class StraightMode: public DriveMode {
+class StraightMode: public IDriveMode {
 public:
-    StraightMode(const DriveModeUtilFunctions& utils);
+    StraightMode() = default;
 
     void setTarget(float targetInches);
-    void run(std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) override;
+    void run(const DriveModeUtilFunctions& utils, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) override;
     bool hasSettled() override;
 private:
     float targetInches;
 };
 
-class TurnMode: public DriveMode {
+class TurnMode: public IDriveMode {
 public:
-    TurnMode(const DriveModeUtilFunctions& utils);
+    TurnMode() = default;
 
     void setTarget(float targetHeading);
-    void run(std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) override;
+    void run(const DriveModeUtilFunctions& utils, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) override;
     bool hasSettled() override;
 private:
     float targetHeading;
 };
 
-class ArcMode: public DriveMode {
+class ArcMode: public IDriveMode {
 public:
-    ArcMode(const DriveModeUtilFunctions& utils);
+    ArcMode() = default;
 
-    void run(std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) override;
+    void run(const DriveModeUtilFunctions& utils, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) override;
     bool hasSettled() override;
 };
 
-class PipelineMode: public DriveMode {
+class PipelineMode: public IDriveMode {
 public:
-    PipelineMode(const DriveModeUtilFunctions& utils);
+    PipelineMode() = default;
 
-    void run(std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) override;
-    void run(std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid, AutonomousPipeline pipeline);
+    void run(const DriveModeUtilFunctions& utils, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) override;
+    void run(const DriveModeUtilFunctions& utils, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid, AutonomousPipeline pipeline);
     bool hasSettled() override;
 };
 

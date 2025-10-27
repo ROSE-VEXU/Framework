@@ -67,7 +67,7 @@ private:
     };
     std::shared_ptr<PID> linearPID = std::make_shared<PID>(0, 0, 0);
     std::shared_ptr<PID> angularPID = std::make_shared<PID>(0, 0, 0);
-    std::shared_ptr<DriveMode> driveModes[4] = { std::make_shared<StraightMode>(utils), std::make_shared<TurnMode>(utils), std::make_shared<ArcMode>(utils), std::make_shared<PipelineMode>(utils) };
+    std::shared_ptr<IDriveMode> driveModes[4] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<ArcMode>(), std::make_shared<PipelineMode>() };
     int selectedDriveMode;
 };
 

@@ -30,7 +30,7 @@ Drivetrain&& Drivetrain::withAutonomousPipeline(AutonomousPipeline& pipeline) {
 
 int Drivetrain::driveTask() {
     while(true) {
-        driveModes[selectedDriveMode]->run(linearPID, angularPID);
+        driveModes[selectedDriveMode]->run(utils, linearPID, angularPID);
         vex::wait(VEX_SLEEP_MSEC);
     }
 
