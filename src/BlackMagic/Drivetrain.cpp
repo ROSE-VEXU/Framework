@@ -1,51 +1,67 @@
 #include "vex.h"
+#include <cstddef>
 
 namespace BlackMagic {
 
 // Public
-Drivetrain::Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, vex::inertial&& imu): Subsystem(),
+Drivetrain::Drivetrain(vex::motor_group& leftMotors, vex::motor_group& rightMotors, vex::inertial& imu): Subsystem(),
     leftMotors(leftMotors),
     rightMotors(rightMotors),
     imu(imu),
     selectedDriveMode(STRAIGHT_MODE) {}
-
-Drivetrain::Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, vex::inertial& imu): Subsystem(),
-    leftMotors(leftMotors),
-    rightMotors(rightMotors),
-    imu(imu),
-    selectedDriveMode(STRAIGHT_MODE) {}
-
 
 void Drivetrain::opControl() {
     if (driveControl != nullptr) {
-        driveLeft(driveControl->getLeftSpeed());
-        driveRight(driveControl->getRightSpeed());
+        DriveSpeeds speeds = driveControl->getSpeeds();
+        driveLeft(speeds.left);
+        driveRight(speeds.right);
     }
 }
 
-Drivetrain&& Drivetrain::withAutonomousPipeline(AutonomousPipeline& pipeline) {
-    autonomousControlPipeline = std::make_unique<BlackMagic::AutonomousPipeline>(std::move(pipeline));
+Drivetrain&& Drivetrain::withAutonomousPipeline(AutonomousPipeline&& pipeline) && {
+    autonomousControlPipeline = std::make_shared<BlackMagic::AutonomousPipeline>(std::move(pipeline));
     return std::move(*this);
 }
+
+Drivetrain& Drivetrain::withAutonomousPipeline(AutonomousPipeline&& pipeline) & {
+    autonomousControlPipeline = std::make_shared<BlackMagic::AutonomousPipeline>(std::move(pipeline));
+    printf("exists: %d\n", autonomousControlPipeline!=nullptr);
+    return *this;
+}
+
 
 int Drivetrain::driveTask() {
     while(true) {
         driveModes[selectedDriveMode]->run(utils, linearPID, angularPID);
+        DriveSpeeds speeds = driveModes[selectedDriveMode]->getSpeeds();
+        driveLeft(speeds.left);
+        driveRight(speeds.right);
         vex::wait(VEX_SLEEP_MSEC);
     }
 
     return 0;
 }
 
-Drivetrain& Drivetrain::withLinearPID(PID&& pid) {
+Drivetrain&& Drivetrain::withLinearPID(PID&& pid) && {
+    this->linearPID = std::make_unique<PID>(std::move(pid));
+    return std::move(*this);
+}
+
+Drivetrain& Drivetrain::withLinearPID(PID&& pid) & {
     this->linearPID = std::make_unique<PID>(std::move(pid));
     return *this;
 }
 
-Drivetrain& Drivetrain::withAngularPID(PID&& pid) {
+Drivetrain&& Drivetrain::withAngularPID(PID&& pid) && {
+    this->angularPID = std::make_unique<PID>(std::move(pid));
+    return std::move(*this);
+}
+
+Drivetrain& Drivetrain::withAngularPID(PID&& pid) & {
     this->angularPID = std::make_unique<PID>(std::move(pid));
     return *this;
 }
+
 
 // Private
 void Drivetrain::driveLeft(float speedPercent) {
@@ -84,17 +100,20 @@ void Drivetrain::driveArc(float radius, float degrees, Direction direction) {
     setBrake(vex::brakeType::hold);
     selectedDriveMode = ARC_MODE;
     std::shared_ptr<ArcMode> arcMode = std::static_pointer_cast<ArcMode>(driveModes[selectedDriveMode]);
+    // TODO - set arc target
     while(!(driveModes[selectedDriveMode]->hasSettled())) vex::wait(VEX_SLEEP_MSEC);
     stop();
 }
 
-void Drivetrain::drivePipeline(float targetX, float targetY, float targetHeading) {
+void Drivetrain::drivePipeline(BlackMagic::Position targetPosition, float targetHeading) {
     stop();
     resetEncoders();
     setBrake(vex::brakeType::hold);
     if (autonomousControlPipeline != nullptr) {
         selectedDriveMode = PIPELINE_MODE;
         std::shared_ptr<PipelineMode> pipelineMode = std::static_pointer_cast<PipelineMode>(driveModes[selectedDriveMode]);
+        pipelineMode->setPipeline(autonomousControlPipeline);
+        autonomousControlPipeline->setTarget(targetPosition, targetHeading);
         while(!(driveModes[selectedDriveMode]->hasSettled())) vex::wait(VEX_SLEEP_MSEC);
     }
     stop();

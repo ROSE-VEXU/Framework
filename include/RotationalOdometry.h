@@ -1,4 +1,5 @@
 #include "./BlackMagic/PipelineStages.h"
+#include "./BlackMagic/PositionProvider.h"
 
 struct RotationalOdometryConfig {
     float vert_tracker_offset;
@@ -16,16 +17,14 @@ public:
     RotationalOdometry(vex::rotation vert_tracker, vex::rotation hori_tracker, vex::inertial imu_1, vex::inertial imu_2, RotationalOdometryConfig&& config);
     void calibrate();
     void update();
-    float getX();
-    float getY();
+    BlackMagic::Position getPosition();
     float getHeading();
 private:
     vex::rotation vert_tracker;
     vex::rotation hori_tracker;
     vex::inertial imu_1;
     vex::inertial imu_2;
-    float xPosition;
-    float yPosition;
+    BlackMagic::Position rawPosition;
     RotationalOdometryConfig config;
     RotationalOdometryState prev_state;
 

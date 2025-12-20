@@ -3,10 +3,14 @@
 
 namespace BlackMagic {
 
+struct Position {
+    float x;
+    float y;
+};
+
 class IPositionProvider {
 public:
-    virtual float getX() = 0;
-    virtual float getY() = 0;
+    virtual Position getPosition() = 0;
 };
 
 };

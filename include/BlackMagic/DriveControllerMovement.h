@@ -8,8 +8,7 @@ namespace BlackMagic {
 class DriveControllerMovement: IDriveSpeedProvider {
 public:
     DriveControllerMovement(const vex::controller& mainController);
-    float getLeftSpeed() = 0;
-    float getRightSpeed() = 0;
+    DriveSpeeds getSpeeds() = 0;
 protected:
     const vex::controller& mainController;
 };
@@ -17,8 +16,7 @@ protected:
 class TankDriveControl: public DriveControllerMovement {
 public:
     TankDriveControl(const vex::controller& mainController);
-    float getLeftSpeed() override;
-    float getRightSpeed() override;
+    DriveSpeeds getSpeeds() override;
 };
 
 };

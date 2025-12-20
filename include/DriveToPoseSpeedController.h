@@ -1,17 +1,19 @@
 #include "./BlackMagic/PipelineStages.h"
+#include "./BlackMagic/PositionProvider.h"
+#include "./BlackMagic/DriveSpeedProvider.h"
 
 class DriveToPoseSpeedController: public BlackMagic::ISpeedController {
 public:
     DriveToPoseSpeedController();
-    void updateTarget(float positionX, float positionY, float heading) override;
-    void update(float positionX, float positionY, float heading) override;
-    float getLeftSpeed() override;
-    float getRightSpeed() override;
+    void updateTarget(BlackMagic::Position targetPosition, float heading) override;
+    void update(BlackMagic::Position currentPosition, float heading) override;
+    BlackMagic::DriveSpeeds getSpeeds() override;
 private:
-    float targetPositionX;
-    float targetPositionY;
+    BlackMagic::Position targetPosition;
     float targetHeading;
 
-    float leftRawSpeed;
-    float rightRawSpeed;
+    float leftSpeed;
+    float rightSpeed;
+
+    BlackMagic::DriveSpeeds getScaledSpeedsFromMax(float linearSpeed, float angularSpeed);
 };

@@ -6,6 +6,7 @@
 #include "DriveControllerMovement.h"
 #include "DriveMode.h"
 #include "PID.h"
+#include "PositionProvider.h"
 #include "Subsystem.h"
 #include <algorithm>
 #include <memory>
@@ -19,31 +20,40 @@ namespace BlackMagic {
 
 class Drivetrain: public Subsystem {
 public:
-    Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, vex::inertial&& imu);
-    Drivetrain(vex::motor_group&& leftMotors, vex::motor_group&& rightMotors, vex::inertial& imu);
+    Drivetrain(vex::motor_group& leftMotors, vex::motor_group& rightMotors, vex::inertial& imu);
 
     void opControl();
 
     template<typename ControllerMovementType>
-    Drivetrain&& withControllerMovement(ControllerMovementType&& controllerMovement) {
+    Drivetrain&& withControllerMovement(ControllerMovementType&& controllerMovement) && {
         VERIFY_SUBCLASS(ControllerMovementType, DriveControllerMovement, "withControllerMovement", "controllerMovement", "DriveControllerMovement");
         driveControl = std::make_unique<std::decay_t<ControllerMovementType>>(std::forward<ControllerMovementType>(controllerMovement));
         return std::move(*this);
     };
+    
+    template<typename ControllerMovementType>
+    Drivetrain& withControllerMovement(ControllerMovementType&& controllerMovement) & {
+        VERIFY_SUBCLASS(ControllerMovementType, DriveControllerMovement, "withControllerMovement", "controllerMovement", "DriveControllerMovement");
+        driveControl = std::make_unique<std::decay_t<ControllerMovementType>>(std::forward<ControllerMovementType>(controllerMovement));
+        return *this;
+    };
 
-    Drivetrain&& withAutonomousPipeline(AutonomousPipeline& pipeline);
-    Drivetrain&& withAlignmentCorrection(float kA);
+
+    Drivetrain&& withAutonomousPipeline(AutonomousPipeline&& pipeline) &&;
+    Drivetrain& withAutonomousPipeline(AutonomousPipeline&& pipeline) &;
     int driveTask();
 
-    Drivetrain& withLinearPID(PID&& pid);
-    Drivetrain& withAngularPID(PID&& pid);
+    Drivetrain&& withLinearPID(PID&& pid) &&;
+    Drivetrain& withLinearPID(PID&& pid) &;
+    Drivetrain&& withAngularPID(PID&& pid) &&;
+    Drivetrain& withAngularPID(PID&& pid) &;
 
     void driveLeft(float speedPercent);
     void driveRight(float speedPercent);
     void driveStraight(float inches);
     void driveTurn(float heading);
     void driveArc(float radius, float degrees, Direction direction);
-    void drivePipeline(float targetX, float targetY, float targetHeading);
+    void drivePipeline(Position targetPosition, float targetHeading);
     bool hasSettled();
     void resetEncoders();
     void stop();
@@ -57,7 +67,7 @@ private:
     vex::motor_group& rightMotors;
     vex::inertial& imu;
     std::unique_ptr<DriveControllerMovement> driveControl;
-    std::unique_ptr<AutonomousPipeline> autonomousControlPipeline;
+    std::shared_ptr<AutonomousPipeline> autonomousControlPipeline;
 
     // All 0-value PIDs will lead to no movement, a graceful failure in the unconfigured case.
     const DriveModeUtilFunctions utils = {

@@ -2,20 +2,29 @@
 
 DriveToPoseSpeedController::DriveToPoseSpeedController() {}
 
-void DriveToPoseSpeedController::updateTarget(float positionX, float positionY, float heading) {
-    targetPositionX = positionX;
-    targetPositionY = positionY;
-    targetHeading = heading;
+void DriveToPoseSpeedController::updateTarget(BlackMagic::Position targetPosition, float targetHeading) {
+    this->targetPosition = targetPosition;
+    this->targetHeading = targetHeading;
 }
 
-void DriveToPoseSpeedController::update(float positionX, float positionY, float heading) {
-    
+void DriveToPoseSpeedController::update(BlackMagic::Position currentPosition, float currentHeading) {
+    float linearSpeed = 0.0;
+    float angularSpeed = 0.0;
+
+
+    BlackMagic::DriveSpeeds scaledSpeeds = getScaledSpeedsFromMax(linearSpeed, angularSpeed);
+    leftSpeed = 5.0;//scaledSpeeds.left;
+    rightSpeed = 5.0;//scaledSpeeds.right;
 }
 
-float DriveToPoseSpeedController::getLeftSpeed() {
-    return /*clamp(*/leftRawSpeed/*)*/;
+BlackMagic::DriveSpeeds DriveToPoseSpeedController::getScaledSpeedsFromMax(float linearSpeed, float angularSpeed) {
+    float totalSpeed = fabs(linearSpeed) + fabs(angularSpeed);
+    float leftSpeed = linearSpeed - angularSpeed;
+    float rightSpeed = linearSpeed + angularSpeed;
+    if (totalSpeed > 100.0) return { .left = leftSpeed / totalSpeed, .right = rightSpeed / totalSpeed };
+    return { .left = leftSpeed, .right = rightSpeed };
 }
 
-float DriveToPoseSpeedController::getRightSpeed() {
-    return /*clamp(*/rightRawSpeed/*)*/;
+BlackMagic::DriveSpeeds DriveToPoseSpeedController::getSpeeds() {
+    return { leftSpeed, rightSpeed };
 }

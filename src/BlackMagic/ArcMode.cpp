@@ -10,4 +10,8 @@ bool ArcMode::hasSettled() {
     return false;
 }
 
+DriveSpeeds ArcMode::getSpeeds() {
+    return { 0.0, 0.0 };
+}
+
 };

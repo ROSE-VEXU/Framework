@@ -10,6 +10,9 @@
 #include "DriveToPoseSpeedController.h"
 #include "RotationalOdometry.h"
 #include "extern.h"
+#include "intake.h"
+#include "lever.h"
+#include "ArcadeDriveControl.h"
 #include "autos.h"
 
 #define waitUntil(condition)                                                   \

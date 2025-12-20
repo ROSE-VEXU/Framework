@@ -8,7 +8,6 @@
 
 #include "Config.h"
 
-#include "AutonomousRoutine.h"
 #include "Direction.h"
 #include "DriveControllerMovement.h"
 #include "DriveMode.h"
@@ -17,6 +16,7 @@
 #include "PID.h"
 #include "PositionProvider.h"
 
+#include "AutonomousRoutine.h"
 #include "AutonomousPipeline.h"
 #include "AutonomousSelector.h"
 #include "Drivetrain.h"

@@ -24,7 +24,14 @@ public:
     template<typename SubsystemType>
     Robot& withSubsystem(SubsystemType&& subsystem) {
         VERIFY_SUBCLASS(std::decay_t<SubsystemType>, Subsystem, "withSubsystem", "subsystem", "Subsystem");
-        subsystems.push_back(std::make_unique<std::decay_t<SubsystemType>>(std::forward<SubsystemType>(subsystem)));
+        subsystems.push_back(std::make_shared<std::decay_t<SubsystemType>>(std::forward<SubsystemType>(subsystem)));
+        return *this;
+    }
+
+    template<typename SubsystemType>
+    Robot& withSubsystem(SubsystemType& subsystem) {
+        VERIFY_SUBCLASS(std::decay_t<SubsystemType>, Subsystem, "withSubsystem", "subsystem", "Subsystem");
+        subsystems.push_back(std::shared_ptr<std::decay_t<SubsystemType>>(&subsystem, [](Subsystem*){}));
         return *this;
     }
 
@@ -34,7 +41,7 @@ public:
 private:
     vex::competition& competitionController;
     AutonomousSelector autoSelector;
-    std::vector<std::unique_ptr<Subsystem>> subsystems;
+    std::vector<std::shared_ptr<Subsystem>> subsystems;
 };
 
 };

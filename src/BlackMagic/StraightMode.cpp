@@ -14,4 +14,8 @@ bool StraightMode::hasSettled() {
     return false;
 }
 
+DriveSpeeds StraightMode::getSpeeds() {
+    return { 0.0, 0.0 };
+}
+
 };

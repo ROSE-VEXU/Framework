@@ -14,4 +14,8 @@ bool TurnMode::hasSettled() {
     return false;
 }
 
+DriveSpeeds TurnMode::getSpeeds() {
+    return { 0.0, 0.0 };
+}
+
 };

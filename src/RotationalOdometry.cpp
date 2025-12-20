@@ -6,8 +6,7 @@ RotationalOdometry::RotationalOdometry(vex::rotation vert_tracker, vex::rotation
     hori_tracker(hori_tracker),
     imu_1(imu_1),
     imu_2(imu_2),
-    xPosition(0.0),
-    yPosition(0.0),
+    rawPosition({ 0.0, 0.0 }),
     config(std::move(config)),
     prev_state() {
     calibrate();
@@ -18,8 +17,7 @@ void RotationalOdometry::calibrate() {
     hori_tracker.resetPosition();
     imu_1.calibrate();
     imu_2.calibrate();
-    xPosition = 0.0;
-    yPosition = 0.0;
+    rawPosition = { 0.0, 0.0 };
 }
 
 float RotationalOdometry::getHeading() {
@@ -78,8 +76,8 @@ void RotationalOdometry::update() {
     float x_position_delta = local_polar_length*cos(global_polar_angle); 
     float y_position_delta = local_polar_length*sin(global_polar_angle);
 
-    xPosition += x_position_delta;
-    yPosition += y_position_delta;
+    rawPosition.x += x_position_delta;
+    rawPosition.y += y_position_delta;
 
     // Update values
     prev_state.vert = state.vert;
@@ -87,10 +85,9 @@ void RotationalOdometry::update() {
     prev_state.heading = state.heading;
 }
 
-float RotationalOdometry::getX() {
-    return xPosition/360.0 * M_PI * WHEEL_DIAM_INCHES;
-}
-
-float RotationalOdometry::getY() {
-    return yPosition/360.0 * M_PI * WHEEL_DIAM_INCHES;
+BlackMagic::Position RotationalOdometry::getPosition() {
+    return {
+        (float)(rawPosition.x/360.0 * M_PI * WHEEL_DIAM_INCHES),
+        (float)(rawPosition.y/360.0 * M_PI * WHEEL_DIAM_INCHES)
+    };
 }

@@ -4,12 +4,11 @@ namespace BlackMagic {
 
 TankDriveControl::TankDriveControl(const vex::controller& mainController): DriveControllerMovement(mainController) {};
 
-float TankDriveControl::getLeftSpeed() {
-    return mainController.Axis3.position();
-}
-
-float TankDriveControl::getRightSpeed() {
-    return mainController.Axis2.position();
+DriveSpeeds TankDriveControl::getSpeeds() {
+    return {
+        static_cast<float>(mainController.Axis3.position()), // Left
+        static_cast<float>(mainController.Axis2.position()) // Right
+    };
 }
 
 };

@@ -10,24 +10,21 @@ class IOdometryPipelineStage: IPositionProvider {
 public:
     virtual void update() = 0;
     virtual void calibrate() = 0;
-    float getX() override;
-    float getY() override;
+    Position getPosition() override;
 };
 
 class ILocalizationPipelineStage: IPositionProvider {
 public:
     virtual void update() = 0;
-    float getX() override;
-    float getY() override;
+    Position getPosition() override;
 };
 
 class ISpeedController: IDriveSpeedProvider {
 public:
     // use updateTarget to do things like generate a new path
-    virtual void updateTarget(float positionX, float positionY, float heading) = 0;
-    virtual void update(float positionX, float positionY, float heading) = 0;
-    float getLeftSpeed() override;
-    float getRightSpeed() override;
+    virtual void updateTarget(Position targetPosition, float targetHeading) = 0;
+    virtual void update(Position currentPosition, float currentHeading) = 0;
+    DriveSpeeds getSpeeds() override;
 };
 
 };
