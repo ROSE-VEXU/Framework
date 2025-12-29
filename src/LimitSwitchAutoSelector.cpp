@@ -10,6 +10,7 @@ LimitSwitchAutoSelector::LimitSwitchAutoSelector() : selectedAuto(0) {
     LimitSwitchAutoSelector::current_limit_selector_reference = this;
     backSwitch.pressed(LimitSwitchAutoSelector::prevAuto);
     frontSwitch.pressed(LimitSwitchAutoSelector::nextAuto);
+    displaySelectedAuto();
 }
 
 BlackMagic::AutonomousRoutine LimitSwitchAutoSelector::getSelectedRoutine() {
