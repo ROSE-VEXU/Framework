@@ -3,10 +3,11 @@
 
 class Lever: public BlackMagic::Subsystem {
 public:
-    Lever(const vex::controller& mainController);
+    Lever(const vex::controller::button& up_button, const vex::controller::button& down_button);
     void opControl() override;
 private:
-    const vex::controller& mainController;
+    const vex::controller::button& up_button;
+    const vex::controller::button& down_button;
 
     enum LeverMode {
         LEVER_OFF,

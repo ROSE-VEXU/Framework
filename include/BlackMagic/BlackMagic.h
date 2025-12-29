@@ -18,9 +18,12 @@
 
 #include "AutonomousRoutine.h"
 #include "AutonomousPipeline.h"
+#include "AutonomousPipelineStages.h"
 #include "AutonomousSelector.h"
 #include "Drivetrain.h"
 #include "MotorizedSubsystem.h"
 #include "Robot.h"
+
+#include "Utils.h"
 
 #endif

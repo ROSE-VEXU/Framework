@@ -3,8 +3,8 @@
 vex::motor leftLever = vex::motor(vex::PORT5);
 vex::motor rightLever = vex::motor(vex::PORT3, true);
 
-Lever::Lever(const vex::controller& mainController) : 
-    mainController(mainController) {
+Lever::Lever(const vex::controller::button& up_button, const vex::controller::button& down_button) : 
+    up_button(up_button), down_button(down_button) {
 }
 
 void Lever::opControl() {
@@ -14,12 +14,9 @@ void Lever::opControl() {
 }
 
 Lever::LeverMode Lever::getLeverMode() {
-    bool topPressed = mainController.ButtonL1.pressing();
-    bool bottomPressed = mainController.ButtonL2.pressing();
-
-    if (topPressed) {
+    if (up_button.pressing()) {
         return LEVER_UP;
-    } else if (bottomPressed) {
+    } else if (down_button.pressing()) {
         return LEVER_DOWN;
     }
 

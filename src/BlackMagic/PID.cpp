@@ -2,7 +2,7 @@
 
 namespace BlackMagic {
 
-PID::PID(float kP, float kI, float kD): prevError(0), totalError(0), prevOutput(0) {
+PID::PID(float kP, float kI, float kD): totalError(0), prevError(0), prevOutput(0) {
     this->kP = kP;
     this->kI = kI;
     this->kD = kD;
@@ -10,7 +10,7 @@ PID::PID(float kP, float kI, float kD): prevError(0), totalError(0), prevOutput(
     this->decelSlewStep = STEP_DISABLE;
 }
 
-PID::PID(float kP, float kI, float kD, float accelSlewStep, float decelSlewStep): prevError(0), totalError(0), prevOutput(0) {
+PID::PID(float kP, float kI, float kD, float accelSlewStep, float decelSlewStep): totalError(0), prevError(0), prevOutput(0) {
     this->kP = kP;
     this->kI = kI;
     this->kD = kD;
@@ -22,11 +22,11 @@ float PID::slew(float prevValue, float value) {
     float valueDelta = fabs(value) - fabs(prevValue);
     if (fabs(prevValue) < fabs(value)) { // Accelerating
         if (valueDelta >= accelSlewStep) { // Limit output delta to config'ed step if accelerating too fast
-            value = prevValue + direction(value)*accelSlewStep;
+            value = prevValue + Utils::sign(value)*accelSlewStep;
         }
     } else { // Decelerating
         if (fabs(valueDelta) >= decelSlewStep) { // Limit output delta to config'ed step if accelerating too fast
-            value = prevValue - direction(value)*decelSlewStep;
+            value = prevValue - Utils::sign(value)*decelSlewStep;
         }
     }
 
@@ -51,10 +51,6 @@ void PID::reset() {
     prevError = 0;
     totalError = 0;
     prevOutput = 0;
-}
-
-const int PID::direction(float value) {
-    return (value < 0) ? -1 : 1;
 }
     
 };

@@ -7,13 +7,16 @@
 #include "v5_vcs.h"
 
 #include "BlackMagic/BlackMagic.h"
-#include "DriveToPoseSpeedController.h"
-#include "RotationalOdometry.h"
+
 #include "extern.h"
-#include "intake.h"
-#include "lever.h"
-#include "ArcadeDriveControl.h"
-#include "autos.h"
+#include "misc-custom-modules/ArcadeDriveControl.h"
+#include "subsystems/accessories.h"
+#include "subsystems/intake.h"
+#include "subsystems/lever.h"
+#include "auto/LimitSwitchAutoSelector.h"
+#include "auto/DriveToPoseSpeedController.h"
+#include "auto/RotationalOdometry.h"
+#include "auto/autos.h"
 
 #define waitUntil(condition)                                                   \
   do {                                                                         \

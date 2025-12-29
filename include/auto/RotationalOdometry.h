@@ -1,4 +1,4 @@
-#include "./BlackMagic/PipelineStages.h"
+#include "./BlackMagic/AutonomousPipelineStages.h"
 #include "./BlackMagic/PositionProvider.h"
 
 struct RotationalOdometryConfig {

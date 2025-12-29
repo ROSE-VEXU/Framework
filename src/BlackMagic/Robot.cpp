@@ -4,21 +4,21 @@
 
 namespace BlackMagic {
 
-// Init static member
-Robot* Robot::currentReference = nullptr;
+// Static field initialization
+Robot* Robot::current_robot_reference = nullptr;
 
 Robot::Robot(vex::competition& competitionController): competitionController(competitionController) {
-    Robot::currentReference = this;
+    Robot::current_robot_reference = this;
 
-    competitionController.autonomous(Robot::currentReference->auton);
-    competitionController.drivercontrol(Robot::currentReference->driverControl);
+    competitionController.autonomous(Robot::current_robot_reference->auton);
+    competitionController.drivercontrol(Robot::current_robot_reference->driverControl);
 }
 
 // Static
 void Robot::auton(void) {
-    if (Robot::currentReference == nullptr) return;
+    if (Robot::current_robot_reference == nullptr) return;
 
-    AutonomousRoutine selectedAuto = Robot::currentReference->autoSelector.getSelectedRoutine();
+    AutonomousRoutine selectedAuto = Robot::current_robot_reference->autoSelector.getSelectedRoutine();
     selectedAuto.routine();
 }
 
@@ -27,14 +27,19 @@ void Robot::driverControl(void) {
     // TODO: - Likely needs task shutdown/restart as a cover for auto problems preventing task shutdowns before driver control
 
     while(true) {
-        if (Robot::currentReference == nullptr) continue;
+        if (Robot::current_robot_reference == nullptr) continue;
 
-        for (int i=0; i<Robot::currentReference->subsystems.size(); i++) {
-            Robot::currentReference->subsystems[i]->opControl();
+        for (int i=0; i<Robot::current_robot_reference->subsystems.size(); i++) {
+            Robot::current_robot_reference->subsystems[i]->opControl();
         }
 
         vex::wait(VEX_SLEEP_MSEC);
     }
+}
+
+Robot& Robot::withAutonomousSelector(IAutonomousSelector&& autoSelector) {
+    this->autoSelector = std::move(autoSelector);
+    return *this;
 }
 
 Robot& Robot::withAutonomousRoutine(const std::string& name, const std::function<void()>& routine) {
@@ -49,9 +54,9 @@ Robot& Robot::withAutonomousRoutine(const std::string& name, const std::function
 
 Robot& Robot::withAutonomousDemoButton(const vex::controller::button button) {
     button.pressed([]() {
-        if (Robot::currentReference == nullptr) return;
+        if (Robot::current_robot_reference == nullptr) return;
 
-        AutonomousRoutine selectedAuto = Robot::currentReference->autoSelector.getSelectedRoutine();
+        AutonomousRoutine selectedAuto = Robot::current_robot_reference->autoSelector.getSelectedRoutine();
         selectedAuto.routine();
     });
 

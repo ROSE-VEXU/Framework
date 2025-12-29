@@ -40,6 +40,51 @@ float RotationalOdometry::toRadians(float degrees) {
 }
 
 // TODO - Put vert, hori, heading into struct?
+// void RotationalOdometry::update() {
+//     // Get new values
+//     RotationalOdometryState state;
+//     state.vert = vert_tracker.position(vex::rotationUnits::deg);
+//     state.hori = hori_tracker.position(vex::rotationUnits::deg);
+//     state.heading = toRadians(getHeading());
+
+//     // Compute deltas
+//     float delta_vert = state.vert-prev_state.vert;
+//     float delta_hori = state.hori-prev_state.hori;
+//     float delta_heading = state.heading-prev_state.heading;
+
+//     float vert_chord_length = (delta_heading == 0.0) ? delta_vert
+//                                                      : (2.0 * ((delta_vert/delta_heading) + config.vert_tracker_offset) * sin(delta_heading/2.0));
+
+//     float hori_chord_length = (delta_heading == 0.0) ? delta_hori
+//     // -2 is offset on hori tracking wheel
+//                                                      : 2.0 * ((delta_hori/delta_heading) + config.hori_tracker_offset) * sin(delta_heading/2.0);
+
+//     float local_polar_angle;
+//     float local_polar_length;
+
+//     if (hori_chord_length == 0 && vert_chord_length == 0){
+//         local_polar_angle = 0;
+//         local_polar_length = 0;
+//     } else {
+//         local_polar_angle = atan2(vert_chord_length, hori_chord_length);
+//         local_polar_length = hypot(hori_chord_length, vert_chord_length); 
+//     }
+
+//     float avg_heading = prev_state.heading + (delta_heading/2);
+//     float global_polar_angle = local_polar_angle - avg_heading;
+
+//     float x_position_delta = local_polar_length*cos(global_polar_angle); 
+//     float y_position_delta = local_polar_length*sin(global_polar_angle);
+
+//     rawPosition.x += x_position_delta;
+//     rawPosition.y += y_position_delta;
+
+//     // Update values
+//     prev_state.vert = state.vert;
+//     prev_state.hori = state.hori;
+//     prev_state.heading = state.heading;
+// }
+
 void RotationalOdometry::update() {
     // Get new values
     RotationalOdometryState state;
@@ -52,32 +97,21 @@ void RotationalOdometry::update() {
     float delta_hori = state.hori-prev_state.hori;
     float delta_heading = state.heading-prev_state.heading;
 
-    float vert_chord_length = (delta_heading == 0.0) ? delta_vert
-                                                     : (2.0 * ((delta_vert/delta_heading) + config.vert_tracker_offset) * sin(delta_heading/2.0));
+    // Compute Distances Traveled
+    float vert_arc_radius = delta_vert/delta_heading + 0.0; // + offset
+    float vert_delta_x = -1 * vert_arc_radius * (1 - cos(delta_heading)); // Reversed b/c turning right produces negative delta theta
+    float vert_delta_y = vert_arc_radius * sin(delta_heading);
 
-    float hori_chord_length = (delta_heading == 0.0) ? delta_hori
-    // -2 is offset on hori tracking wheel
-                                                     : 2.0 * ((delta_hori/delta_heading) + config.hori_tracker_offset) * sin(delta_heading/2.0);
+    float hori_arc_radius = delta_hori/delta_heading + 0.0; // + offset
+    float hori_delta_x = hori_arc_radius * sin(delta_heading);
+    float hori_delta_y = hori_arc_radius * (1 - cos(delta_heading));
 
-    float local_polar_angle;
-    float local_polar_length;
+    float delta_x = hori_delta_x + vert_delta_x;
+    float delta_y = hori_delta_y + vert_delta_y;
 
-    if (hori_chord_length == 0 && vert_chord_length == 0){
-        local_polar_angle = 0;
-        local_polar_length = 0;
-    } else {
-        local_polar_angle = atan2(vert_chord_length, hori_chord_length);
-        local_polar_length = hypot(hori_chord_length, vert_chord_length); 
-    }
-
-    float avg_heading = prev_state.heading + (delta_heading/2);
-    float global_polar_angle = local_polar_angle - avg_heading;
-
-    float x_position_delta = local_polar_length*cos(global_polar_angle); 
-    float y_position_delta = local_polar_length*sin(global_polar_angle);
-
-    rawPosition.x += x_position_delta;
-    rawPosition.y += y_position_delta;
+    // Update Position
+    rawPosition.x += delta_x*cos(state.heading) - delta_y*sin(state.heading);
+    rawPosition.y += delta_y*cos(state.heading) + delta_x*sin(state.heading);
 
     // Update values
     prev_state.vert = state.vert;

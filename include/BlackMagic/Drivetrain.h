@@ -53,7 +53,7 @@ public:
     void driveStraight(float inches);
     void driveTurn(float heading);
     void driveArc(float radius, float degrees, Direction direction);
-    void drivePipeline(Position targetPosition, float targetHeading);
+    void drivePipeline(Pose target_pose);
     bool hasSettled();
     void resetEncoders();
     void stop();

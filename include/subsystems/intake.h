@@ -3,11 +3,12 @@
 
 class Intake: public BlackMagic::Subsystem {
 public:
-    Intake(const vex::controller& mainController);
+    Intake(const vex::controller::button& in_button, const vex::controller::button& out_button);
     void opControl() override;
 private:
-    const vex::controller& mainController;
-
+    const vex::controller::button& in_button;
+    const vex::controller::button& out_button;
+    
     enum IntakeMode {
         INTAKE_OFF,
         INTAKE_IN,

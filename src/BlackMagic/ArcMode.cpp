@@ -6,7 +6,7 @@ void ArcMode::run(const DriveModeUtilFunctions& utils, std::shared_ptr<PID> line
     
 }
 
-bool ArcMode::hasSettled() {
+bool ArcMode::hasSettled(const DriveModeUtilFunctions& utils) {
     return false;
 }
 

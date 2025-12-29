@@ -5,15 +5,15 @@ namespace BlackMagic {
 void PipelineMode::run(const DriveModeUtilFunctions& utils, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) {
     if (this->pipeline == nullptr) return;
 
-    this->pipeline->runPipeline();
+    this->pipeline->runPipeline(utils, linear_pid, angular_pid);
 }
 
 void PipelineMode::setPipeline(std::shared_ptr<AutonomousPipeline> pipeline) {
     this->pipeline = pipeline;
 }
 
-bool PipelineMode::hasSettled() {
-    return false;
+bool PipelineMode::hasSettled(const DriveModeUtilFunctions& utils) {
+    return this->pipeline->hasSettled(utils);
 }
 
 DriveSpeeds PipelineMode::getSpeeds() {

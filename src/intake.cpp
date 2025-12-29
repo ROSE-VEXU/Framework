@@ -3,8 +3,8 @@
 vex::motor leftIntake = vex::motor(vex::PORT4, true);
 vex::motor rightIntake = vex::motor(vex::PORT6);
 
-Intake::Intake(const vex::controller& mainController) : 
-    mainController(mainController) {
+Intake::Intake(const vex::controller::button& in_button, const vex::controller::button& out_button) : 
+    in_button(in_button), out_button(out_button) {
 }
 
 void Intake::opControl() {
@@ -14,12 +14,9 @@ void Intake::opControl() {
 }
 
 Intake::IntakeMode Intake::getIntakeMode() {
-    bool topPressed = mainController.ButtonR1.pressing();
-    bool bottomPressed = mainController.ButtonR2.pressing();
-
-    if (bottomPressed) {
+    if (in_button.pressing()) {
         return INTAKE_IN;
-    } else if (topPressed) {
+    } else if (out_button.pressing()) {
         return INTAKE_OUT;
     }
 

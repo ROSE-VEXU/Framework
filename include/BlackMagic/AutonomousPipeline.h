@@ -1,7 +1,8 @@
 #ifndef AUTONOMOUS_PIPELINE_H
 #define AUTONOMOUS_PIPELINE_H
 
-#include "PipelineStages.h"
+#include "PID.h"
+#include "AutonomousPipelineStages.h"
 #include "PositionProvider.h"
 #include <memory>
 
@@ -50,8 +51,9 @@ public:
         return *this;
     }
 
-    void setTarget(Position targetPosition, float targetHeading);
-    int runPipeline();
+    void setTarget(Pose target_pose);
+    int runPipeline(const DriveModeUtilFunctions& utils, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid);
+    bool hasSettled(const DriveModeUtilFunctions& utils);
 
     Position getPosition() override;
     DriveSpeeds getSpeeds() override;
@@ -61,7 +63,7 @@ private:
     std::unique_ptr<ILocalizationPipelineStage> localizationSource;
     std::unique_ptr<ISpeedController> speedController;
 
-    Position targetPosition;
+    Pose target_pose;
 
     Position odomPosition;
     Position localizedPosition;

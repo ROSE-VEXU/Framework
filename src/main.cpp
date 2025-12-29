@@ -17,20 +17,20 @@ void setup() {
 
 }
 
-// extern vex::brain robot_brain;
+vex::brain robot_brain = brain();
 vex::competition comp_controller;
 vex::controller main_controller;
 
-vex::motor left1 = motor(vex::PORT17, true);
-vex::motor left2 = motor(vex::PORT16);
-vex::motor left3 = motor(vex::PORT18, true);
-vex::motor left4 = motor(vex::PORT19);
+vex::motor left1 = motor(vex::PORT17);
+vex::motor left2 = motor(vex::PORT16, true);
+vex::motor left3 = motor(vex::PORT18);
+vex::motor left4 = motor(vex::PORT19, true);
 vex::motor_group left_motors = motor_group(left1, left2, left3, left4);
 
-vex::motor right1 = motor(vex::PORT13);
-vex::motor right2 = motor(vex::PORT15, true);
-vex::motor right3 = motor(vex::PORT14);
-vex::motor right4 = motor(vex::PORT12, true);
+vex::motor right1 = motor(vex::PORT13, true);
+vex::motor right2 = motor(vex::PORT15);
+vex::motor right3 = motor(vex::PORT14, true);
+vex::motor right4 = motor(vex::PORT12);
 vex::motor_group right_motors = motor_group(right1, right2, right3, right4);
 
 vex::rotation vert_tracking = rotation(PORT20, false);
@@ -50,7 +50,7 @@ int main() {
       robot_drivetrain
         .withLinearPID(BlackMagic::PID(0.0, 0.0, 0.0, 5.0, 5.0))
         .withAngularPID(BlackMagic::PID(0.0, 0.0, 0.0, 5.0, 5.0))
-        .withControllerMovement(ArcadeDriveControl(main_controller))//BlackMagic::TankDriveControl(main_controller))
+        .withControllerMovement(ArcadeDriveControl(main_controller.Axis3, main_controller.Axis1))
         .withAutonomousPipeline(
           BlackMagic::AutonomousPipeline()
             .withOdometrySource(RotationalOdometry(vert_tracking, hori_tracking, imu_1, imu_2, { .vert_tracker_offset=0.0, .hori_tracker_offset=-2.0 }))
@@ -58,11 +58,14 @@ int main() {
         )
     )
     .withSubsystem(
-      Intake(main_controller)
+      // In button, Out button
+      Intake(main_controller.ButtonR2, main_controller.ButtonR1)
     )
     .withSubsystem(
-      Lever(main_controller)
+      // Up Button, Down Button
+      Lever(main_controller.ButtonL1, main_controller.ButtonL2)
     )
+    .withAutonomousSelector(LimitSwitchAutoSelector())
     .withAutonomousRoutine("Auto 1", auto1)
     .withAutonomousDemoButton(main_controller.ButtonUp);
 

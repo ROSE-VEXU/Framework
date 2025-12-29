@@ -7,5 +7,5 @@ void auto1() {
         return robot_drivetrain.driveTask();
     });
 
-    robot_drivetrain.drivePipeline({0, 12}, 0.0);
+    robot_drivetrain.drivePipeline({{0, 12}, 0.0});
 }

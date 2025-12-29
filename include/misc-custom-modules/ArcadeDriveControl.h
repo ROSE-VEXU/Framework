@@ -5,7 +5,7 @@
 
 class ArcadeDriveControl: public BlackMagic::DriveControllerMovement {
 public:
-    ArcadeDriveControl(const vex::controller& mainController);
+    ArcadeDriveControl(const vex::controller::axis& straight_axis, const vex::controller::axis& turn_axis);
     BlackMagic::DriveSpeeds getSpeeds() override;
 };
 
