@@ -65,9 +65,9 @@ int main() {
       // Up Button, Down Button
       Lever(main_controller.ButtonL1, main_controller.ButtonL2)
     )
-    .withAutonomousSelector(LimitSwitchAutoSelector())
     .withAutonomousRoutine("Auto 1", auto1)
     .withAutonomousDemoButton(main_controller.ButtonUp)
+    .withAutonomousSelector(LimitSwitchAutoSelector())
     .withPreDriverControlAction([]() {
       // End any tasks or items that may interfere with driver control
       robot_drivetrain.disableDriveTask(); // If auto gets cut short and pid task runs during driver, controller input will be overridden

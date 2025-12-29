@@ -55,6 +55,7 @@ Robot& Robot::withAutonomousRoutine(const std::string& name, const std::function
 Robot& Robot::withAutonomousDemoButton(const vex::controller::button button) {
     button.pressed([]() {
         if (Robot::current_robot_reference == nullptr) return;
+        if (competition_controller.isCompetitionSwitch()) return; // Prevent accidental demo runs in comp
 
         AutonomousRoutine selectedAuto = Robot::current_robot_reference->autoSelector.getSelectedRoutine();
         selectedAuto.routine();
