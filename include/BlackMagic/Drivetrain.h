@@ -38,10 +38,8 @@ public:
         return *this;
     };
 
-
     Drivetrain&& withAutonomousPipeline(AutonomousPipeline&& pipeline) &&;
     Drivetrain& withAutonomousPipeline(AutonomousPipeline&& pipeline) &;
-    int driveTask();
 
     Drivetrain&& withLinearPID(PID&& pid) &&;
     Drivetrain& withLinearPID(PID&& pid) &;
@@ -62,6 +60,10 @@ public:
     float getLeftDegrees();
     float getRightDegrees();
 
+    void enableDriveTask();
+    void disableDriveTask();
+    int driveTask();
+
 private:
     vex::motor_group& leftMotors;
     vex::motor_group& rightMotors;
@@ -79,6 +81,8 @@ private:
     std::shared_ptr<PID> angularPID = std::make_shared<PID>(0, 0, 0);
     std::shared_ptr<IDriveMode> driveModes[4] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<ArcMode>(), std::make_shared<PipelineMode>() };
     int selectedDriveMode;
+
+    bool drive_task_enabled;
 };
 
 };

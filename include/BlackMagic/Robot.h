@@ -15,7 +15,7 @@ namespace BlackMagic {
 
 class Robot {
 public:
-    Robot(vex::competition& competitionController);
+    Robot(vex::competition& competition_controller);
 
     static Robot* current_robot_reference; // required to run auton & driver control due to vex needing function ptr (can't pass 'this')
     static void auton(void);
@@ -38,11 +38,14 @@ public:
     Robot& withAutonomousSelector(IAutonomousSelector&& autoSelector);
     Robot& withAutonomousRoutine(const std::string& name, const std::function<void()>& routine);
     Robot& withAutonomousDemoButton(const vex::controller::button button);
+
+    Robot& withPreDriverControlAction(std::function<void()> pre_driver_control_action);
   
 private:
-    vex::competition& competitionController;
+    vex::competition& competition_controller;
     IAutonomousSelector autoSelector;
     std::vector<std::shared_ptr<Subsystem>> subsystems;
+    std::function<void()> pre_driver_control;
 };
 
 };

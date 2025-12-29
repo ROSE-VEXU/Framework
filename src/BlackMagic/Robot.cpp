@@ -7,11 +7,11 @@ namespace BlackMagic {
 // Static field initialization
 Robot* Robot::current_robot_reference = nullptr;
 
-Robot::Robot(vex::competition& competitionController): competitionController(competitionController) {
+Robot::Robot(vex::competition& competition_controller): competition_controller(competition_controller), pre_driver_control([](){}) {
     Robot::current_robot_reference = this;
 
-    competitionController.autonomous(Robot::current_robot_reference->auton);
-    competitionController.drivercontrol(Robot::current_robot_reference->driverControl);
+    competition_controller.autonomous(Robot::current_robot_reference->auton);
+    competition_controller.drivercontrol(Robot::current_robot_reference->driverControl);
 }
 
 // Static
@@ -24,8 +24,8 @@ void Robot::auton(void) {
 
 // Static
 void Robot::driverControl(void) {
-    // TODO: - Likely needs task shutdown/restart as a cover for auto problems preventing task shutdowns before driver control
-
+    Robot::current_robot_reference->pre_driver_control();
+    
     while(true) {
         if (Robot::current_robot_reference == nullptr) continue;
 
@@ -60,6 +60,11 @@ Robot& Robot::withAutonomousDemoButton(const vex::controller::button button) {
         selectedAuto.routine();
     });
 
+    return *this;
+}
+
+Robot& Robot::withPreDriverControlAction(std::function<void()> pre_driver_control_action) {
+    this->pre_driver_control = pre_driver_control_action;
     return *this;
 }
 

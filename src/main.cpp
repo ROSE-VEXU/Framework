@@ -67,7 +67,11 @@ int main() {
     )
     .withAutonomousSelector(LimitSwitchAutoSelector())
     .withAutonomousRoutine("Auto 1", auto1)
-    .withAutonomousDemoButton(main_controller.ButtonUp);
+    .withAutonomousDemoButton(main_controller.ButtonUp)
+    .withPreDriverControlAction([]() {
+      // End any tasks or items that may interfere with driver control
+      robot_drivetrain.disableDriveTask(); // If auto gets cut short and pid task runs during driver, controller input will be overridden
+    });
 
   // Don't leave scope to avoid destroying the robot object
   while (1) {

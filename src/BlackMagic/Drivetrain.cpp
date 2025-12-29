@@ -8,7 +8,8 @@ Drivetrain::Drivetrain(vex::motor_group& leftMotors, vex::motor_group& rightMoto
     leftMotors(leftMotors),
     rightMotors(rightMotors),
     imu(imu),
-    selectedDriveMode(STRAIGHT_MODE) {}
+    selectedDriveMode(STRAIGHT_MODE),
+    drive_task_enabled(false) {}
 
 void Drivetrain::opControl() {
     if (driveControl != nullptr) {
@@ -26,19 +27,6 @@ Drivetrain&& Drivetrain::withAutonomousPipeline(AutonomousPipeline&& pipeline) &
 Drivetrain& Drivetrain::withAutonomousPipeline(AutonomousPipeline&& pipeline) & {
     autonomousControlPipeline = std::make_shared<BlackMagic::AutonomousPipeline>(std::move(pipeline));
     return *this;
-}
-
-
-int Drivetrain::driveTask() {
-    while(true) {
-        driveModes[selectedDriveMode]->run(utils, linearPID, angularPID);
-        DriveSpeeds speeds = driveModes[selectedDriveMode]->getSpeeds();
-        driveLeft(speeds.left);
-        driveRight(speeds.right);
-        vex::wait(VEX_SLEEP_MSEC);
-    }
-
-    return 0;
 }
 
 Drivetrain&& Drivetrain::withLinearPID(PID&& pid) && {
@@ -147,6 +135,26 @@ float Drivetrain::getLeftDegrees() {
 
 float Drivetrain::getRightDegrees() {
     return rightMotors.position(vex::rotationUnits::deg);
+}
+
+void Drivetrain::enableDriveTask() {
+    drive_task_enabled = true;
+}
+
+void Drivetrain::disableDriveTask() {
+    drive_task_enabled = false;
+}
+
+int Drivetrain::driveTask() {
+    while(drive_task_enabled) {
+        driveModes[selectedDriveMode]->run(utils, linearPID, angularPID);
+        DriveSpeeds speeds = driveModes[selectedDriveMode]->getSpeeds();
+        driveLeft(speeds.left);
+        driveRight(speeds.right);
+        vex::wait(VEX_SLEEP_MSEC);
+    }
+
+    return 0;
 }
 
 };
