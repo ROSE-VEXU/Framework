@@ -3,10 +3,14 @@
 
 namespace BlackMagic {
 
-class DriveSpeedProvider {
+struct DriveSpeeds {
+    float left;
+    float right;
+};
+
+class IDriveSpeedProvider {
 public:
-    virtual float getLeftSpeed() = 0;
-    virtual float getRightSpeed() = 0;
+    virtual DriveSpeeds getSpeeds() = 0;
 };
 
 };

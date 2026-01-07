@@ -8,6 +8,19 @@
 
 #include "BlackMagic/BlackMagic.h"
 
+#include "extern.h"
+#include "misc-custom-modules/ArcadeDriveControl.h"
+#include "subsystems/accessories.h"
+#include "subsystems/intake.h"
+#include "subsystems/lever.h"
+#include "auto/LimitSwitchAutoSelector.h"
+#include "auto/DriveToPose.h"
+#include "auto/SimpleDriveToPoint.h"
+#include "auto/DriveToPoint.h"
+#include "auto/RotationalOdometry.h"
+#include "auto/RotationalOdometryTester.h"
+#include "auto/autos.h"
+
 #define waitUntil(condition)                                                   \
   do {                                                                         \
     wait(5, msec);                                                             \

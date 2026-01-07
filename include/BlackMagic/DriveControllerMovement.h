@@ -5,20 +5,19 @@
 
 namespace BlackMagic {
 
-class DriveControllerMovement: DriveSpeedProvider {
+class DriveControllerMovement: IDriveSpeedProvider {
 public:
-    DriveControllerMovement(const vex::controller& mainController);
-    float getLeftSpeed() = 0;
-    float getRightSpeed() = 0;
+    DriveControllerMovement(const vex::controller::axis& first_axis, const vex::controller::axis& second_axis);
+    DriveSpeeds getSpeeds() = 0;
 protected:
-    const vex::controller& mainController;
+    const vex::controller::axis& first_axis;
+    const vex::controller::axis& second_axis;
 };
 
 class TankDriveControl: public DriveControllerMovement {
 public:
-    TankDriveControl(const vex::controller& mainController);
-    float getLeftSpeed() override;
-    float getRightSpeed() override;
+    TankDriveControl(const vex::controller::axis& left_axis, const vex::controller::axis& right_axis);
+    DriveSpeeds getSpeeds() override;
 };
 
 };
