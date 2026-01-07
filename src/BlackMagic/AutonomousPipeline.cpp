@@ -4,57 +4,57 @@ namespace BlackMagic {
 
 AutonomousPipeline::AutonomousPipeline() {}
 
-void AutonomousPipeline::setTarget(float targetXPosition, float targetYPosition, float targetHeading) {
-    this->targetXPosition = targetXPosition;
-    this->targetYPosition = targetYPosition;
+void AutonomousPipeline::setTarget(Pose target_pose) {
+    this->target_pose = target_pose;
 
     if (speedController != nullptr) {
-        speedController->updateTarget(targetXPosition, targetYPosition, targetHeading);
+        speedController->updateTarget(this->target_pose);
     }
 }
 
-int AutonomousPipeline::runPipeline() {
-    while(true) {
-        if (odometrySource == nullptr) continue;
-        rawXPosition = odometrySource->getX();
-        rawYPosition = odometrySource->getY();
+void AutonomousPipeline::setPosition(Position position) {
+    if (odometrySource == nullptr) return;
+    odometrySource->setPosition(position);
+}
+
+int AutonomousPipeline::runPipeline(const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) {
+    // while(true) {
+        if (odometrySource == nullptr) return 1;//continue;
+        odometrySource->update();
+        odomPosition = odometrySource->getPosition();
 
         if (localizationSource != nullptr) {
-            localizedXPosition = localizationSource->getX();
-            localizedYPosition = localizationSource->getY();
+            localizedPosition = localizationSource->getPosition();
         }
 
-        if (speedController == nullptr) continue;
-        speedController->update(getX(), getY(), 0.0);
+        if (speedController == nullptr) return 1;//continue;
+        Pose current_pose = { getPosition(), drive_state.heading };
+        speedController->update(current_pose, drive_state, linear_pid, angular_pid);
 
-        vex::wait(VEX_SLEEP_MSEC);
-    }
+        // vex::wait(VEX_SLEEP_MSEC);
+    // }
 
     return 0;
 }
 
-float AutonomousPipeline::getX() {
-    if (localizationSource != nullptr) return localizedXPosition;
-    return rawXPosition;
+bool AutonomousPipeline::hasSettled(const DrivetrainState& drive_state) {
+    if (speedController == nullptr) return true;
+    return speedController->hasSettled(drive_state);
 }
 
-float AutonomousPipeline::getY() {
-    if (localizationSource == nullptr) return localizedYPosition;
-    return rawYPosition;
+Position AutonomousPipeline::getPosition() {
+    if (localizationSource != nullptr) return localizedPosition;
+    return odomPosition;
 }
 
-float AutonomousPipeline::getLeftSpeed() {
+DriveSpeeds AutonomousPipeline::getSpeeds() {
     if (speedController == nullptr) {
-        return 0.0; // No speed if there's no controller
+        return { 0.0, 0.0 }; // No speed if there's no controller
     }
-    return speedController->getLeftSpeed();
-}
 
-float AutonomousPipeline::getRightSpeed() {
-    if (speedController == nullptr) {
-        return 0.0; // No speed if there's no controller
-    }
-    return speedController->getRightSpeed();
+    DriveSpeeds speeds = speedController->getSpeeds();
+    
+    return speeds;
 }
 
 };
