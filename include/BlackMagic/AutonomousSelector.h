@@ -15,7 +15,7 @@ public:
         return AutonomousRoutine{"Default Routine", [](){}};
     }
 
-    void addRoutine(AutonomousRoutine routine) {
+    virtual void addRoutine(AutonomousRoutine routine) {
         routines.push_back(routine);
     }
 protected:

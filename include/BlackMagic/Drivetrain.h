@@ -5,6 +5,7 @@
 #include "Direction.h"
 #include "DriveControllerMovement.h"
 #include "DriveMode.h"
+#include "DriveStates.h"
 #include "PID.h"
 #include "PositionProvider.h"
 #include "Subsystem.h"
@@ -20,7 +21,7 @@ namespace BlackMagic {
 
 class Drivetrain: public Subsystem {
 public:
-    Drivetrain(vex::motor_group& leftMotors, vex::motor_group& rightMotors, vex::inertial& imu);
+    Drivetrain(vex::motor_group& leftMotors, vex::motor_group& rightMotors, IHeadingProvider& heading_provider);
 
     void opControl();
 
@@ -49,16 +50,17 @@ public:
     void driveLeft(float speedPercent);
     void driveRight(float speedPercent);
     void driveStraight(float inches);
-    void driveTurn(float heading);
+    void driveTurn(Angle heading);
     void driveArc(float radius, float degrees, Direction direction);
     void drivePipeline(Pose target_pose);
     bool hasSettled();
     void resetEncoders();
     void stop();
     void setBrake(vex::brakeType brakeMode);
-    float getHeading();
+    DrivetrainState getDriveState();
     float getLeftDegrees();
     float getRightDegrees();
+    Angle getHeading();
 
     void enableDriveTask();
     void disableDriveTask();
@@ -67,18 +69,13 @@ public:
 private:
     vex::motor_group& leftMotors;
     vex::motor_group& rightMotors;
-    vex::inertial& imu;
+    IHeadingProvider& heading_provider;
     std::unique_ptr<DriveControllerMovement> driveControl;
     std::shared_ptr<AutonomousPipeline> autonomousControlPipeline;
 
     // All 0-value PIDs will lead to no movement, a graceful failure in the unconfigured case.
-    const DriveModeUtilFunctions utils = {
-        .getLeftDegrees = [this]() -> float { return this->getLeftDegrees(); }, 
-        .getRightDegrees = [this]() -> float { return this->getRightDegrees(); }, 
-        .getHeading = [this]() -> float { return this->getHeading(); }
-    };
-    std::shared_ptr<PID> linearPID = std::make_shared<PID>(0, 0, 0);
-    std::shared_ptr<PID> angularPID = std::make_shared<PID>(0, 0, 0);
+    std::shared_ptr<PID> linearPID = std::make_shared<PID>(0, IntegralConfig{0, 0, 0}, 0);
+    std::shared_ptr<PID> angularPID = std::make_shared<PID>(0, IntegralConfig{0, 0, 0}, 0);
     std::shared_ptr<IDriveMode> driveModes[4] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<ArcMode>(), std::make_shared<PipelineMode>() };
     int selectedDriveMode;
 

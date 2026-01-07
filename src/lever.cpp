@@ -1,7 +1,7 @@
 #include "vex.h"
 
-vex::motor leftLever = vex::motor(vex::PORT5);
-vex::motor rightLever = vex::motor(vex::PORT3, true);
+vex::motor leftLever = vex::motor(vex::PORT9, true);
+vex::motor rightLever = vex::motor(vex::PORT10, false);
 
 Lever::Lever(const vex::controller::button& up_button, const vex::controller::button& down_button) : 
     up_button(up_button), down_button(down_button) {

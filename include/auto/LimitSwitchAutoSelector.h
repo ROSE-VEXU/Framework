@@ -12,6 +12,7 @@ public:
     static LimitSwitchAutoSelector* current_limit_selector_reference;
 
     LimitSwitchAutoSelector();
+    void addRoutine(BlackMagic::AutonomousRoutine routine) override;
     BlackMagic::AutonomousRoutine getSelectedRoutine() override;
     void updateSelectedAuto(int amount);
 private:

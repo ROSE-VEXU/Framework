@@ -35,7 +35,13 @@ public:
         return *this;
     }
 
-    Robot& withAutonomousSelector(IAutonomousSelector&& autoSelector);
+    template<typename AutonomousSelectorType>
+    Robot& withAutonomousSelector(AutonomousSelectorType&& auto_selector) {
+        VERIFY_SUBCLASS(std::decay_t<AutonomousSelectorType>, IAutonomousSelector, "withAutonomousSelector", "autoSelector", "IAutonomousSelector");
+        this->auto_selector = std::make_unique<std::decay_t<AutonomousSelectorType>>(std::forward<AutonomousSelectorType>(auto_selector));
+        return *this;
+    }
+    
     Robot& withAutonomousRoutine(const std::string& name, const std::function<void()>& routine);
     Robot& withAutonomousDemoButton(const vex::controller::button button);
 
@@ -43,7 +49,7 @@ public:
   
 private:
     vex::competition& competition_controller;
-    IAutonomousSelector autoSelector;
+    std::unique_ptr<IAutonomousSelector> auto_selector;
     std::vector<std::shared_ptr<Subsystem>> subsystems;
     std::function<void()> pre_driver_control;
 };

@@ -1,23 +1,34 @@
 #ifndef PID_H
 #define PID_H
 
-#define STEP_DISABLE 128
-#define LIMIT_DISABLE 128
+#define PID_SETTING_DISABLE -2048
 
 namespace BlackMagic {
 
+struct IntegralConfig {
+    float kI;
+    float max_integral;
+    float start_integral_threshold;
+};
+
+struct PIDConfig {
+    float min_speed;
+    float max_speed;
+    float accel_slew_step;
+    float decel_slew_step;
+};
+
 class PID {
 public:
-    PID(float kP, float kI, float kD);
-    PID(float kP, float kI, float kD, float accelSlewStep, float decelSlewStep);
+    PID(float kP, IntegralConfig cI, float kD);
+    PID(float kP, IntegralConfig cI, float kD, PIDConfig pid_config);
     float getNextValue(float err);
     void reset();
 private:
     float kP;
-    float kI;
+    IntegralConfig cI;
     float kD;
-    float accelSlewStep;
-    float decelSlewStep;
+    PIDConfig config;
     float totalError;
     float prevError;
     float prevOutput;

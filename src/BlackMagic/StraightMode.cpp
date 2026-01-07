@@ -2,37 +2,55 @@
 
 namespace BlackMagic {
 
-void StraightMode::setTarget(float targetInches) {
-    this->target_deg = targetInches * (360.0 / (WHEEL_DIAM_INCHES * M_PI));
-    this->speed = 0;
+void StraightMode::setTarget(float target_inches, Angle target_heading) {
+    this->target_deg = target_inches * (360.0 / (WHEEL_DIAM_INCHES * M_PI));
+    this->target_heading = target_heading;
+    this->decelerating = false;
+    this->linear_speed = 0;
+    this->angular_speed = 0;
     this->settle_count = 0;
-    this->settling_prev_position = 0;
-    this->settling_total_position_change = 0;
+    this->settling_prev_left = 0;
+    this->settling_prev_right = 0;
+    this->settling_total_left = 0;
+    this->settling_total_right = 0;
 }
 
-void StraightMode::run(const DriveModeUtilFunctions& utils, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) {
-    float curr_distance = utils.getLeftDegrees();
-    float curr_error = target_deg - curr_distance;
-    speed = linear_pid->getNextValue(curr_error);
+void StraightMode::run(const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) {
+    float curr_distance = drive_state.leftDegrees;
+    float curr_distance_error = target_deg - curr_distance;
+    float curr_heading_error = Utils::getShortestAngleBetween(drive_state.heading, target_heading);
+    float prev_linear_speed = linear_speed;
+    linear_speed = linear_pid->getNextValue(curr_distance_error);
+    angular_speed = angular_pid->getNextValue(curr_heading_error);
+
+    if (fabs(linear_speed) < fabs(prev_linear_speed)) decelerating = true;
 }
 
-bool StraightMode::hasSettled(const DriveModeUtilFunctions& utils) {
-    float curr_position = utils.getLeftDegrees();
-    settling_total_position_change += fabs(curr_position - settling_prev_position);
+bool StraightMode::hasSettled(const DrivetrainState& drive_state) {
+    if (!decelerating) return false;
 
-    if (settling_total_position_change < settling_position_threshold) {
+    float curr_left = drive_state.leftDegrees;
+    float curr_right = drive_state.rightDegrees;
+
+    settling_total_left += fabs(curr_left - settling_prev_left);
+    settling_total_right += fabs(curr_right - settling_prev_right);
+
+    if (settling_total_left < STRAIGHT_DRIVE_SETTLE_DEG_THRESHOLD &&
+        settling_total_right < STRAIGHT_DRIVE_SETTLE_DEG_THRESHOLD) {
         settle_count++;
     } else {
         settle_count = 0;
-        settling_total_position_change = 0;
+        settling_total_left = 0;
+        settling_total_right = 0;
     }
-    settling_prev_position = curr_position;
+    settling_prev_left = curr_left;
+    settling_prev_right = curr_right;
 
-    return (settle_count > max_settle_count) ? true : false;
+    return (settle_count > STRAIGHT_DRIVE_SETTLE_COUNT) ? true : false;
 }
 
 DriveSpeeds StraightMode::getSpeeds() {
-    return { speed, speed };
+    return { BlackMagic::Utils::getScaledSpeedsFromMax(linear_speed, angular_speed) };
 }
 
 };

@@ -1,8 +1,8 @@
 #include "vex.h"
 
 // Pneumatics
-vex::pneumatics lever = vex::pneumatics(robot_brain.ThreeWirePort.A);
-vex::pneumatics little_will = vex::pneumatics(robot_brain.ThreeWirePort.H);
+vex::pneumatics lever = vex::pneumatics(BlackMagic::Utils::robot_brain().ThreeWirePort.G);
+vex::pneumatics little_will = vex::pneumatics(BlackMagic::Utils::robot_brain().ThreeWirePort.H);
 
 // Utils
 enum Position {
@@ -12,9 +12,9 @@ enum Position {
 
 void setLever(Position position) {
     if (position == Position::UP) {
-        little_will.open();
+        lever.open();
     } else {
-        little_will.close();
+        lever.close();
     }
 }
 

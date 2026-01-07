@@ -8,6 +8,7 @@ namespace BlackMagic {
 Robot* Robot::current_robot_reference = nullptr;
 
 Robot::Robot(vex::competition& competition_controller): competition_controller(competition_controller), pre_driver_control([](){}) {
+    this->auto_selector = std::make_unique<IAutonomousSelector>();
     Robot::current_robot_reference = this;
 
     competition_controller.autonomous(Robot::current_robot_reference->auton);
@@ -18,7 +19,7 @@ Robot::Robot(vex::competition& competition_controller): competition_controller(c
 void Robot::auton(void) {
     if (Robot::current_robot_reference == nullptr) return;
 
-    AutonomousRoutine selectedAuto = Robot::current_robot_reference->autoSelector.getSelectedRoutine();
+    AutonomousRoutine selectedAuto = Robot::current_robot_reference->auto_selector->getSelectedRoutine();
     selectedAuto.routine();
 }
 
@@ -37,17 +38,12 @@ void Robot::driverControl(void) {
     }
 }
 
-Robot& Robot::withAutonomousSelector(IAutonomousSelector&& autoSelector) {
-    this->autoSelector = std::move(autoSelector);
-    return *this;
-}
-
 Robot& Robot::withAutonomousRoutine(const std::string& name, const std::function<void()>& routine) {
     AutonomousRoutine newRoutine = {
         .name = name,
         .routine = routine
     };
-    autoSelector.addRoutine(newRoutine);
+    auto_selector->addRoutine(newRoutine);
 
     return *this;
 }
@@ -57,7 +53,7 @@ Robot& Robot::withAutonomousDemoButton(const vex::controller::button button) {
         if (Robot::current_robot_reference == nullptr) return;
         if (Robot::current_robot_reference->competition_controller.isCompetitionSwitch()) return; // Prevent accidental demo runs in comp
 
-        AutonomousRoutine selectedAuto = Robot::current_robot_reference->autoSelector.getSelectedRoutine();
+        AutonomousRoutine selectedAuto = Robot::current_robot_reference->auto_selector->getSelectedRoutine();
         selectedAuto.routine();
     });
 

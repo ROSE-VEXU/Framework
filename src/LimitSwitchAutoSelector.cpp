@@ -1,7 +1,7 @@
 #include "vex.h"
 
-vex::limit backSwitch = vex::limit(robot_brain.ThreeWirePort.B);
-vex::limit frontSwitch = vex::limit(robot_brain.ThreeWirePort.C);
+vex::limit backSwitch = vex::limit(BlackMagic::Utils::robot_brain().ThreeWirePort.B);
+vex::limit frontSwitch = vex::limit(BlackMagic::Utils::robot_brain().ThreeWirePort.C);
 
 // Static field initialization
 LimitSwitchAutoSelector* LimitSwitchAutoSelector::current_limit_selector_reference = nullptr;
@@ -21,6 +21,11 @@ BlackMagic::AutonomousRoutine LimitSwitchAutoSelector::getSelectedRoutine() {
     return routines[selectedAuto];
 }
 
+void LimitSwitchAutoSelector::addRoutine(BlackMagic::AutonomousRoutine routine) {
+    routines.push_back(routine);
+    displaySelectedAuto();
+}
+
 void LimitSwitchAutoSelector::updateSelectedAuto(int direction) {
     selectedAuto += direction;
     if (selectedAuto < 0) {
@@ -32,6 +37,16 @@ void LimitSwitchAutoSelector::updateSelectedAuto(int direction) {
 }
 
 void LimitSwitchAutoSelector::displaySelectedAuto() {
-    robot_brain.Screen.clearScreen();
-    robot_brain.Screen.printAt(32, 24, getSelectedRoutine().name.c_str());
-}
+    BlackMagic::Utils::robot_brain().Screen.clearScreen();
+    BlackMagic::Utils::robot_brain().Screen.setPenColor(vex::color(212, 212, 212));
+    BlackMagic::Utils::robot_brain().Screen.setFillColor(vex::color::black);
+    BlackMagic::Utils::robot_brain().Screen.printAt(12, 218, "HW v2.0.0");
+    BlackMagic::Utils::robot_brain().Screen.printAt(196, 218, "ROSE VEXU");
+    BlackMagic::Utils::robot_brain().Screen.printAt(376, 218, "SW v0.3.5");
+
+    BlackMagic::Utils::robot_brain().Screen.setPenColor(vex::color::black);
+    BlackMagic::Utils::robot_brain().Screen.drawRectangle(0, 40, 480, 40, vex::color(128, 0, 0));
+    BlackMagic::Utils::robot_brain().Screen.setPenColor(vex::color(212, 212, 212));
+    BlackMagic::Utils::robot_brain().Screen.setFillColor(vex::color(128, 0, 0));
+    BlackMagic::Utils::robot_brain().Screen.printAt(12, 64, getSelectedRoutine().name.c_str());
+}   

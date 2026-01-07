@@ -52,8 +52,8 @@ public:
     }
 
     void setTarget(Pose target_pose);
-    int runPipeline(const DriveModeUtilFunctions& utils, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid);
-    bool hasSettled(const DriveModeUtilFunctions& utils);
+    int runPipeline(const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid);
+    bool hasSettled(const DrivetrainState& drive_state);
 
     Position getPosition() override;
     DriveSpeeds getSpeeds() override;
