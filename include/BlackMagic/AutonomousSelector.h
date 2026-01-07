@@ -8,12 +8,17 @@
 
 namespace BlackMagic {
 
-class AutonomousSelector {
+class IAutonomousSelector {
 public:
-    AutonomousSelector();
-    AutonomousRoutine getSelectedRoutine();
-    void addRoutine(AutonomousRoutine routine);
-private:
+    IAutonomousSelector() = default;
+    virtual AutonomousRoutine getSelectedRoutine() {
+        return AutonomousRoutine{"Default Routine", [](){}};
+    }
+
+    virtual void addRoutine(AutonomousRoutine routine) {
+        routines.push_back(routine);
+    }
+protected:
     std::vector<AutonomousRoutine> routines;
 };
 

@@ -1,12 +1,13 @@
 #ifndef POSITION_PROVIDER_H
 #define POSITION_PROVIDER_H
 
+#include "DriveStates.h"
+
 namespace BlackMagic {
 
 class IPositionProvider {
 public:
-    virtual float getX() = 0;
-    virtual float getY() = 0;
+    virtual Position getPosition() = 0;
 };
 
 };
