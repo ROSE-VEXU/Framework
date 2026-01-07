@@ -11,6 +11,7 @@ public:
     SingleInertialHeadingProvider(vex::inertial& imu);
     void calibrate() override;
     Angle getHeading() override;
+    void setHeading(float heading) override;
 private:
     vex::inertial& imu;
 };
@@ -20,6 +21,7 @@ public:
     DoubleInertialHeadingProvider(vex::inertial& imu_1, vex::inertial& imu_2);
     void calibrate() override;
     Angle getHeading() override;
+    void setHeading(float heading) override;
 private:
     vex::inertial& imu_1;
     vex::inertial& imu_2;

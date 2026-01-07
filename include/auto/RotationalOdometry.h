@@ -25,6 +25,7 @@ public:
     void update();
     // Uses degrees, not inches since straight movement uses deg & PID is tuned for that
     BlackMagic::Position getPosition();
+    void setPosition(BlackMagic::Position position);
     float getHeading();
 private:
     vex::rotation vert_tracker;

@@ -43,7 +43,7 @@ void SimpleDriveToPoint::update(BlackMagic::Pose curr_pose, const BlackMagic::Dr
         [this, &curr_pose, &linear_err, &angular_err]() {
             linear_err = 0.0;
             angular_err = BlackMagic::Utils::getShortestAngleBetween(curr_pose.heading, face_target_heading);
-            // printf("Angular Error: %.2f\n", BlackMagic::Utils::getShortestAngleBetween(curr_pose.heading, face_target_heading));
+            printf("Angular Error: %.2f\n", BlackMagic::Utils::getShortestAngleBetween(curr_pose.heading, face_target_heading));
         },
         // DRIVE_TO_POINT
         [this, &curr_pose, &linear_err, &angular_err]() {
@@ -54,13 +54,15 @@ void SimpleDriveToPoint::update(BlackMagic::Pose curr_pose, const BlackMagic::Dr
             radian_heading = fmod((M_TWOPI - (radian_heading-M_PI/2.0f)), M_TWOPI);
             float signed_distance = delta_x * cos(radian_heading) + delta_y * sin(radian_heading);
 
-            linear_err = 0;//signed_distance;
-            angular_err = 0;//BlackMagic::Utils::getShortestAngleBetween(curr_pose.heading, face_target_heading);
+            printf("X: %.2f Y: %.2f, Distance: %.2f\n", curr_pose.position.x, curr_pose.position.y, signed_distance);
+            linear_err = 0.0;//signed_distance;
+            angular_err = 0.0;;//BlackMagic::Utils::getShortestAngleBetween(curr_pose.heading, face_target_heading);
         },
         // FACE_TARGET
         [this, &curr_pose, &linear_err, &angular_err]() {
+            printf("face target\n");
             linear_err = 0.0;
-            angular_err = 0;//BlackMagic::Utils::getShortestAngleBetween(curr_pose.heading, target_pose.heading);
+            angular_err = 0.0;//BlackMagic::Utils::getShortestAngleBetween(curr_pose.heading, target_pose.heading);
         }
     );
 
@@ -134,6 +136,8 @@ bool SimpleDriveToPoint::hasPhaseSettled(const BlackMagic::DrivetrainState& driv
 
             settling_total_left += fabs(curr_left - settling_prev_left);
             settling_total_right += fabs(curr_right - settling_prev_right);
+
+            printf("Left total: %.2f, Right total: %.2f\n", settling_total_left, settling_total_right);
 
             if (settling_total_left < STRAIGHT_DRIVE_SETTLE_DEG_THRESHOLD &&
                 settling_total_right < STRAIGHT_DRIVE_SETTLE_DEG_THRESHOLD) {

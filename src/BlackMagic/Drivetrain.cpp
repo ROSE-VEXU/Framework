@@ -87,12 +87,17 @@ void Drivetrain::driveTurn(Angle heading) {
     stop();
 }
 
-void Drivetrain::driveArc(float radius, float degrees, Direction direction) {
+void Drivetrain::driveArc(float inches, Angle end_angle) {
     stop();
     resetEncoders();
     setBrake(vex::brakeType::hold);
-    selectedDriveMode = ARC_MODE;
-    std::shared_ptr<ArcMode> arcMode = std::static_pointer_cast<ArcMode>(driveModes[selectedDriveMode]);
+    linearPID->reset();
+    angularPID->reset();
+    selectedDriveMode = STRAIGHT_MODE;
+    std::shared_ptr<StraightMode> straightMode = std::static_pointer_cast<StraightMode>(driveModes[selectedDriveMode]);
+    straightMode->setTarget(inches, end_angle);
+    // selectedDriveMode = ARC_MODE;
+    // std::shared_ptr<ArcMode> arcMode = std::static_pointer_cast<ArcMode>(driveModes[selectedDriveMode]);
     // TODO - set arc target
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
     stop();
@@ -123,6 +128,10 @@ void Drivetrain::resetEncoders() {
     rightMotors.resetPosition();
 }
 
+void Drivetrain::calibrateHeading() {
+    heading_provider.calibrate();
+}
+
 void Drivetrain::stop() {
     leftMotors.stop();
     rightMotors.stop();
@@ -131,6 +140,17 @@ void Drivetrain::stop() {
 void Drivetrain::setBrake(vex::brakeType brakeMode) {
     leftMotors.setStopping(brakeMode);
     rightMotors.setStopping(brakeMode);
+}
+
+void Drivetrain::setHeading(float degrees) {
+    heading_provider.setHeading(degrees);
+}
+
+void Drivetrain::setPipelinePose(Pose pose) {
+    if (autonomousControlPipeline != nullptr) {
+        autonomousControlPipeline->setPosition(pose.position);
+    }
+    setHeading(pose.heading);
 }
 
 DrivetrainState Drivetrain::getDriveState(){
@@ -159,8 +179,6 @@ void Drivetrain::disableDriveTask() {
 
 int Drivetrain::driveTask() {
     while(drive_task_enabled) {
-        // printf("Driving!\n");
-        // Utils::robot_brain().Screen.printAt(12, 24, "mode: %d", selectedDriveMode);
         driveModes[selectedDriveMode]->run(getDriveState(), linearPID, angularPID);
         DriveSpeeds speeds = driveModes[selectedDriveMode]->getSpeeds();
         driveLeft(speeds.left);

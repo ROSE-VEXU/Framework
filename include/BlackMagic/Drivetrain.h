@@ -51,12 +51,15 @@ public:
     void driveRight(float speedPercent);
     void driveStraight(float inches);
     void driveTurn(Angle heading);
-    void driveArc(float radius, float degrees, Direction direction);
+    void driveArc(float inches, Angle end_angle);
     void drivePipeline(Pose target_pose);
     bool hasSettled();
     void resetEncoders();
+    void calibrateHeading();
     void stop();
     void setBrake(vex::brakeType brakeMode);
+    void setHeading(float degrees);
+    void setPipelinePose(Pose target_pose);
     DrivetrainState getDriveState();
     float getLeftDegrees();
     float getRightDegrees();

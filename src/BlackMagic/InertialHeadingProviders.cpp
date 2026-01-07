@@ -5,19 +5,31 @@ namespace BlackMagic {
 SingleInertialHeadingProvider::SingleInertialHeadingProvider(vex::inertial& imu): imu(imu) {}
 
 void SingleInertialHeadingProvider::calibrate() {
-    imu.calibrate();
+    imu.calibrate(3);
+
+    while (imu.isCalibrating() || imu.isCalibrating()) {
+        vex::wait(VEX_SLEEP_MSEC);
+    }
 }
 
 Angle SingleInertialHeadingProvider::getHeading() {
     return { imu.heading(vex::degrees), Angle::Unit::DEG };
 }
 
+void SingleInertialHeadingProvider::setHeading(float heading) {
+    imu.setHeading(heading, vex::rotationUnits::deg);
+}
+
 
 DoubleInertialHeadingProvider::DoubleInertialHeadingProvider(vex::inertial& imu_1, vex::inertial& imu_2): imu_1(imu_1), imu_2(imu_2) {}
 
 void DoubleInertialHeadingProvider::calibrate() {
-    imu_1.calibrate();
-    imu_2.calibrate();
+    imu_1.calibrate(3);
+    imu_2.calibrate(3);
+
+    while (imu_1.isCalibrating() || imu_2.isCalibrating()) {
+        vex::wait(VEX_SLEEP_MSEC);
+    } 
 }
 
 Angle DoubleInertialHeadingProvider::getHeading() {
@@ -33,6 +45,11 @@ Angle DoubleInertialHeadingProvider::getHeading() {
     }
 
     return { ((max+min) / 2.0), Angle::Unit::DEG };
+}
+
+void DoubleInertialHeadingProvider::setHeading(float heading) {
+    imu_1.setHeading(heading, vex::rotationUnits::deg);
+    imu_2.setHeading(heading, vex::rotationUnits::deg);
 }
 
 };

@@ -66,3 +66,8 @@ void RotationalOdometry::update() {
 BlackMagic::Position RotationalOdometry::getPosition() {
     return rawPosition;
 }
+
+void RotationalOdometry::setPosition(BlackMagic::Position position) {
+    rawPosition.x = position.x;
+    rawPosition.y = position.y;
+}

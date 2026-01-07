@@ -12,10 +12,6 @@
 using namespace vex;
 
 // define your global instances of motors and other devices here
-
-void setup() {
-}
-
 vex::competition comp_controller;
 vex::controller main_controller;
 
@@ -40,8 +36,12 @@ BlackMagic::DoubleInertialHeadingProvider double_imu_heading_provider(imu_1, imu
 
 BlackMagic::Drivetrain robot_drivetrain = BlackMagic::Drivetrain(left_motors, right_motors, double_imu_heading_provider);
 BlackMagic::PIDConfig linear_pid_config = { PID_SETTING_DISABLE , 80.0, 5.0, PID_SETTING_DISABLE};
-BlackMagic::PIDConfig angular_pid_config = { PID_SETTING_DISABLE , 50.0, PID_SETTING_DISABLE, PID_SETTING_DISABLE};
+BlackMagic::PIDConfig angular_pid_config = { PID_SETTING_DISABLE , 80.0, PID_SETTING_DISABLE, PID_SETTING_DISABLE};
 
+void setup() {
+  imu_1.calibrate(3);
+  imu_2.calibrate(3);
+}
 
 int main() {
   setup(); // pre_auton replacement since robot handles game lifecycle
@@ -52,8 +52,8 @@ int main() {
     .withSubsystem(
       robot_drivetrain
         .withLinearPID(BlackMagic::PID(0.15, {0.0015, 2160.0, 720.0}, 1, linear_pid_config))
-        .withAngularPID(BlackMagic::PID(1.45, {0.8, 15.0, 5.0}, 7.5, angular_pid_config))
-        .withControllerMovement(ArcadeDriveControl(main_controller.Axis3, main_controller.Axis1))
+        .withAngularPID(BlackMagic::PID(1.45, {0.0, 0.0, 0.0}, 10.0, angular_pid_config))
+        .withControllerMovement(BlackMagic::TankDriveControl(main_controller.Axis3, main_controller.Axis2))
         .withAutonomousPipeline(
           BlackMagic::AutonomousPipeline()
             .withOdometrySource(RotationalOdometry(vert_tracking, hori_tracking, double_imu_heading_provider, { .vert_tracker_offset=0.241, .hori_tracker_offset=-2.111 }))
@@ -72,11 +72,11 @@ int main() {
       // Lever Button, Little Will Button
       Accessories(main_controller.ButtonRight, main_controller.ButtonY)
     )
-    // .withSubsystem(
-    //   RotationalOdometryTester(vert_tracking, hori_tracking, double_imu_heading_provider, { .vert_tracker_offset=-0.241, .hori_tracker_offset=2.111 })//{ .vert_tracker_offset=-0.241, .hori_tracker_offset=-2.111 })
-    // )
+    .withSubsystem(
+      RotationalOdometryTester(vert_tracking, hori_tracking, double_imu_heading_provider, { .vert_tracker_offset=-0.241, .hori_tracker_offset=2.111 })//{ .vert_tracker_offset=-0.241, .hori_tracker_offset=-2.111 })
+    )
     .withAutonomousSelector(LimitSwitchAutoSelector())
-    .withAutonomousRoutine("Auto 1", auto1)
+    .withAutonomousRoutine("Skills left", skills)
     .withAutonomousDemoButton(main_controller.ButtonUp)
     .withPreDriverControlAction([]() {
       // End any tasks or items that may interfere with driver control

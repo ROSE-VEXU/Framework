@@ -9,6 +9,7 @@ class IHeadingProvider {
 public:
     virtual void calibrate() = 0;
     virtual Angle getHeading() = 0;
+    virtual void setHeading(float heading) = 0;
 };
 
 };

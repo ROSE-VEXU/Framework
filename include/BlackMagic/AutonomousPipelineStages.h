@@ -16,6 +16,7 @@ public:
     virtual void update() = 0;
     virtual void calibrate() = 0;
     Position getPosition() override;
+    virtual void setPosition(Position position) = 0;
 };
 
 class ILocalizationPipelineStage: IPositionProvider {
