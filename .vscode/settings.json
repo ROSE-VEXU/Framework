@@ -48,7 +48,6 @@
 		"thread": "cpp",
 		"memory": "cpp",
 		"optional": "cpp",
-		"iostream": "cpp",
-		"cstddef": "cpp"
+		"iostream": "cpp"
 	}
 }

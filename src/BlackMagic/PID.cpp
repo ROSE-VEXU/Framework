@@ -1,32 +1,32 @@
 #include "vex.h"
-#include <algorithm>
 
 namespace BlackMagic {
 
-PID::PID(float kP, IntegralConfig cI, float kD): totalError(0), prevError(0), prevOutput(0) {
+PID::PID(float kP, float kI, float kD): prevError(0), totalError(0), prevOutput(0) {
     this->kP = kP;
-    this->cI = cI;
+    this->kI = kI;
     this->kD = kD;
-    this->config = { PID_SETTING_DISABLE, PID_SETTING_DISABLE, PID_SETTING_DISABLE, PID_SETTING_DISABLE };
+    this->accelSlewStep = STEP_DISABLE;
+    this->decelSlewStep = STEP_DISABLE;
 }
 
-PID::PID(float kP, IntegralConfig cI, float kD, PIDConfig pid_config): totalError(0), prevError(0), prevOutput(0) {
+PID::PID(float kP, float kI, float kD, float accelSlewStep, float decelSlewStep): prevError(0), totalError(0), prevOutput(0) {
     this->kP = kP;
-    this->cI = cI;
+    this->kI = kI;
     this->kD = kD;
-    this->config = pid_config;
+    this->accelSlewStep = accelSlewStep;
+    this->decelSlewStep = decelSlewStep;
 }
 
 float PID::slew(float prevValue, float value) {
     float valueDelta = fabs(value) - fabs(prevValue);
-
     if (fabs(prevValue) < fabs(value)) { // Accelerating
-        if (valueDelta >= config.accel_slew_step && config.accel_slew_step != PID_SETTING_DISABLE) { // Limit output delta to config'ed step if accelerating too fast
-            value = prevValue + Utils::sign(value)*config.accel_slew_step;
+        if (valueDelta >= accelSlewStep) { // Limit output delta to config'ed step if accelerating too fast
+            value = prevValue + direction(value)*accelSlewStep;
         }
     } else { // Decelerating
-        if (fabs(valueDelta) >= config.decel_slew_step && config.decel_slew_step != PID_SETTING_DISABLE) { // Limit output delta to config'ed step if accelerating too fast
-            value = prevValue - Utils::sign(value)*config.decel_slew_step;
+        if (fabs(valueDelta) >= decelSlewStep) { // Limit output delta to config'ed step if accelerating too fast
+            value = prevValue - direction(value)*decelSlewStep;
         }
     }
 
@@ -34,22 +34,14 @@ float PID::slew(float prevValue, float value) {
 }
 
 float PID::getNextValue(float err) {
-    float result = kP*err + kD*(err-prevError);
+    totalError += err;
 
-    if (fabs(err) < cI.start_integral_threshold) {
-        totalError += err;
-        totalError = Utils::clamp(totalError, -cI.max_integral, cI.max_integral);
-        result += cI.kI*totalError;
-    }
-
+    float result = kP*err + kI*totalError + kD*(err-prevError);
     prevError = err;
 
-    result = slew(prevOutput, result);
-    result = Utils::sign(result) * Utils::clamp(
-        fabs(result),
-        config.min_speed == PID_SETTING_DISABLE ? 0.0 : config.min_speed,
-        config.min_speed == PID_SETTING_DISABLE ? 100.0 : config.max_speed
-    );
+    if (accelSlewStep != STEP_DISABLE || decelSlewStep != STEP_DISABLE) {
+        result = slew(prevOutput, result);
+    }
 
     prevOutput = result;
     return result;
@@ -59,6 +51,10 @@ void PID::reset() {
     prevError = 0;
     totalError = 0;
     prevOutput = 0;
+}
+
+const int PID::direction(float value) {
+    return (value < 0) ? -1 : 1;
 }
     
 };
