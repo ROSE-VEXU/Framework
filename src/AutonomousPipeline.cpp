@@ -15,6 +15,7 @@ void AutonomousPipeline::setTarget(Pose target_pose) {
 void AutonomousPipeline::setPosition(Position position) {
     if (odometrySource == nullptr) return;
     odometrySource->setPosition(position);
+    odomPosition = position;
 }
 
 int AutonomousPipeline::runPipeline(const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) {

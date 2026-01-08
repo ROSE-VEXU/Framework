@@ -13,7 +13,6 @@ void TurnMode::setTarget(Angle targetHeading) {
 
 void TurnMode::run(const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) {
     float curr_error = Utils::getShortestAngleBetween(drive_state.heading, this->target_heading);
-    // printf("Error: %.2f\n", curr_error);
     float turn_speed = angular_pid->getNextValue(curr_error);
     float prev_turn_speed = left_speed;
 

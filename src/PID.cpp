@@ -48,7 +48,7 @@ float PID::getNextValue(float err) {
     result = Utils::sign(result) * Utils::clamp(
         fabs(result),
         config.min_speed == PID_SETTING_DISABLE ? 0.0 : config.min_speed,
-        config.min_speed == PID_SETTING_DISABLE ? 100.0 : config.max_speed
+        config.max_speed == PID_SETTING_DISABLE ? 100.0 : config.max_speed
     );
 
     prevOutput = result;
