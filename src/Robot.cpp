@@ -9,6 +9,7 @@ Robot* Robot::current_robot_reference = nullptr;
 
 Robot::Robot(vex::competition& competition_controller): competition_controller(competition_controller), pre_driver_control([](){}) {
     this->auto_selector = std::make_shared<IAutonomousSelector>();
+    this->testing_auto = false;
     Robot::current_robot_reference = this;
 
     competition_controller.autonomous(Robot::current_robot_reference->auton);
@@ -27,7 +28,7 @@ void Robot::auton(void) {
 void Robot::driverControl(void) {
     Robot::current_robot_reference->pre_driver_control();
     
-    while(true) {
+    while(!testing_auto) {
         if (Robot::current_robot_reference == nullptr) continue;
 
         for (int i=0; i<Robot::current_robot_reference->subsystems.size(); i++) {
@@ -53,8 +54,10 @@ Robot& Robot::withAutonomousDemoButton(const vex::controller::button button) {
         if (Robot::current_robot_reference == nullptr) return;
         if (Robot::current_robot_reference->competition_controller.isCompetitionSwitch()) return; // Prevent accidental demo runs in comp
 
+        testing_auto = true;
         AutonomousRoutine selectedAuto = Robot::current_robot_reference->auto_selector->getSelectedRoutine();
         selectedAuto.routine();
+        testing_auto = false;
     });
 
     return *this;
