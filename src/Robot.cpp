@@ -8,7 +8,7 @@ namespace BlackMagic {
 Robot* Robot::current_robot_reference = nullptr;
 
 Robot::Robot(vex::competition& competition_controller): competition_controller(competition_controller), pre_driver_control([](){}) {
-    this->auto_selector = std::make_unique<IAutonomousSelector>();
+    this->auto_selector = std::make_shared<IAutonomousSelector>();
     Robot::current_robot_reference = this;
 
     competition_controller.autonomous(Robot::current_robot_reference->auton);

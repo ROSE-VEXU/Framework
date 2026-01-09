@@ -36,9 +36,9 @@ public:
     }
 
     template<typename AutonomousSelectorType>
-    Robot& withAutonomousSelector(AutonomousSelectorType&& auto_selector) {
+    Robot& withAutonomousSelector(AutonomousSelectorType& auto_selector) {
         VERIFY_SUBCLASS(std::decay_t<AutonomousSelectorType>, IAutonomousSelector, "withAutonomousSelector", "autoSelector", "IAutonomousSelector");
-        this->auto_selector = std::make_unique<std::decay_t<AutonomousSelectorType>>(std::forward<AutonomousSelectorType>(auto_selector));
+        this->auto_selector = std::shared_ptr<std::decay_t<AutonomousSelectorType>>(&auto_selector, [](AutonomousSelectorType*){});
         return *this;
     }
     
@@ -49,7 +49,7 @@ public:
   
 private:
     vex::competition& competition_controller;
-    std::unique_ptr<IAutonomousSelector> auto_selector;
+    std::shared_ptr<IAutonomousSelector> auto_selector;
     std::vector<std::shared_ptr<Subsystem>> subsystems;
     std::function<void()> pre_driver_control;
 };
