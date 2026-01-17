@@ -78,7 +78,7 @@ private:
     // All 0-value PIDs will lead to no movement, a graceful failure in the unconfigured case.
     std::shared_ptr<PID> linear_pid = std::make_shared<PID>(0, IntegralConfig{0, 0, 0}, 0);
     std::shared_ptr<PID> angular_pid = std::make_shared<PID>(0, IntegralConfig{0, 0, 0}, 0);
-    std::shared_ptr<IDriveMode> drive_modes[4] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<ArcMode>(), std::make_shared<PipelineMode>() };
+    std::shared_ptr<IDriveMode> drive_modes[3] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<PipelineMode>() };
     int selected_drive_mode;
 
     bool drive_task_enabled;

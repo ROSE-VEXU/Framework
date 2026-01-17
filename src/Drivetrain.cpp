@@ -14,9 +14,9 @@ Drivetrain::Drivetrain(vex::motor_group& left_motors, vex::motor_group& right_mo
 }
 
 void Drivetrain::opControl() {
-    if (driveControl != nullptr && !drive_task_enabled) {
+    if (drive_control != nullptr && !drive_task_enabled) {
         setBrake(vex::brakeType::coast);
-        DriveSpeeds speeds = driveControl->getSpeeds();
+        DriveSpeeds speeds = drive_control->getSpeeds();
         driveLeft(speeds.left);
         driveRight(speeds.right);
     }
