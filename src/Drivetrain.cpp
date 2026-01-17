@@ -9,7 +9,7 @@ Drivetrain::Drivetrain(vex::motor_group& left_motors, vex::motor_group& right_mo
     left_motors(left_motors),
     right_motors(right_motors),
     heading_provider(heading_provider),
-    selectedDriveMode(STRAIGHT_MODE),
+    selected_drive_mode(STRAIGHT_MODE),
     drive_task_enabled(false) {
 }
 
@@ -69,7 +69,7 @@ void Drivetrain::driveStraight(float inches) {
     linear_pid->reset();
     angular_pid->reset();
     selected_drive_mode = STRAIGHT_MODE;
-    std::shared_ptr<StraightMode> straight_mode = std::static_pointer_cast<StraightMode>(drive_modes[selectedDriveMode]);
+    std::shared_ptr<StraightMode> straight_mode = std::static_pointer_cast<StraightMode>(drive_modes[selected_drive_mode]);
     straight_mode->setTarget(inches, getHeading());
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
     stop();
@@ -81,7 +81,7 @@ void Drivetrain::driveTurn(Angle heading) {
     setBrake(vex::brakeType::hold);
     angular_pid->reset();
     selected_drive_mode = TURN_MODE;
-    std::shared_ptr<TurnMode> turn_mode = std::static_pointer_cast<TurnMode>(drive_modes[selectedDriveMode]);
+    std::shared_ptr<TurnMode> turn_mode = std::static_pointer_cast<TurnMode>(drive_modes[selected_drive_mode]);
     turn_mode->setTarget(heading);
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
     stop();
@@ -94,7 +94,7 @@ void Drivetrain::driveArc(float inches, Angle end_angle) {
     linear_pid->reset();
     angular_pid->reset();
     selected_drive_mode = STRAIGHT_MODE;
-    std::shared_ptr<StraightMode> straight_mode = std::static_pointer_cast<StraightMode>(drive_modes[selectedDriveMode]);
+    std::shared_ptr<StraightMode> straight_mode = std::static_pointer_cast<StraightMode>(drive_modes[selected_drive_mode]);
     straight_mode->setTarget(inches, end_angle);
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
     stop();
@@ -107,8 +107,8 @@ void Drivetrain::drivePipeline(BlackMagic::Pose target_pose) {
     linear_pid->reset();
     angular_pid->reset();
     if (autonomous_pipeline != nullptr) {
-        selectedDriveMode = PIPELINE_MODE;
-        std::shared_ptr<PipelineMode> pipeline_mode = std::static_pointer_cast<PipelineMode>(drive_modes[selectedDriveMode]);
+        selected_drive_mode = PIPELINE_MODE;
+        std::shared_ptr<PipelineMode> pipeline_mode = std::static_pointer_cast<PipelineMode>(drive_modes[selected_drive_mode]);
         pipeline_mode->setPipeline(autonomous_pipeline);
         autonomous_pipeline->setTarget(target_pose);
         while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
@@ -117,7 +117,7 @@ void Drivetrain::drivePipeline(BlackMagic::Pose target_pose) {
 }
 
 bool Drivetrain::hasSettled() {
-    return drive_modes[selectedDriveMode]->hasSettled(getDriveState());
+    return drive_modes[selected_drive_mode]->hasSettled(getDriveState());
 }
 
 void Drivetrain::resetEncoders() {
@@ -176,8 +176,8 @@ void Drivetrain::disableDriveTask() {
 
 int Drivetrain::driveTask() {
     while(drive_task_enabled) {
-        drive_modes[selectedDriveMode]->run(getDriveState(), linear_pid, angular_pid);
-        DriveSpeeds speeds = drive_modes[selectedDriveMode]->getSpeeds();
+        drive_modes[selected_drive_mode]->run(getDriveState(), linear_pid, angular_pid);
+        DriveSpeeds speeds = drive_modes[selected_drive_mode]->getSpeeds();
         driveLeft(speeds.left);
         driveRight(speeds.right);
 

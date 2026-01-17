@@ -2,7 +2,6 @@
 #define DRIVETRAIN_H
 
 #include "AutonomousPipeline.h"
-#include "Direction.h"
 #include "DriveControllerMovement.h"
 #include "DriveMode.h"
 #include "DriveStates.h"
