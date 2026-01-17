@@ -9,7 +9,6 @@
 
 #include "Config.h"
 
-#include "Direction.h"
 #include "DriveControllerMovement.h"
 #include "DriveMode.h"
 #include "DriveSpeedProvider.h"
@@ -26,7 +25,6 @@
 #include "InertialHeadingProviders.h"
 
 #include "Drivetrain.h"
-#include "MotorizedSubsystem.h"
 #include "Robot.h"
 
 #include "Utils.h"
