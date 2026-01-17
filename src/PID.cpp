@@ -19,7 +19,7 @@ PID::PID(float kP, IntegralConfig cI, float kD, PIDConfig pid_config): total_err
 float PID::slew(float prev_value, float value) {
     float value_delta = fabs(value) - fabs(prev_value);
 
-    if (fabs(prevValue) < fabs(value)) { // Accelerating
+    if (fabs(prev_value) < fabs(value)) { // Accelerating
         if (value_delta >= config.accel_slew_step && config.accel_slew_step != PID_SETTING_DISABLE) { // Limit output delta to config'ed step if accelerating too fast
             value = prev_value + Utils::sign(value)*config.accel_slew_step;
         }
