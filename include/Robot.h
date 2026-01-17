@@ -50,7 +50,6 @@ public:
 private:
     vex::competition& competition_controller;
     std::shared_ptr<IAutonomousSelector> auto_selector;
-    std::shared_ptr<IAutonomousSelector> auto_selector;
     std::vector<std::shared_ptr<Subsystem>> subsystems;
     std::function<void()> pre_driver_control;
     bool testing_auto;

@@ -33,7 +33,6 @@ private:
     bool decelerating;
     float linear_speed;
     float angular_speed;
-    int settle_count;
     float settling_prev_left;
     float settling_prev_right;
     float settling_total_left;

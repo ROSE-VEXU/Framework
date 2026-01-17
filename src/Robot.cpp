@@ -1,6 +1,4 @@
 #include "vex.h"
-#include <iostream>
-#include <string>
 
 namespace BlackMagic {
 
@@ -20,8 +18,8 @@ Robot::Robot(vex::competition& competition_controller): competition_controller(c
 void Robot::auton(void) {
     if (Robot::current_robot_reference == nullptr) return;
 
-    AutonomousRoutine selectedAuto = Robot::current_robot_reference->auto_selector->getSelectedRoutine();
-    selectedAuto.routine();
+    AutonomousRoutine selected_auto = Robot::current_robot_reference->auto_selector->getSelectedRoutine();
+    selected_auto.routine();
 }
 
 // Static
@@ -40,11 +38,11 @@ void Robot::driverControl(void) {
 }
 
 Robot& Robot::withAutonomousRoutine(const std::string& name, const std::function<void()>& routine) {
-    AutonomousRoutine newRoutine = {
+    AutonomousRoutine new_routine = {
         .name = name,
         .routine = routine
     };
-    auto_selector->addRoutine(newRoutine);
+    auto_selector->addRoutine(new_routine);
 
     return *this;
 }
@@ -55,8 +53,8 @@ Robot& Robot::withAutonomousDemoButton(const vex::controller::button button) {
         if (Robot::current_robot_reference->competition_controller.isCompetitionSwitch()) return; // Prevent accidental demo runs in comp
 
         Robot::current_robot_reference->testing_auto = true;
-        AutonomousRoutine selectedAuto = Robot::current_robot_reference->auto_selector->getSelectedRoutine();
-        selectedAuto.routine();
+        AutonomousRoutine selected_auto = Robot::current_robot_reference->auto_selector->getSelectedRoutine();
+        selected_auto.routine();
         Robot::current_robot_reference->testing_auto = false;
     });
 

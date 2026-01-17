@@ -2,8 +2,8 @@
 
 namespace BlackMagic {
 
-void TurnMode::setTarget(Angle targetHeading) {
-    this->target_heading = targetHeading;
+void TurnMode::setTarget(Angle target_heading) {
+    this->target_heading = target_heading;
     this->left_speed = 0;
     this->right_speed = 0;
     this->settle_count = 0;
