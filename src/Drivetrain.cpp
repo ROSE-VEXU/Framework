@@ -110,7 +110,7 @@ void Drivetrain::drivePipeline(BlackMagic::Pose target_pose) {
         selected_drive_mode = PIPELINE_MODE;
         std::shared_ptr<PipelineMode> pipeline_mode = std::static_pointer_cast<PipelineMode>(drive_modes[selected_drive_mode]);
         pipeline_mode->setPipeline(autonomous_pipeline);
-        autonomous_pipeline->setTarget(target_pose);
+        pipeline_mode->setTarget(target_pose);
         while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
     }
     stop();

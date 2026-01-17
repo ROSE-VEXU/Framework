@@ -60,7 +60,7 @@ class PipelineMode: public IDriveMode {
 public:
     PipelineMode() = default;
 
-    void setTarget(float target_x, float target_y, float target_heading);
+    void setTarget(Pose target_pose);
     void run(const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) override;
     void setPipeline(std::shared_ptr<AutonomousPipeline> pipeline);
     bool hasSettled(const DrivetrainState& drive_state) override;

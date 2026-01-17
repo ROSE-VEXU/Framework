@@ -2,6 +2,12 @@
 
 namespace BlackMagic {
 
+void PipelineMode::setTarget(Pose target_pose) {
+    if (this->pipeline == nullptr) return;
+
+    this->pipeline->setTarget(target_pose);
+}
+
 void PipelineMode::run(const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) {
     if (this->pipeline == nullptr) return;
 
