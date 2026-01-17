@@ -16,7 +16,7 @@ void StraightMode::setTarget(float target_inches, Angle target_heading) {
 }
 
 void StraightMode::run(const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) {
-    float curr_distance = drive_state.leftDegrees;
+    float curr_distance = drive_state.left_degrees;
     float curr_distance_error = target_deg - curr_distance;
     float curr_heading_error = Utils::getShortestAngleBetween(drive_state.heading, target_heading);
     float prev_linear_speed = linear_speed;
@@ -29,8 +29,8 @@ void StraightMode::run(const DrivetrainState& drive_state, std::shared_ptr<PID> 
 bool StraightMode::hasSettled(const DrivetrainState& drive_state) {
     if (!decelerating) return false;
 
-    float curr_left = drive_state.leftDegrees;
-    float curr_right = drive_state.rightDegrees;
+    float curr_left = drive_state.left_degrees;
+    float curr_right = drive_state.right_degrees;
 
     settling_total_left += fabs(curr_left - settling_prev_left);
     settling_total_right += fabs(curr_right - settling_prev_right);
