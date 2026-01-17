@@ -44,7 +44,7 @@ class TurnMode: public IDriveMode {
 public:
     TurnMode() = default;
 
-    void setTarget(Angle targetHeading);
+    void setTarget(Angle target_heading);
     void run(const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) override;
     bool hasSettled(const DrivetrainState& drive_state) override;
     DriveSpeeds getSpeeds() override;
@@ -57,20 +57,11 @@ private:
     float settling_total_heading_change;
 };
 
-class ArcMode: public IDriveMode {
-public:
-    ArcMode() = default;
-
-    void run(const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) override;
-    bool hasSettled(const DrivetrainState& drive_state) override;
-    DriveSpeeds getSpeeds() override;
-};
-
 class PipelineMode: public IDriveMode {
 public:
     PipelineMode() = default;
 
-    void setTarget(float targetX, float targetY, float targetHeading);
+    void setTarget(float target_x, float target_y, float target_heading);
     void run(const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) override;
     void setPipeline(std::shared_ptr<AutonomousPipeline> pipeline);
     bool hasSettled(const DrivetrainState& drive_state) override;

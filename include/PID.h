@@ -29,12 +29,12 @@ private:
     IntegralConfig cI;
     float kD;
     PIDConfig config;
-    float totalError;
-    float prevError;
-    float prevOutput;
+    float total_error;
+    float prev_error;
+    float prev_output;
 
     const int direction(float value);
-    float slew(float prevValue, float value);
+    float slew(float prev_value, float value);
 };
 
 };

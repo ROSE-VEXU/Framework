@@ -32,8 +32,8 @@ struct Angle {
 };
 
 struct DrivetrainState {
-    float leftDegrees;
-    float rightDegrees;
+    float left_degrees;
+    float right_degrees;
     Angle heading;
 };
 

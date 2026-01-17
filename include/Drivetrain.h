@@ -21,21 +21,21 @@ namespace BlackMagic {
 
 class Drivetrain: public Subsystem {
 public:
-    Drivetrain(vex::motor_group& leftMotors, vex::motor_group& rightMotors, IHeadingProvider& heading_provider);
+    Drivetrain(vex::motor_group& left_motors, vex::motor_group& right_motors, IHeadingProvider& heading_provider);
 
     void opControl();
 
     template<typename ControllerMovementType>
-    Drivetrain&& withControllerMovement(ControllerMovementType&& controllerMovement) && {
+    Drivetrain&& withControllerMovement(ControllerMovementType&& controller_movement) && {
         VERIFY_SUBCLASS(ControllerMovementType, DriveControllerMovement, "withControllerMovement", "controllerMovement", "DriveControllerMovement");
-        driveControl = std::make_unique<std::decay_t<ControllerMovementType>>(std::forward<ControllerMovementType>(controllerMovement));
+        drive_control = std::make_unique<std::decay_t<ControllerMovementType>>(std::forward<ControllerMovementType>(controller_movement));
         return std::move(*this);
     };
     
     template<typename ControllerMovementType>
-    Drivetrain& withControllerMovement(ControllerMovementType&& controllerMovement) & {
+    Drivetrain& withControllerMovement(ControllerMovementType&& controller_movement) & {
         VERIFY_SUBCLASS(ControllerMovementType, DriveControllerMovement, "withControllerMovement", "controllerMovement", "DriveControllerMovement");
-        driveControl = std::make_unique<std::decay_t<ControllerMovementType>>(std::forward<ControllerMovementType>(controllerMovement));
+        drive_control = std::make_unique<std::decay_t<ControllerMovementType>>(std::forward<ControllerMovementType>(controller_movement));
         return *this;
     };
 
@@ -47,8 +47,8 @@ public:
     Drivetrain&& withAngularPID(PID&& pid) &&;
     Drivetrain& withAngularPID(PID&& pid) &;
 
-    void driveLeft(float speedPercent);
-    void driveRight(float speedPercent);
+    void driveLeft(float speed_percent);
+    void driveRight(float speed_percent);
     void driveStraight(float inches);
     void driveTurn(Angle heading);
     void driveArc(float inches, Angle end_angle);
@@ -57,7 +57,7 @@ public:
     void resetEncoders();
     void calibrateHeading();
     void stop();
-    void setBrake(vex::brakeType brakeMode);
+    void setBrake(vex::brakeType brake_mode);
     void setHeading(float degrees);
     void setPipelinePose(Pose target_pose);
     DrivetrainState getDriveState();
@@ -70,17 +70,17 @@ public:
     int driveTask();
 
 private:
-    vex::motor_group& leftMotors;
-    vex::motor_group& rightMotors;
+    vex::motor_group& left_motors;
+    vex::motor_group& right_motors;
     IHeadingProvider& heading_provider;
-    std::unique_ptr<DriveControllerMovement> driveControl;
-    std::shared_ptr<AutonomousPipeline> autonomousControlPipeline;
+    std::unique_ptr<DriveControllerMovement> drive_control;
+    std::shared_ptr<AutonomousPipeline> autonomous_pipeline;
 
     // All 0-value PIDs will lead to no movement, a graceful failure in the unconfigured case.
-    std::shared_ptr<PID> linearPID = std::make_shared<PID>(0, IntegralConfig{0, 0, 0}, 0);
-    std::shared_ptr<PID> angularPID = std::make_shared<PID>(0, IntegralConfig{0, 0, 0}, 0);
-    std::shared_ptr<IDriveMode> driveModes[4] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<ArcMode>(), std::make_shared<PipelineMode>() };
-    int selectedDriveMode;
+    std::shared_ptr<PID> linear_pid = std::make_shared<PID>(0, IntegralConfig{0, 0, 0}, 0);
+    std::shared_ptr<PID> angular_pid = std::make_shared<PID>(0, IntegralConfig{0, 0, 0}, 0);
+    std::shared_ptr<IDriveMode> drive_modes[4] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<ArcMode>(), std::make_shared<PipelineMode>() };
+    int selected_drive_mode;
 
     bool drive_task_enabled;
 };
