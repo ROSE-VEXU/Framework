@@ -9,6 +9,9 @@ struct IntegralConfig {
     float kI;
     float max_integral;
     float start_integral_threshold;
+
+    IntegralConfig(float kI): kI(kI), max_integral(0.0), start_integral_threshold(0.0) {};
+    IntegralConfig(float kI, float max_integral, float start_integral_threshold): kI(kI), max_integral(max_integral), start_integral_threshold(start_integral_threshold) {};
 };
 
 struct PIDConfig {
