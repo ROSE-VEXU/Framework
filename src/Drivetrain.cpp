@@ -43,7 +43,7 @@ void Drivetrain::driveRight(float speed_percent) {
     right_motors.spin(vex::directionType::fwd, MV(speed_percent), vex::voltageUnits::mV);
 }
 
-void Drivetrain::driveStraight(float inches, PID& linear_pid, PID& angular_pid) {
+void Drivetrain::driveStraight(float inches, float max_speed, PID& linear_pid, PID& angular_pid) {
     stop();
     resetEncoders();
     setBrake(vex::brakeType::hold);
@@ -55,7 +55,11 @@ void Drivetrain::driveStraight(float inches, PID& linear_pid, PID& angular_pid) 
     stop();
 }
 
-void Drivetrain::driveTurn(Angle heading, PID& angular_pid) {
+void Drivetrain::driveStraight(float inches, PID& linear_pid, PID& angular_pid) {
+    driveStraight(inches, 100.0, linear_pid, angular_pid);
+}
+
+void Drivetrain::driveTurn(Angle heading, float max_speed, PID& angular_pid) {
     stop();
     resetEncoders();
     setBrake(vex::brakeType::hold);
@@ -67,7 +71,11 @@ void Drivetrain::driveTurn(Angle heading, PID& angular_pid) {
     stop();
 }
 
-void Drivetrain::driveArc(float inches, Angle end_angle, PID& linear_pid, PID& angular_pid) {
+void Drivetrain::driveTurn(Angle heading, PID& angular_pid) {
+    driveTurn(heading, 100.0, angular_pid);
+}
+
+void Drivetrain::driveArc(float inches, Angle end_angle, float max_speed, PID& linear_pid, PID& angular_pid) {
     stop();
     resetEncoders();
     setBrake(vex::brakeType::hold);
@@ -79,7 +87,11 @@ void Drivetrain::driveArc(float inches, Angle end_angle, PID& linear_pid, PID& a
     stop();
 }
 
-void Drivetrain::drivePipeline(BlackMagic::Pose target_pose, PID& linear_pid, PID& angular_pid) {
+void Drivetrain::driveArc(float inches, Angle end_angle, PID& linear_pid, PID& angular_pid) {
+    driveArc(inches, end_angle, 100.0, linear_pid, angular_pid);
+}
+
+void Drivetrain::drivePipeline(BlackMagic::Pose target_pose, float max_speed, PID& linear_pid, PID& angular_pid) {
     stop();
     resetEncoders();
     setBrake(vex::brakeType::hold);
@@ -92,6 +104,10 @@ void Drivetrain::drivePipeline(BlackMagic::Pose target_pose, PID& linear_pid, PI
         while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
     }
     stop();
+}
+
+Drivetrain::drivePipeline(BlackMagic::Pose target_pose, PID& linear_pid, PID& angular_pid) {
+    drivePipeline(target_pose, 100.0, linear_pid, angular_pid);
 }
 
 void Drivetrain::enableDriveTask() {

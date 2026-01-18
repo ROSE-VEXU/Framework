@@ -7,7 +7,7 @@ PID PID::ZERO_PID = { 0.0, { 0.0, 0.0, 0.0 }, 0.0 };
 PID::PID(float kP, IntegralConfig cI, float kD):
     kP(kP), cI(cI), kD(kD),
     total_error(0), prev_error(0), prev_output(0) {
-    this->config = { PID_SETTING_DISABLE, PID_SETTING_DISABLE, PID_SETTING_DISABLE, PID_SETTING_DISABLE };
+    this->config = { PID_SETTING_DISABLE, PID_SETTING_DISABLE };
 }
 
 PID::PID(float kP, IntegralConfig cI, float kD, SlewConfig slew_config): 
