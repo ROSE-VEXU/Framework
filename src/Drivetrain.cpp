@@ -106,7 +106,7 @@ void Drivetrain::drivePipeline(BlackMagic::Pose target_pose, float max_speed, PI
     stop();
 }
 
-Drivetrain::drivePipeline(BlackMagic::Pose target_pose, PID& linear_pid, PID& angular_pid) {
+void Drivetrain::drivePipeline(BlackMagic::Pose target_pose, PID& linear_pid, PID& angular_pid) {
     drivePipeline(target_pose, 100.0, linear_pid, angular_pid);
 }
 
