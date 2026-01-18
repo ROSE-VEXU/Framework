@@ -2,7 +2,7 @@
 
 namespace BlackMagic {
 
-PipelineMode::PipelineMode(): linear_pid(PID::ZERO_PID), angular_pid(PID::ZERO_PID) {}
+PipelineMode::PipelineMode() {}
 
 void PipelineMode::setTarget(Pose target_pose) {
     if (this->pipeline == nullptr) return;

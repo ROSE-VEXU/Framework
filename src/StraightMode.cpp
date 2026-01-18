@@ -2,7 +2,7 @@
 
 namespace BlackMagic {
 
-StraightMode::StraightMode(): linear_pid(PID::ZERO_PID), angular_pid(PID::ZERO_PID) {}
+StraightMode::StraightMode() {}
 
 void StraightMode::setTarget(float target_inches, Angle target_heading) {
     this->target_deg = target_inches * (360.0 / (WHEEL_DIAM_INCHES * M_PI));

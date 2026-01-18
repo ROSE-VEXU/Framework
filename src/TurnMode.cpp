@@ -2,7 +2,7 @@
 
 namespace BlackMagic {
 
-TurnMode::TurnMode(): angular_pid(PID::ZERO_PID) {}
+TurnMode::TurnMode() {}
 
 void TurnMode::setTarget(Angle target_heading) {
     this->target_heading = target_heading;
