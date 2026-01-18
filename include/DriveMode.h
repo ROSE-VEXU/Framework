@@ -31,6 +31,8 @@ public:
 private:
     PID& linear_pid;
     PID& angular_pid;
+    float max_speed;
+    
     float target_deg;
     Angle target_heading;
     bool decelerating;
@@ -53,6 +55,8 @@ public:
     DriveSpeeds getSpeeds() override;
 private:
     PID& angular_pid;
+    float max_speed;
+
     Angle target_heading;
     bool decelerating;
     float left_speed;
@@ -75,6 +79,8 @@ public:
 private:
     PID& linear_pid;
     PID& angular_pid;
+    float max_speed;
+
     std::shared_ptr<AutonomousPipeline> pipeline;
 };
 

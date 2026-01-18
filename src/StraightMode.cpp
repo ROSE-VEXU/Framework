@@ -59,7 +59,10 @@ bool StraightMode::hasSettled(const DrivetrainState& drive_state) {
 }
 
 DriveSpeeds StraightMode::getSpeeds() {
-    return { BlackMagic::Utils::getScaledSpeedsFromMax(linear_speed, angular_speed) };
+    // Scaled speeds verify each side's output is a percentage of 100 (meaning output is achievable)
+    DriveSpeeds scaled = BlackMagic::Utils::getScaledSpeedsFromMax(linear_speed, angular_speed);
+
+    return { BlackMagic::Utils::clamp(scaled.left, -max_speed, max_speed), BlackMagic::Utils::clamp(scaled.right, -max_speed, max_speed) };
 }
 
 };

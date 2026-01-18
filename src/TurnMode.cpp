@@ -47,7 +47,7 @@ bool TurnMode::hasSettled(const DrivetrainState& drive_state) {
 }
 
 DriveSpeeds TurnMode::getSpeeds() {
-    return { left_speed, right_speed };
+    return { BlackMagic::Utils::clamp(left_speed, -max_speed, max_speed), BlackMagic::Utils::clamp(right_speed, -max_speed, max_speed) };
 }
 
 };
