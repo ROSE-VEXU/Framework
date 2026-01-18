@@ -9,8 +9,8 @@ Drivetrain::Drivetrain(vex::motor_group& left_motors, vex::motor_group& right_mo
     left_motors(left_motors),
     right_motors(right_motors),
     heading_provider(heading_provider),
-    linear_pid(PID::ZERO_PID),
-    angular_pid(PID::ZERO_PID),
+    current_linear_pid(PID::ZERO_PID),
+    current_angular_pid(PID::ZERO_PID),
     max_speed(100.0f),
     selected_drive_mode(STRAIGHT_MODE),
     drive_task_enabled(false) {
