@@ -10,10 +10,10 @@ PID::PID(float kP, IntegralConfig cI, float kD):
     this->config = { PID_SETTING_DISABLE, PID_SETTING_DISABLE, PID_SETTING_DISABLE, PID_SETTING_DISABLE };
 }
 
-PID::PID(float kP, IntegralConfig cI, float kD, PIDConfig pid_config): 
+PID::PID(float kP, IntegralConfig cI, float kD, SlewConfig slew_config): 
     kP(kP), cI(cI), kD(kD),
     total_error(0), prev_error(0), prev_output(0),
-    config(pid_config) {
+    config(slew_config) {
 }
 
 float PID::slew(float prev_value, float value) {
@@ -44,11 +44,6 @@ float PID::getNextValue(float err) {
     prev_error = err;
 
     result = slew(prev_output, result);
-    result = Utils::sign(result) * Utils::clamp(
-        fabs(result),
-        config.min_speed == PID_SETTING_DISABLE ? 0.0 : config.min_speed,
-        config.max_speed == PID_SETTING_DISABLE ? 100.0 : config.max_speed
-    );
 
     prev_output = result;
     return result;
