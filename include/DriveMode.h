@@ -11,12 +11,16 @@ namespace BlackMagic {
 
 class IDriveMode: IDriveSpeedProvider {
 public:
+    void setMaxSpeed(float max_speed) {
+        this->max_speed = max_speed;
+    }
     virtual void run(const DrivetrainState& drive_state) = 0;
     virtual bool hasSettled(const DrivetrainState& drive_state) = 0;
     DriveSpeeds getSpeeds() = 0;
 
 protected:
     int settle_count;
+    float max_speed;
 };
 
 class StraightMode: public IDriveMode {
