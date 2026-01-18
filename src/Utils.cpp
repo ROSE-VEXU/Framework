@@ -32,7 +32,7 @@ BlackMagic::DriveSpeeds Utils::getScaledSpeedsFromMax(float linear_speed, float 
     float total_speed = fabs(linear_speed) + fabs(angular_speed);
     float left_speed = linear_speed + angular_speed;
     float right_speed = linear_speed - angular_speed;
-    if (total_speed > max_speed) return { max_speed * (left_speed/total_speed), max_speed * (right_speed/total_speed) };
+    if (total_speed > 100.0f) return { 100.0f * (left_speed/total_speed), 100.0f * (right_speed/total_speed) };
     return { left_speed, right_speed };
 }
 
