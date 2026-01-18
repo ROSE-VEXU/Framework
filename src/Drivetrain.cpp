@@ -49,7 +49,7 @@ void Drivetrain::driveStraight(float inches, float max_speed, PID& linear_pid, P
     setBrake(vex::brakeType::hold);
     selected_drive_mode = STRAIGHT_MODE;
     std::shared_ptr<StraightMode> straight_mode = std::static_pointer_cast<StraightMode>(drive_modes[selected_drive_mode]);
-    pipeline_mode->setMaxSpeed(max_speed);
+    straight_mode->setMaxSpeed(max_speed);
     straight_mode->setPIDs(linear_pid, angular_pid);
     straight_mode->setTarget(inches, getHeading());
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
@@ -66,7 +66,7 @@ void Drivetrain::driveTurn(Angle heading, float max_speed, PID& angular_pid) {
     setBrake(vex::brakeType::hold);
     selected_drive_mode = TURN_MODE;
     std::shared_ptr<TurnMode> turn_mode = std::static_pointer_cast<TurnMode>(drive_modes[selected_drive_mode]);
-    pipeline_mode->setMaxSpeed(max_speed);
+    turn_mode->setMaxSpeed(max_speed);
     turn_mode->setPIDs(angular_pid);
     turn_mode->setTarget(heading);
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
@@ -83,7 +83,7 @@ void Drivetrain::driveArc(float inches, Angle end_angle, float max_speed, PID& l
     setBrake(vex::brakeType::hold);
     selected_drive_mode = STRAIGHT_MODE;
     std::shared_ptr<StraightMode> straight_mode = std::static_pointer_cast<StraightMode>(drive_modes[selected_drive_mode]);
-    pipeline_mode->setMaxSpeed(max_speed);
+    straight_mode->setMaxSpeed(max_speed);
     straight_mode->setPIDs(linear_pid, angular_pid);
     straight_mode->setTarget(inches, end_angle);
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
