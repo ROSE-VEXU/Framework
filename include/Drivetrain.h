@@ -40,17 +40,15 @@ public:
     Drivetrain&& withAutonomousPipeline(AutonomousPipeline&& pipeline) &&;
     Drivetrain& withAutonomousPipeline(AutonomousPipeline&& pipeline) &;
 
-    Drivetrain&& withLinearPID(PID&& pid) &&;
-    Drivetrain& withLinearPID(PID&& pid) &;
-    Drivetrain&& withAngularPID(PID&& pid) &&;
-    Drivetrain& withAngularPID(PID&& pid) &;
-
     void driveLeft(float speed_percent);
     void driveRight(float speed_percent);
-    void driveStraight(float inches);
-    void driveTurn(Angle heading);
-    void driveArc(float inches, Angle end_angle);
-    void drivePipeline(Pose target_pose);
+    void driveStraight(float inches, PID& linear_pid, PID& angular_pid);
+    void driveTurn(Angle heading, PID& angular_pid);
+    void driveArc(float inches, Angle end_angle, PID& linear_pid, PID& angular_pid);
+    void drivePipeline(Pose target_pose, PID& linear_pid, PID& angular_pid);
+    void enableDriveTask();
+    void disableDriveTask();
+    int driveTask();
     bool hasSettled();
     void resetEncoders();
     void calibrateHeading();
@@ -63,10 +61,6 @@ public:
     float getRightDegrees();
     Angle getHeading();
 
-    void enableDriveTask();
-    void disableDriveTask();
-    int driveTask();
-
 private:
     vex::motor_group& left_motors;
     vex::motor_group& right_motors;
@@ -75,8 +69,8 @@ private:
     std::shared_ptr<AutonomousPipeline> autonomous_pipeline;
 
     // All 0-value PIDs will lead to no movement, a graceful failure in the unconfigured case.
-    std::shared_ptr<PID> linear_pid = std::make_shared<PID>(0, IntegralConfig{0, 0, 0}, 0);
-    std::shared_ptr<PID> angular_pid = std::make_shared<PID>(0, IntegralConfig{0, 0, 0}, 0);
+    PID& linear_pid;
+    PID& angular_pid;
     std::shared_ptr<IDriveMode> drive_modes[3] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<PipelineMode>() };
     int selected_drive_mode;
 

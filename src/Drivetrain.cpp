@@ -32,25 +32,6 @@ Drivetrain& Drivetrain::withAutonomousPipeline(AutonomousPipeline&& pipeline) & 
     return *this;
 }
 
-Drivetrain&& Drivetrain::withLinearPID(PID&& pid) && {
-    this->linear_pid = std::make_unique<PID>(std::move(pid));
-    return std::move(*this);
-}
-
-Drivetrain& Drivetrain::withLinearPID(PID&& pid) & {
-    this->linear_pid = std::make_unique<PID>(std::move(pid));
-    return *this;
-}
-
-Drivetrain&& Drivetrain::withAngularPID(PID&& pid) && {
-    this->angular_pid = std::make_unique<PID>(std::move(pid));
-    return std::move(*this);
-}
-
-Drivetrain& Drivetrain::withAngularPID(PID&& pid) & {
-    this->angular_pid = std::make_unique<PID>(std::move(pid));
-    return *this;
-}
 
 
 // Private
@@ -62,12 +43,14 @@ void Drivetrain::driveRight(float speed_percent) {
     right_motors.spin(vex::directionType::fwd, MV(speed_percent), vex::voltageUnits::mV);
 }
 
-void Drivetrain::driveStraight(float inches) {
+void Drivetrain::driveStraight(float inches, PID& linear_pid, PID& angular_pid) {
     stop();
     resetEncoders();
     setBrake(vex::brakeType::hold);
-    linear_pid->reset();
-    angular_pid->reset();
+    this->linear_pid = linear_pid;
+    this->angular_pid = angular_pid;
+    this->linear_pid->reset();
+    this->angular_pid->reset();
     selected_drive_mode = STRAIGHT_MODE;
     std::shared_ptr<StraightMode> straight_mode = std::static_pointer_cast<StraightMode>(drive_modes[selected_drive_mode]);
     straight_mode->setTarget(inches, getHeading());
@@ -75,11 +58,12 @@ void Drivetrain::driveStraight(float inches) {
     stop();
 }
 
-void Drivetrain::driveTurn(Angle heading) {
+void Drivetrain::driveTurn(Angle heading, PID& angular_pid) {
     stop();
     resetEncoders();
     setBrake(vex::brakeType::hold);
-    angular_pid->reset();
+    this->angular_pid = angular_pid;
+    this->angular_pid->reset();
     selected_drive_mode = TURN_MODE;
     std::shared_ptr<TurnMode> turn_mode = std::static_pointer_cast<TurnMode>(drive_modes[selected_drive_mode]);
     turn_mode->setTarget(heading);
@@ -87,12 +71,14 @@ void Drivetrain::driveTurn(Angle heading) {
     stop();
 }
 
-void Drivetrain::driveArc(float inches, Angle end_angle) {
+void Drivetrain::driveArc(float inches, Angle end_angle, PID& linear_pid, PID& angular_pid) {
     stop();
     resetEncoders();
     setBrake(vex::brakeType::hold);
-    linear_pid->reset();
-    angular_pid->reset();
+    this->linear_pid = linear_pid;
+    this->angular_pid = angular_pid;
+    this->linear_pid->reset();
+    this->angular_pid->reset();
     selected_drive_mode = STRAIGHT_MODE;
     std::shared_ptr<StraightMode> straight_mode = std::static_pointer_cast<StraightMode>(drive_modes[selected_drive_mode]);
     straight_mode->setTarget(inches, end_angle);
@@ -100,12 +86,14 @@ void Drivetrain::driveArc(float inches, Angle end_angle) {
     stop();
 }
 
-void Drivetrain::drivePipeline(BlackMagic::Pose target_pose) {
+void Drivetrain::drivePipeline(BlackMagic::Pose target_pose, PID& linear_pid, PID& angular_pid) {
     stop();
     resetEncoders();
     setBrake(vex::brakeType::hold);
-    linear_pid->reset();
-    angular_pid->reset();
+    this->linear_pid = linear_pid;
+    this->angular_pid = angular_pid;
+    this->linear_pid->reset();
+    this->angular_pid->reset();
     if (autonomous_pipeline != nullptr) {
         selected_drive_mode = PIPELINE_MODE;
         std::shared_ptr<PipelineMode> pipeline_mode = std::static_pointer_cast<PipelineMode>(drive_modes[selected_drive_mode]);
@@ -114,6 +102,27 @@ void Drivetrain::drivePipeline(BlackMagic::Pose target_pose) {
         while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
     }
     stop();
+}
+
+void Drivetrain::enableDriveTask() {
+    drive_task_enabled = true;
+}
+
+void Drivetrain::disableDriveTask() {
+    drive_task_enabled = false;
+}
+
+int Drivetrain::driveTask() {
+    while(drive_task_enabled) {
+        drive_modes[selected_drive_mode]->run(getDriveState(), linear_pid, angular_pid);
+        DriveSpeeds speeds = drive_modes[selected_drive_mode]->getSpeeds();
+        driveLeft(speeds.left);
+        driveRight(speeds.right);
+
+        vex::wait(VEX_SLEEP_MSEC_SHORT);
+    }
+
+    return 0;
 }
 
 bool Drivetrain::hasSettled() {
@@ -164,27 +173,6 @@ float Drivetrain::getRightDegrees() {
 
 Angle Drivetrain::getHeading() {
     return heading_provider.getHeading();
-}
-
-void Drivetrain::enableDriveTask() {
-    drive_task_enabled = true;
-}
-
-void Drivetrain::disableDriveTask() {
-    drive_task_enabled = false;
-}
-
-int Drivetrain::driveTask() {
-    while(drive_task_enabled) {
-        drive_modes[selected_drive_mode]->run(getDriveState(), linear_pid, angular_pid);
-        DriveSpeeds speeds = drive_modes[selected_drive_mode]->getSpeeds();
-        driveLeft(speeds.left);
-        driveRight(speeds.right);
-
-        vex::wait(VEX_SLEEP_MSEC_SHORT);
-    }
-
-    return 0;
 }
 
 };
