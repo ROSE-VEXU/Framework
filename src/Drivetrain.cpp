@@ -174,12 +174,12 @@ void Drivetrain::setPipelinePose(Pose target_pose) {
     setHeading(target_pose.heading);
 }
 
-void setPIDs(PID& linear_pid, PID& angular_pid) {
+void Drivetrain::setPIDs(PID& linear_pid, PID& angular_pid) {
     current_linear_pid = linear_pid;
     current_angular_pid = angular_pid;
 }
 
-void setMaxSpeed(float max_speed) {
+void Drivetrain::setMaxSpeed(float max_speed) {
     this->max_speed = max_speed;
 }
 
