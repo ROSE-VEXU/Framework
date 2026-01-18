@@ -74,8 +74,8 @@ private:
     std::unique_ptr<DriveControllerMovement> drive_control;
     std::shared_ptr<AutonomousPipeline> autonomous_pipeline;
 
-    PID& linear_pid;
-    PID& angular_pid;
+    PID& current_linear_pid;
+    PID& current_angular_pid;
     float max_speed;
 
     std::shared_ptr<IDriveMode> drive_modes[3] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<PipelineMode>() };

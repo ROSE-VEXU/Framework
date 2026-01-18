@@ -127,7 +127,7 @@ void Drivetrain::disableDriveTask() {
 
 int Drivetrain::driveTask() {
     while(drive_task_enabled) {
-        drive_modes[selected_drive_mode]->run(getDriveState());
+        drive_modes[selected_drive_mode]->run(getDriveState(), current_linear_pid, current_angular_pid);
         DriveSpeeds speeds = drive_modes[selected_drive_mode]->getSpeeds();
         speeds = { BlackMagic::Utils::clamp(speeds.left, -max_speed, max_speed), BlackMagic::Utils::clamp(speeds.right, -max_speed, max_speed) };
 
