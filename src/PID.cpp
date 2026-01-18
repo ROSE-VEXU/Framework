@@ -2,6 +2,8 @@
 
 namespace BlackMagic {
 
+PID PID::ZERO_PID = { 0.0, { 0.0, 0.0, 0.0 }, 0.0 };
+
 PID::PID(float kP, IntegralConfig cI, float kD): total_error(0), prev_error(0), prev_output(0) {
     this->kP = kP;
     this->cI = cI;

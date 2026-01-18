@@ -20,6 +20,8 @@ struct PIDConfig {
 
 class PID {
 public:
+    static PID ZERO_PID;
+
     PID(float kP, IntegralConfig cI, float kD);
     PID(float kP, IntegralConfig cI, float kD, PIDConfig pid_config);
     float getNextValue(float err);

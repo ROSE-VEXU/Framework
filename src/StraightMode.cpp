@@ -2,6 +2,8 @@
 
 namespace BlackMagic {
 
+StraightMode::StraightMode(): linear_pid(PID::ZERO_PID), angular_pid(PID::ZERO_PID) {}
+
 void StraightMode::setPIDs(PID& linear_pid, PID& angular_pid) {
     linear_pid.reset();
     angular_pid.reset();

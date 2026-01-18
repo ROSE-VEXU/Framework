@@ -2,6 +2,8 @@
 
 namespace BlackMagic {
 
+TurnMode::TurnMode(): angular_pid(PID::ZERO_PID) {}
+
 void TurnMode::setPIDs(PID& angular_pid) {
     angular_pid.reset();
     this->angular_pid = angular_pid;

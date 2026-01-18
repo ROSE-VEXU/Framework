@@ -21,7 +21,7 @@ protected:
 
 class StraightMode: public IDriveMode {
 public:
-    StraightMode() = default;
+    StraightMode();
 
     void setPIDs(PID& linear_pid, PID& angular_pid);
     void setTarget(float target_inches, Angle target_heading);
@@ -44,7 +44,7 @@ private:
 
 class TurnMode: public IDriveMode {
 public:
-    TurnMode() = default;
+    TurnMode();
 
     void setPIDs(PID& angular_pid);
     void setTarget(Angle target_heading);
@@ -63,7 +63,7 @@ private:
 
 class PipelineMode: public IDriveMode {
 public:
-    PipelineMode() = default;
+    PipelineMode();
 
     void setPIDs(PID& linear_pid, PID& angular_pid);
     void setTarget(Pose target_pose);
