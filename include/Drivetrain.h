@@ -68,9 +68,6 @@ private:
     std::unique_ptr<DriveControllerMovement> drive_control;
     std::shared_ptr<AutonomousPipeline> autonomous_pipeline;
 
-    // All 0-value PIDs will lead to no movement, a graceful failure in the unconfigured case.
-    PID& linear_pid;
-    PID& angular_pid;
     std::shared_ptr<IDriveMode> drive_modes[3] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<PipelineMode>() };
     int selected_drive_mode;
 

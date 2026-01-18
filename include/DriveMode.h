@@ -11,7 +11,7 @@ namespace BlackMagic {
 
 class IDriveMode: IDriveSpeedProvider {
 public:
-    virtual void run(const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) = 0;
+    virtual void run(const DrivetrainState& drive_state) = 0;
     virtual bool hasSettled(const DrivetrainState& drive_state) = 0;
     DriveSpeeds getSpeeds() = 0;
 
@@ -23,11 +23,14 @@ class StraightMode: public IDriveMode {
 public:
     StraightMode() = default;
 
+    void setPIDs(PID& linear_pid, PID& angular_pid);
     void setTarget(float target_inches, Angle target_heading);
-    void run(const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) override;
+    void run(const DrivetrainState& drive_state) override;
     bool hasSettled(const DrivetrainState& drive_state) override;
     DriveSpeeds getSpeeds() override;
 private:
+    PID& linear_pid;
+    PID& angular_pid;
     float target_deg;
     Angle target_heading;
     bool decelerating;
@@ -43,11 +46,13 @@ class TurnMode: public IDriveMode {
 public:
     TurnMode() = default;
 
+    void setPIDs(PID& angular_pid);
     void setTarget(Angle target_heading);
-    void run(const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) override;
+    void run(const DrivetrainState& drive_state) override;
     bool hasSettled(const DrivetrainState& drive_state) override;
     DriveSpeeds getSpeeds() override;
 private:
+    PID& angular_pid;
     Angle target_heading;
     bool decelerating;
     float left_speed;
@@ -60,13 +65,16 @@ class PipelineMode: public IDriveMode {
 public:
     PipelineMode() = default;
 
+    void setPIDs(PID& linear_pid, PID& angular_pid);
     void setTarget(Pose target_pose);
-    void run(const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) override;
+    void run(const DrivetrainState& drive_state) override;
     void setPipeline(std::shared_ptr<AutonomousPipeline> pipeline);
     bool hasSettled(const DrivetrainState& drive_state) override;
     DriveSpeeds getSpeeds() override;
 
 private:
+    PID& linear_pid;
+    PID& angular_pid;
     std::shared_ptr<AutonomousPipeline> pipeline;
 };
 

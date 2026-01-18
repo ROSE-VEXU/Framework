@@ -2,13 +2,20 @@
 
 namespace BlackMagic {
 
+void PipelineMode::setPIDs(PID& linear_pid, PID& angular_pid) {
+    linear_pid.reset();
+    angular_pid.reset();
+    this->linear_pid = linear_pid;
+    this->angular_pid = angular_pid;
+}
+
 void PipelineMode::setTarget(Pose target_pose) {
     if (this->pipeline == nullptr) return;
 
     this->pipeline->setTarget(target_pose);
 }
 
-void PipelineMode::run(const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) {
+void PipelineMode::run(const DrivetrainState& drive_state) {
     if (this->pipeline == nullptr) return;
 
     this->pipeline->runPipeline(drive_state, linear_pid, angular_pid);

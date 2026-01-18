@@ -29,7 +29,7 @@ class ISpeedController: IDriveSpeedProvider {
 public:
     // use updateTarget to do things like generate a new path
     virtual void updateTarget(Pose target_pose) = 0;
-    virtual void update(Pose curr_pose, const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid) = 0;
+    virtual void update(Pose curr_pose, const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) = 0;
     virtual bool hasSettled(const DrivetrainState& drive_state) = 0;
     DriveSpeeds getSpeeds() override;
 };

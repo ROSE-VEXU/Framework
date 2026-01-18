@@ -53,7 +53,7 @@ public:
 
     void setTarget(Pose target_pose);
     void setPosition(Position position);
-    int runPipeline(const DrivetrainState& drive_state, std::shared_ptr<PID> linear_pid, std::shared_ptr<PID> angular_pid);
+    int runPipeline(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid);
     bool hasSettled(const DrivetrainState& drive_state);
 
     Position getPosition() override;
