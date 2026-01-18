@@ -4,13 +4,6 @@ namespace BlackMagic {
 
 StraightMode::StraightMode(): linear_pid(PID::ZERO_PID), angular_pid(PID::ZERO_PID) {}
 
-void StraightMode::setPIDs(PID& linear_pid, PID& angular_pid) {
-    linear_pid.reset();
-    angular_pid.reset();
-    this->linear_pid = linear_pid;
-    this->angular_pid = angular_pid;
-}
-
 void StraightMode::setTarget(float target_inches, Angle target_heading) {
     this->target_deg = target_inches * (360.0 / (WHEEL_DIAM_INCHES * M_PI));
     this->target_heading = target_heading;
@@ -24,7 +17,7 @@ void StraightMode::setTarget(float target_inches, Angle target_heading) {
     this->settling_total_right = 0;
 }
 
-void StraightMode::run(const DrivetrainState& drive_state) {
+void StraightMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
     float curr_distance = drive_state.left_degrees;
     float curr_distance_error = target_deg - curr_distance;
     float curr_heading_error = Utils::getShortestAngleBetween(drive_state.heading, target_heading);
@@ -59,10 +52,7 @@ bool StraightMode::hasSettled(const DrivetrainState& drive_state) {
 }
 
 DriveSpeeds StraightMode::getSpeeds() {
-    // Scaled speeds verify each side's output is a percentage of 100 (meaning output is achievable)
-    DriveSpeeds scaled = BlackMagic::Utils::getScaledSpeedsFromMax(linear_speed, angular_speed);
-
-    return { BlackMagic::Utils::clamp(scaled.left, -max_speed, max_speed), BlackMagic::Utils::clamp(scaled.right, -max_speed, max_speed) };
+    return BlackMagic::Utils::getScaledSpeedsFromMax(linear_speed, angular_speed);
 }
 
 };

@@ -28,12 +28,16 @@ float Utils::clamp(float value, float min, float max) {
     return fmax(fmin(value, max), min);
 }
 
-BlackMagic::DriveSpeeds Utils::getScaledSpeedsFromMax(float linear_speed, float angular_speed) {
+BlackMagic::DriveSpeeds Utils::getScaledSpeedsFromMax(float max_speed, float linear_speed, float angular_speed) {
     float total_speed = fabs(linear_speed) + fabs(angular_speed);
     float left_speed = linear_speed + angular_speed;
     float right_speed = linear_speed - angular_speed;
-    if (total_speed > 100.0) return { 100.0f * (left_speed/total_speed), 100.0f * (right_speed/total_speed) };
+    if (total_speed > max_speed) return { max_speed * (left_speed/total_speed), max_speed * (right_speed/total_speed) };
     return { left_speed, right_speed };
+}
+
+BlackMagic::DriveSpeeds Utils::getScaledSpeedsFromMax(float linear_speed, float angular_speed) {
+    return getScaledSpeedsFromMax(100.0f, linear_speed, angular_speed);
 }
 
 };

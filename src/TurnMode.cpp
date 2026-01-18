@@ -4,11 +4,6 @@ namespace BlackMagic {
 
 TurnMode::TurnMode(): angular_pid(PID::ZERO_PID) {}
 
-void TurnMode::setPIDs(PID& angular_pid) {
-    angular_pid.reset();
-    this->angular_pid = angular_pid;
-}
-
 void TurnMode::setTarget(Angle target_heading) {
     this->target_heading = target_heading;
     this->left_speed = 0;
@@ -18,7 +13,7 @@ void TurnMode::setTarget(Angle target_heading) {
     this->settling_total_heading_change = 0;
 }
 
-void TurnMode::run(const DrivetrainState& drive_state) {
+void TurnMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
     float curr_error = Utils::getShortestAngleBetween(drive_state.heading, this->target_heading);
     float turn_speed = angular_pid.getNextValue(curr_error);
     float prev_turn_speed = left_speed;
@@ -47,7 +42,7 @@ bool TurnMode::hasSettled(const DrivetrainState& drive_state) {
 }
 
 DriveSpeeds TurnMode::getSpeeds() {
-    return { BlackMagic::Utils::clamp(left_speed, -max_speed, max_speed), BlackMagic::Utils::clamp(right_speed, -max_speed, max_speed) };
+    return { left_speed, right_speed };
 }
 
 };

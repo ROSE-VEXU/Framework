@@ -13,6 +13,7 @@ public:
     static int sign(int value);
     static int sign(float value);
     static float clamp(float value, float min, float max);
+    static DriveSpeeds getScaledSpeedsFromMax(float max_speed, float linear_speed, float angular_speed);
     static DriveSpeeds getScaledSpeedsFromMax(float linear_speed, float angular_speed);
 };
 

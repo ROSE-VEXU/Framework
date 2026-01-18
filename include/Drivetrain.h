@@ -60,6 +60,8 @@ public:
     void setBrake(vex::brakeType brake_mode);
     void setHeading(float degrees);
     void setPipelinePose(Pose target_pose);
+    void setPIDs(PID& linear_pid, PID& angular_pid);
+    void setMaxSpeed(float max_speed);
     DrivetrainState getDriveState();
     float getLeftDegrees();
     float getRightDegrees();
@@ -72,9 +74,13 @@ private:
     std::unique_ptr<DriveControllerMovement> drive_control;
     std::shared_ptr<AutonomousPipeline> autonomous_pipeline;
 
+    PID& linear_pid;
+    PID& angular_pid;
+    float max_speed;
+
     std::shared_ptr<IDriveMode> drive_modes[3] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<PipelineMode>() };
     int selected_drive_mode;
-
+    
     bool drive_task_enabled;
 };
 
