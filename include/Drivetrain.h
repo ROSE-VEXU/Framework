@@ -46,7 +46,7 @@ public:
     void driveStraight(float inches, PID& linear_pid, PID& angular_pid);
     void driveTurn(Angle heading, float max_speed, PID& angular_pid);
     void driveTurn(Angle heading, PID& angular_pid);
-    void driveArc(float inches, float max_speed, Angle end_angle, PID& linear_pid, PID& angular_pid);
+    void driveArc(float inches, Angle end_angle, float max_speed, PID& linear_pid, PID& angular_pid);
     void driveArc(float inches, Angle end_angle, PID& linear_pid, PID& angular_pid);
     void drivePipeline(Pose target_pose, float max_speed, PID& linear_pid, PID& angular_pid);
     void drivePipeline(Pose target_pose, PID& linear_pid, PID& angular_pid);
