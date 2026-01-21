@@ -21,7 +21,7 @@ float PID::slew(float prev_value, float value) {
 
     if (fabs(prev_value) < fabs(value)) { // Accelerating
         if (value_delta >= accel_slew && accel_slew != PID_SETTING_DISABLE) { // Limit output delta to config'ed step if accelerating too fast
-            value = prev_value + Utils::sign(value)*config.accel_slew_step;
+            value = prev_value + (Utils::sign(value) * accel_slew);
         }
     } 
 
