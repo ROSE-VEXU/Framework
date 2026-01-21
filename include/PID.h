@@ -21,12 +21,14 @@ public:
     PID(float kP, IntegralConfig cI, float kD);
     PID(float kP, IntegralConfig cI, float kD, float accel_slew);
     float getNextValue(float err);
+    void setMaxSpeed(float max_speed);
     void reset();
 private:
     float kP;
     IntegralConfig cI;
     float kD;
     float accel_slew;
+    float max_speed;
     float total_error;
     float prev_error;
     float prev_output;

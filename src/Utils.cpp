@@ -28,7 +28,7 @@ float Utils::clamp(float value, float min, float max) {
     return fmax(fmin(value, max), min);
 }
 
-BlackMagic::DriveSpeeds Utils::getScaledSpeedsFromMax(float linear_speed, float angular_speed) {
+BlackMagic::DriveSpeeds Utils::desaturateSpeeds(float linear_speed, float angular_speed) {
     float total_speed = fabs(linear_speed) + fabs(angular_speed);
     float left_speed = linear_speed + angular_speed;
     float right_speed = linear_speed - angular_speed;

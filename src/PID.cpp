@@ -6,14 +6,14 @@ PID PID::ZERO_PID = { 0.0, { 0.0, 0.0, 0.0 }, 0.0 };
 
 PID::PID(float kP, IntegralConfig cI, float kD):
     kP(kP), cI(cI), kD(kD),
+    accel_slew(PID_SETTING_DISABLE), max_speed(0.0),
     total_error(0), prev_error(0), prev_output(0) {
-    this->accel_slew = PID_SETTING_DISABLE;
 }
 
 PID::PID(float kP, IntegralConfig cI, float kD, float accel_slew): 
     kP(kP), cI(cI), kD(kD),
-    total_error(0), prev_error(0), prev_output(0),
-    accel_slew(accel_slew) {
+    accel_slew(accel_slew), max_speed(0.0),
+    total_error(0), prev_error(0), prev_output(0) {
 }
 
 float PID::slew(float prev_value, float value) {
@@ -45,10 +45,15 @@ float PID::getNextValue(float err) {
     return result;
 }
 
+void PID::setMaxSpeed(float max_speed) {
+    this->max_speed = max_speed;
+}
+
 void PID::reset() {
-    prev_error = 0;
-    total_error = 0;
-    prev_output = 0;
+    prev_error = 0.0;
+    total_error = 0.0;
+    prev_output = 0.0;
+    max_speed = 0.0;
 }
     
 };

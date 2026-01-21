@@ -11,7 +11,6 @@ Drivetrain::Drivetrain(vex::motor_group& left_motors, vex::motor_group& right_mo
     heading_provider(heading_provider),
     current_linear_pid(PID::ZERO_PID),
     current_angular_pid(PID::ZERO_PID),
-    max_speed(100.0f),
     selected_drive_mode(STRAIGHT_MODE),
     drive_task_enabled(false) {
 }
@@ -51,8 +50,9 @@ void Drivetrain::driveStraight(float inches, float max_speed, PID& linear_pid, P
     resetEncoders();
     setBrake(vex::brakeType::hold);
     selected_drive_mode = STRAIGHT_MODE;
+    linear_pid.setMaxSpeed(max_speed);
+    angular_pid.setMaxSpeed(max_speed);
     setPIDs(linear_pid, angular_pid);
-    setMaxSpeed(max_speed);
     std::shared_ptr<StraightMode> straight_mode = std::static_pointer_cast<StraightMode>(drive_modes[selected_drive_mode]);
     straight_mode->setTarget(inches, getHeading());
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
@@ -68,8 +68,8 @@ void Drivetrain::driveTurn(Angle heading, float max_speed, PID& angular_pid) {
     resetEncoders();
     setBrake(vex::brakeType::hold);
     selected_drive_mode = TURN_MODE;
+    angular_pid.setMaxSpeed(max_speed);
     setPIDs(PID::ZERO_PID, angular_pid);
-    setMaxSpeed(max_speed);
     std::shared_ptr<TurnMode> turn_mode = std::static_pointer_cast<TurnMode>(drive_modes[selected_drive_mode]);
     turn_mode->setTarget(heading);
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
@@ -80,13 +80,14 @@ void Drivetrain::driveTurn(Angle heading, PID& angular_pid) {
     driveTurn(heading, 100.0, angular_pid);
 }
 
-void Drivetrain::driveArc(float inches, Angle end_angle, float max_speed, PID& linear_pid, PID& angular_pid) {
+void Drivetrain::driveArc(float inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID& linear_pid, PID& angular_pid) {
     stop();
     resetEncoders();
     setBrake(vex::brakeType::hold);
     selected_drive_mode = STRAIGHT_MODE;
+    linear_pid.setMaxSpeed(linear_max_speed);
+    angular_pid.setMaxSpeed(angular_max_speed);
     setPIDs(linear_pid, angular_pid);
-    setMaxSpeed(max_speed);
     std::shared_ptr<StraightMode> straight_mode = std::static_pointer_cast<StraightMode>(drive_modes[selected_drive_mode]);
     straight_mode->setTarget(inches, end_angle);
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
@@ -94,17 +95,18 @@ void Drivetrain::driveArc(float inches, Angle end_angle, float max_speed, PID& l
 }
 
 void Drivetrain::driveArc(float inches, Angle end_angle, PID& linear_pid, PID& angular_pid) {
-    driveArc(inches, end_angle, 100.0, linear_pid, angular_pid);
+    driveArc(inches, end_angle, 100.0, 100.0, linear_pid, angular_pid);
 }
 
-void Drivetrain::drivePipeline(BlackMagic::Pose target_pose, float max_speed, PID& linear_pid, PID& angular_pid) {
+void Drivetrain::drivePipeline(BlackMagic::Pose target_pose, float linear_max_speed, float angular_max_speed, PID& linear_pid, PID& angular_pid) {
     stop();
     resetEncoders();
     setBrake(vex::brakeType::hold);
     if (autonomous_pipeline != nullptr) {
         selected_drive_mode = PIPELINE_MODE;
+        linear_pid.setMaxSpeed(linear_max_speed);
+        angular_pid.setMaxSpeed(angular_max_speed);
         setPIDs(linear_pid, angular_pid);
-        setMaxSpeed(max_speed);
         std::shared_ptr<PipelineMode> pipeline_mode = std::static_pointer_cast<PipelineMode>(drive_modes[selected_drive_mode]);
         pipeline_mode->setPipeline(autonomous_pipeline);
         pipeline_mode->setTarget(target_pose);
@@ -114,7 +116,7 @@ void Drivetrain::drivePipeline(BlackMagic::Pose target_pose, float max_speed, PI
 }
 
 void Drivetrain::drivePipeline(BlackMagic::Pose target_pose, PID& linear_pid, PID& angular_pid) {
-    drivePipeline(target_pose, 100.0, linear_pid, angular_pid);
+    drivePipeline(target_pose, 100.0, 100.0, linear_pid, angular_pid);
 }
 
 void Drivetrain::enableDriveTask() {
@@ -129,7 +131,6 @@ int Drivetrain::driveTask() {
     while(drive_task_enabled) {
         drive_modes[selected_drive_mode]->run(getDriveState(), current_linear_pid, current_angular_pid);
         DriveSpeeds speeds = drive_modes[selected_drive_mode]->getSpeeds();
-        speeds = { BlackMagic::Utils::clamp(speeds.left, -max_speed, max_speed), BlackMagic::Utils::clamp(speeds.right, -max_speed, max_speed) };
 
         driveLeft(speeds.left);
         driveRight(speeds.right);
@@ -177,10 +178,6 @@ void Drivetrain::setPipelinePose(Pose target_pose) {
 void Drivetrain::setPIDs(PID& linear_pid, PID& angular_pid) {
     current_linear_pid = linear_pid;
     current_angular_pid = angular_pid;
-}
-
-void Drivetrain::setMaxSpeed(float max_speed) {
-    this->max_speed = max_speed;
 }
 
 DrivetrainState Drivetrain::getDriveState(){

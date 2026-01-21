@@ -46,9 +46,9 @@ public:
     void driveStraight(float inches, PID& linear_pid, PID& angular_pid);
     void driveTurn(Angle heading, float max_speed, PID& angular_pid);
     void driveTurn(Angle heading, PID& angular_pid);
-    void driveArc(float inches, Angle end_angle, float max_speed, PID& linear_pid, PID& angular_pid);
+    void driveArc(float inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID& linear_pid, PID& angular_pid);
     void driveArc(float inches, Angle end_angle, PID& linear_pid, PID& angular_pid);
-    void drivePipeline(Pose target_pose, float max_speed, PID& linear_pid, PID& angular_pid);
+    void drivePipeline(Pose target_pose, float linear_max_speed, float angular_max_speed, PID& linear_pid, PID& angular_pid);
     void drivePipeline(Pose target_pose, PID& linear_pid, PID& angular_pid);
     void enableDriveTask();
     void disableDriveTask();
@@ -61,7 +61,6 @@ public:
     void setHeading(float degrees);
     void setPipelinePose(Pose target_pose);
     void setPIDs(PID& linear_pid, PID& angular_pid);
-    void setMaxSpeed(float max_speed);
     DrivetrainState getDriveState();
     float getLeftDegrees();
     float getRightDegrees();
@@ -76,7 +75,6 @@ private:
 
     PID& current_linear_pid;
     PID& current_angular_pid;
-    float max_speed;
 
     std::shared_ptr<IDriveMode> drive_modes[3] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<PipelineMode>() };
     int selected_drive_mode;
