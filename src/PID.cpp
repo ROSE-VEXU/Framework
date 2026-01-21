@@ -40,6 +40,7 @@ float PID::getNextValue(float err) {
     prev_error = err;
 
     result = slew(prev_output, result);
+    result = Utils::clamp(result, -max_speed, max_speed);
 
     prev_output = result;
     return result;
