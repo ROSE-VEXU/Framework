@@ -7,27 +7,23 @@ PID PID::ZERO_PID = { 0.0, { 0.0, 0.0, 0.0 }, 0.0 };
 PID::PID(float kP, IntegralConfig cI, float kD):
     kP(kP), cI(cI), kD(kD),
     total_error(0), prev_error(0), prev_output(0) {
-    this->config = { PID_SETTING_DISABLE, PID_SETTING_DISABLE };
+    this->accel_slew = PID_SETTING_DISABLE;
 }
 
-PID::PID(float kP, IntegralConfig cI, float kD, SlewConfig slew_config): 
+PID::PID(float kP, IntegralConfig cI, float kD, float accel_slew): 
     kP(kP), cI(cI), kD(kD),
     total_error(0), prev_error(0), prev_output(0),
-    config(slew_config) {
+    accel_slew(accel_slew) {
 }
 
 float PID::slew(float prev_value, float value) {
     float value_delta = fabs(value) - fabs(prev_value);
 
     if (fabs(prev_value) < fabs(value)) { // Accelerating
-        if (value_delta >= config.accel_slew_step && config.accel_slew_step != PID_SETTING_DISABLE) { // Limit output delta to config'ed step if accelerating too fast
+        if (value_delta >= accel_slew && accel_slew != PID_SETTING_DISABLE) { // Limit output delta to config'ed step if accelerating too fast
             value = prev_value + Utils::sign(value)*config.accel_slew_step;
         }
-    } else { // Decelerating
-        if (fabs(value_delta) >= config.decel_slew_step && config.decel_slew_step != PID_SETTING_DISABLE) { // Limit output delta to config'ed step if accelerating too fast
-            value = prev_value - Utils::sign(value)*config.decel_slew_step;
-        }
-    }
+    } 
 
     return value;
 }
