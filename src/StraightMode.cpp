@@ -22,8 +22,12 @@ void StraightMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID&
     float curr_distance_error = target_deg - curr_distance;
     float curr_heading_error = Utils::getShortestAngleBetween(drive_state.heading, target_heading);
     float prev_linear_speed = linear_speed;
+
     linear_speed = linear_pid.getNextValue(curr_distance_error);
     angular_speed = angular_pid.getNextValue(curr_heading_error);
+
+    // Scale angular to avoid curves at the start
+    angular_speed *= (linear_speed / linear_pid.getMaxSpeed());
 
     if (fabs(linear_speed) < fabs(prev_linear_speed)) decelerating = true;
 }

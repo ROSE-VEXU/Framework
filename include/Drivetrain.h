@@ -42,6 +42,8 @@ public:
 
     void driveLeft(float speed_percent);
     void driveRight(float speed_percent);
+    void preMove();
+    void postMove();
     void driveStraight(float inches, float max_speed, PID linear_pid, PID angular_pid);
     void driveStraight(float inches, PID linear_pid, PID angular_pid);
     void driveTurn(Angle heading, float max_speed, PID angular_pid);

@@ -50,6 +50,10 @@ void PID::setMaxSpeed(float max_speed) {
     this->max_speed = max_speed;
 }
 
+float PID::getMaxSpeed() {
+    return max_speed;
+}
+
 void PID::reset() {
     prev_error = 0.0;
     total_error = 0.0;
