@@ -58,18 +58,16 @@ void Drivetrain::postMove() {
 void Drivetrain::driveStraight(float inches, float max_speed, PID linear_pid, PID angular_pid) {
     preMove();
     float initial_heading = getHeading();
-    setHeading(0.0f);
     
     linear_pid.setMaxSpeed(max_speed);
     angular_pid.setMaxSpeed(max_speed);
     setPIDs(linear_pid, angular_pid);
     std::shared_ptr<StraightMode> straight_mode = std::static_pointer_cast<StraightMode>(drive_modes[STRAIGHT_MODE]);
-    straight_mode->setTarget(inches, 0.0f);
+    straight_mode->setTarget(inches, initial_heading);
     selected_drive_mode = STRAIGHT_MODE;
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
     
     postMove();
-    setHeading((initial_heading + getHeading()) % 360.0f);
 }
 
 void Drivetrain::driveStraight(float inches, PID linear_pid, PID angular_pid) {
@@ -78,8 +76,6 @@ void Drivetrain::driveStraight(float inches, PID linear_pid, PID angular_pid) {
 
 void Drivetrain::driveTurn(Angle heading, float max_speed, PID angular_pid) {
     preMove();
-    float initial_heading = getHeading();
-    setHeading(0.0f);
 
     angular_pid.setMaxSpeed(max_speed);
     setPIDs(PID::ZERO_PID, angular_pid);
@@ -89,7 +85,6 @@ void Drivetrain::driveTurn(Angle heading, float max_speed, PID angular_pid) {
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
 
     postMove();
-    setHeading((initial_heading + getHeading()) % 360.0f);
 }
 
 void Drivetrain::driveTurn(Angle heading, PID angular_pid) {
@@ -98,8 +93,6 @@ void Drivetrain::driveTurn(Angle heading, PID angular_pid) {
 
 void Drivetrain::driveArc(float inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
     preMove();
-    float initial_heading = getHeading();
-    setHeading(0.0f);
 
     linear_pid.setMaxSpeed(linear_max_speed);
     angular_pid.setMaxSpeed(angular_max_speed);
@@ -110,7 +103,6 @@ void Drivetrain::driveArc(float inches, Angle end_angle, float linear_max_speed,
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
 
     postMove();
-    setHeading((initial_heading + getHeading()) % 360.0f);
 }
 
 void Drivetrain::driveArc(float inches, Angle end_angle, PID linear_pid, PID angular_pid) {
