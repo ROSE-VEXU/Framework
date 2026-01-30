@@ -57,13 +57,12 @@ void Drivetrain::postMove() {
 
 void Drivetrain::driveStraight(float inches, float max_speed, PID linear_pid, PID angular_pid) {
     preMove();
-    float initial_heading = getHeading();
     
     linear_pid.setMaxSpeed(max_speed);
     angular_pid.setMaxSpeed(max_speed);
     setPIDs(linear_pid, angular_pid);
     std::shared_ptr<StraightMode> straight_mode = std::static_pointer_cast<StraightMode>(drive_modes[STRAIGHT_MODE]);
-    straight_mode->setTarget(inches, initial_heading);
+    straight_mode->setTarget(inches, getHeading());
     selected_drive_mode = STRAIGHT_MODE;
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
     
