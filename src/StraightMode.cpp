@@ -27,7 +27,7 @@ void StraightMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID&
     angular_speed = angular_pid.getNextValue(curr_heading_error);
 
     // Scale angular to avoid curves at the start
-    angular_speed *= (linear_speed / linear_pid.getMaxSpeed());
+    angular_speed *= (fabs(linear_speed) / linear_pid.getMaxSpeed());
 
     if (fabs(linear_speed) < fabs(prev_linear_speed)) decelerating = true;
 }
