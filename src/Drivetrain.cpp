@@ -5,10 +5,11 @@
 namespace BlackMagic {
 
 // Public
-Drivetrain::Drivetrain(vex::motor_group& left_motors, vex::motor_group& right_motors, IHeadingProvider& heading_provider): Subsystem(),
+Drivetrain::Drivetrain(vex::motor_group& left_motors, vex::motor_group& right_motors, IHeadingProvider& heading_provider, vex::brakeType brake_mode): Subsystem(),
     left_motors(left_motors),
     right_motors(right_motors),
     heading_provider(heading_provider),
+    brake_mode(brake_mode),
     current_linear_pid(PID::ZERO_PID),
     current_angular_pid(PID::ZERO_PID),
     selected_drive_mode(STRAIGHT_MODE),
@@ -17,7 +18,7 @@ Drivetrain::Drivetrain(vex::motor_group& left_motors, vex::motor_group& right_mo
 
 void Drivetrain::opControl() {
     if (drive_control != nullptr && !drive_task_enabled) {
-        setBrake(vex::brakeType::coast);
+        setBrake(brake_mode);
         DriveSpeeds speeds = drive_control->getSpeeds();
         driveLeft(speeds.left);
         driveRight(speeds.right);

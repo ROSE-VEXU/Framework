@@ -19,7 +19,7 @@ namespace BlackMagic {
 
 class Drivetrain: public Subsystem {
 public:
-    Drivetrain(vex::motor_group& left_motors, vex::motor_group& right_motors, IHeadingProvider& heading_provider);
+    Drivetrain(vex::motor_group& left_motors, vex::motor_group& right_motors, IHeadingProvider& heading_provider, vex::brakeType brake_mode);
 
     void opControl();
 
@@ -72,6 +72,7 @@ private:
     vex::motor_group& left_motors;
     vex::motor_group& right_motors;
     IHeadingProvider& heading_provider;
+    vex::brakeType brake_mode;
     std::unique_ptr<DriveControllerMovement> drive_control;
     std::shared_ptr<AutonomousPipeline> autonomous_pipeline;
 
