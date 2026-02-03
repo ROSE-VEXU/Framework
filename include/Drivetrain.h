@@ -14,6 +14,7 @@
 #define STRAIGHT_MODE 0
 #define TURN_MODE 1
 #define PIPELINE_MODE 2
+#define DISABLED_MODE -1
 
 namespace BlackMagic {
 
@@ -42,8 +43,9 @@ public:
 
     void driveLeft(float speed_percent);
     void driveRight(float speed_percent);
-    void preMove();
-    void postMove();
+    void prepareMove();
+    void cancelMove();
+    void driveStraightAsync(float inches, float max_speed, PID linear_pid, PID angular_pid);
     void driveStraight(float inches, float max_speed, PID linear_pid, PID angular_pid);
     void driveStraight(float inches, PID linear_pid, PID angular_pid);
     void driveTurn(Angle heading, float max_speed, PID angular_pid);
