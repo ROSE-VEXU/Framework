@@ -13,7 +13,7 @@
 
 #define STRAIGHT_MODE 0
 #define TURN_MODE 1
-#define PIPELINE_MODE 3
+#define PIPELINE_MODE 2
 
 namespace BlackMagic {
 

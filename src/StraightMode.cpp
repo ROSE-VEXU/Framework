@@ -7,7 +7,6 @@ StraightMode::StraightMode() {}
 void StraightMode::setTarget(float target_inches, Angle target_heading) {
     this->target_deg = target_inches * (360.0 / (WHEEL_DIAM_INCHES * M_PI));
     this->target_heading = target_heading;
-    this->decelerating = false;
     this->linear_speed = 0;
     this->angular_speed = 0;
     this->settle_count = 0;
@@ -25,13 +24,9 @@ void StraightMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID&
 
     linear_speed = linear_pid.getNextValue(curr_distance_error);
     angular_speed = angular_pid.getNextValue(curr_heading_error);
-
-    if (fabs(linear_speed) < fabs(prev_linear_speed)) decelerating = true;
 }
 
 bool StraightMode::hasSettled(const DrivetrainState& drive_state) {
-    if (!decelerating) return false;
-
     float curr_left = drive_state.left_degrees;
     float curr_right = drive_state.right_degrees;
 

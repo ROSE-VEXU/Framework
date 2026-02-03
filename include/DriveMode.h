@@ -30,7 +30,6 @@ public:
 private:
     float target_deg;
     Angle target_heading;
-    bool decelerating;
     float linear_speed;
     float angular_speed;
     float settling_prev_left;
