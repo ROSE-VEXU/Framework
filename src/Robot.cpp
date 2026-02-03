@@ -26,8 +26,9 @@ void Robot::auton(void) {
 void Robot::driverControl(void) {
     Robot::current_robot_reference->pre_driver_control();
     
-    while(!(Robot::current_robot_reference->testing_auto)) {
+    while(true) {
         if (Robot::current_robot_reference == nullptr) continue;
+        if (Robot::current_robot_reference->testing_auto) continue;
 
         for (int i=0; i<Robot::current_robot_reference->subsystems.size(); i++) {
             Robot::current_robot_reference->subsystems[i]->opControl();
