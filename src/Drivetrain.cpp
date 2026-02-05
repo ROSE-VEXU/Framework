@@ -97,15 +97,15 @@ void Drivetrain::driveTurn(Angle heading, PID angular_pid) {
     driveTurn(heading, 100.0, angular_pid);
 }
 
-void Drivetrain::driveArc(float inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveArc(float inches, Angle end_angle, float linear_max_speed, float angular_max_speed, float angle_mix_pct, PID linear_pid, PID angular_pid) {
     prepareMove();
 
     linear_pid.setMaxSpeed(linear_max_speed);
     angular_pid.setMaxSpeed(angular_max_speed);
     setPIDs(linear_pid, angular_pid);
-    std::shared_ptr<StraightMode> straight_mode = std::static_pointer_cast<StraightMode>(drive_modes[STRAIGHT_MODE]);
-    straight_mode->setTarget(inches, end_angle);
-    selected_drive_mode = STRAIGHT_MODE;
+    std::shared_ptr<ArcMode> arc_mode = std::static_pointer_cast<ArcMode>(drive_modes[ARC_MODE]);
+    arc_mode->setTarget(inches, end_angle, angle_mix_pct);
+    selected_drive_mode = ARC_MODE;
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
 
     cancelMove();
