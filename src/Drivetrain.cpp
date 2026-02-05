@@ -97,7 +97,7 @@ void Drivetrain::driveTurn(Angle heading, PID angular_pid) {
     driveTurn(heading, 100.0, angular_pid);
 }
 
-void Drivetrain::driveArc(float inches, Angle end_angle, float linear_max_speed, float angular_max_speed, float angle_mix_pct, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveArc(float inches, Angle end_angle, float angle_mix_pct, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
     prepareMove();
 
     linear_pid.setMaxSpeed(linear_max_speed);
