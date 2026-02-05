@@ -20,7 +20,11 @@ void ArcMode::setTarget(float target_inches, Angle target_heading, float heading
 void ArcMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
     float curr_distance = (drive_state.left_degrees + drive_state.right_degrees) / 2.0;
     float curr_distance_error = target_deg - curr_distance;
-    float curr_heading_error = Utils::getShortestAngleBetween(drive_state.heading, target_heading);
+
+    float pct_distance_traveled = curr_distance/target_deg * 100.0f;
+    float pct_to_mix_heading = BlackMagic::Utils::clamp(pct_distance_traveled/heading_mix_pct, 0.0f, 100.0f);
+
+    float curr_heading_error = pct_to_mix_heading * Utils::getShortestAngleBetween(drive_state.heading, target_heading);
     float prev_linear_speed = linear_speed;
 
     linear_speed = linear_pid.getNextValue(curr_distance_error);
