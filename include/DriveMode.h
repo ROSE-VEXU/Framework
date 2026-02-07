@@ -55,18 +55,23 @@ private:
     float settling_total_heading_change;
 };
 
+struct ArcSettings {
+    float start_arc_pct;
+    float arc_length_pct;
+};
+
 class ArcMode: public IDriveMode {
 public:
     ArcMode();
 
-    void setTarget(float target_inches, Angle target_heading, float heading_mix_pct);
+    void setTarget(float target_inches, Angle target_heading, ArcSettings arc_settings);
     void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) override;
     bool hasSettled(const DrivetrainState& drive_state) override;
     DriveSpeeds getSpeeds() override;
 private:
     float target_deg;
     Angle target_heading;
-    float heading_mix_pct;
+    ArcSettings arc_settings;
     float linear_speed;
     float angular_speed;
     float settling_prev_left;

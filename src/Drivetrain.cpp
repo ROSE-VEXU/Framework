@@ -97,14 +97,14 @@ void Drivetrain::driveTurn(Angle heading, PID angular_pid) {
     driveTurn(heading, 100.0, angular_pid);
 }
 
-void Drivetrain::driveArc(float inches, Angle end_angle, float angle_mix_pct, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveArc(float inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
     prepareMove();
 
     linear_pid.setMaxSpeed(linear_max_speed);
     angular_pid.setMaxSpeed(angular_max_speed);
     setPIDs(linear_pid, angular_pid);
     std::shared_ptr<ArcMode> arc_mode = std::static_pointer_cast<ArcMode>(drive_modes[ARC_MODE]);
-    arc_mode->setTarget(inches, end_angle, angle_mix_pct);
+    arc_mode->setTarget(inches, end_angle, arc_settings);
     selected_drive_mode = ARC_MODE;
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
 
@@ -112,7 +112,7 @@ void Drivetrain::driveArc(float inches, Angle end_angle, float angle_mix_pct, fl
 }
 
 void Drivetrain::driveArc(float inches, Angle end_angle, PID linear_pid, PID angular_pid) {
-    driveArc(inches, end_angle, 0.001f, 100.0, 100.0, linear_pid, angular_pid); // instant mix by default
+    driveArc(inches, end_angle, { 0.0f, 0.001f }, 100.0, 100.0, linear_pid, angular_pid); // instant mix by default
 }
 
 void Drivetrain::drivePipeline(BlackMagic::Pose target_pose, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {

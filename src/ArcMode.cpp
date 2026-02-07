@@ -4,10 +4,10 @@ namespace BlackMagic {
 
 ArcMode::ArcMode() {}
 
-void ArcMode::setTarget(float target_inches, Angle target_heading, float heading_mix_pct) {
+void ArcMode::setTarget(float target_inches, Angle target_heading, ArcSettings arc_settings) {
     this->target_deg = target_inches * (360.0 / (WHEEL_DIAM_INCHES * M_PI));
     this->target_heading = target_heading;
-    this->heading_mix_pct = heading_mix_pct;
+    this->arc_settings = arc_settings;
     this->linear_speed = 0;
     this->angular_speed = 0;
     this->settle_count = 0;
@@ -22,7 +22,7 @@ void ArcMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angu
     float curr_distance_error = target_deg - curr_distance;
 
     float pct_distance_traveled = curr_distance/target_deg;
-    float pct_to_mix_heading = BlackMagic::Utils::clamp(pct_distance_traveled/heading_mix_pct, 0.0f, 1.0f);
+    float pct_to_mix_heading = BlackMagic::Utils::clamp((pct_distance_traveled-arc_settings.start_arc_pct)/arc_settings.arc_length_pct, 0.0f, 1.0f);
 
     float curr_heading_error = pct_to_mix_heading * Utils::getShortestAngleBetween(drive_state.heading, target_heading);
     float prev_linear_speed = linear_speed;
