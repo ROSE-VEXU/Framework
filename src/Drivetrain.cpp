@@ -119,7 +119,7 @@ void Drivetrain::driveArc(float inches, Angle end_angle, PID linear_pid, PID ang
     driveArc(inches, end_angle, { 0.0f, 0.001f }, 100.0, 100.0, linear_pid, angular_pid); // instant mix by default
 }
 
-void driveCurve(float inches, std::vector<CurveKeyframe> keyframes, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveCurve(float inches, std::vector<CurveKeyframe> keyframes, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
     prepareMove();
 
     linear_pid.setMaxSpeed(linear_max_speed);
@@ -133,7 +133,7 @@ void driveCurve(float inches, std::vector<CurveKeyframe> keyframes, float linear
     cancelMove();
 }
 
-void driveCurve(float inches, std::vector<CurveKeyframe> keyframes, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveCurve(float inches, std::vector<CurveKeyframe> keyframes, PID linear_pid, PID angular_pid) {
     driveCurve(inches, keyframes,  100.0, 100.0, linear_pid, angular_pid);
 }
 

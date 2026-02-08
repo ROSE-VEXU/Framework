@@ -86,7 +86,7 @@ private:
     PID current_linear_pid;
     PID current_angular_pid;
 
-    std::shared_ptr<IDriveMode> drive_modes[4] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<ArcMode>(), std::make_shared<CurveMode>(), std::make_shared<PipelineMode>() };
+    std::shared_ptr<IDriveMode> drive_modes[5] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<ArcMode>(), std::make_shared<CurveMode>(), std::make_shared<PipelineMode>() };
     int selected_drive_mode;
     
     bool drive_task_enabled;
