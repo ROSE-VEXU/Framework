@@ -6,6 +6,7 @@
 #include "PID.h"
 #include <functional>
 #include <memory>
+#include <vector>
 
 namespace BlackMagic {
 
