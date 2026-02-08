@@ -7,7 +7,7 @@ CurveMode::CurveMode() {}
 void CurveMode::setTarget(float target_inches, std::vector<CurveKeyframe> keyframes) {
     this->target_deg = target_inches * (360.0 / (WHEEL_DIAM_INCHES * M_PI));
     this->keyframes = keyframes;
-    this->current_keyframe_index = 0;
+    this->curr_keyframe_index = 0;
     this->linear_speed = 0;
     this->angular_speed = 0;
     this->settle_count = 0;

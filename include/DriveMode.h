@@ -83,7 +83,7 @@ private:
 
 struct CurveKeyframe {
     float pct;
-    float heading;
+    Angle heading;
     float smooth_pct;
 };
 
@@ -98,7 +98,7 @@ public:
 private:
     float target_deg;
     std::vector<CurveKeyframe> keyframes;
-    int current_keyframe_index;
+    int curr_keyframe_index;
     float linear_speed;
     float angular_speed;
     float settling_prev_left;
