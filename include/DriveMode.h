@@ -80,6 +80,32 @@ private:
     float settling_total_right;
 };
 
+struct CurveKeyframe {
+    float pct;
+    float heading;
+    float smooth_pct;
+};
+
+class CurveMode: public IDriveMode {
+public:
+    CurveMode();
+
+    void setTarget(float target_inches, std::vector<CurveKeyframe> keyframes);
+    void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) override;
+    bool hasSettled(const DrivetrainState& drive_state) override;
+    DriveSpeeds getSpeeds() override;
+private:
+    float target_deg;
+    std::vector<CurveKeyframe> keyframes;
+    int current_keyframe_index;
+    float linear_speed;
+    float angular_speed;
+    float settling_prev_left;
+    float settling_prev_right;
+    float settling_total_left;
+    float settling_total_right;
+};
+
 class PipelineMode: public IDriveMode {
 public:
     PipelineMode();

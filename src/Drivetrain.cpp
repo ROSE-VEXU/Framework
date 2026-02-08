@@ -119,6 +119,24 @@ void Drivetrain::driveArc(float inches, Angle end_angle, PID linear_pid, PID ang
     driveArc(inches, end_angle, { 0.0f, 0.001f }, 100.0, 100.0, linear_pid, angular_pid); // instant mix by default
 }
 
+void driveCurve(float inches, std::vector<CurveKeyframe> keyframes, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
+    prepareMove();
+
+    linear_pid.setMaxSpeed(linear_max_speed);
+    angular_pid.setMaxSpeed(angular_max_speed);
+    setPIDs(linear_pid, angular_pid);
+    std::shared_ptr<CurveMode> curve_mode = std::static_pointer_cast<CurveMode>(drive_modes[CURVE_MODE]);
+    curve_mode->setTarget(inches, keyframes);
+    selected_drive_mode = CURVE_MODE;
+    while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
+
+    cancelMove();
+}
+
+void driveCurve(float inches, std::vector<CurveKeyframe> keyframes, PID linear_pid, PID angular_pid) {
+    driveCurve(inches, keyframes,  100.0, 100.0, linear_pid, angular_pid);
+}
+
 void Drivetrain::drivePipeline(BlackMagic::Pose target_pose, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
     prepareMove();
 

@@ -18,7 +18,7 @@ void ArcMode::setTarget(float target_inches, Angle target_heading, ArcSettings a
 }
 
 void ArcMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
-    float curr_distance = (drive_state.left_degrees + drive_state.right_degrees) / 2.0;
+    float curr_distance = drive_state.left_degrees;
     float curr_distance_error = target_deg - curr_distance;
 
     float pct_distance_traveled = curr_distance/target_deg;
