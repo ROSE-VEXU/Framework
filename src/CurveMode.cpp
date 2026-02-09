@@ -23,18 +23,17 @@ void CurveMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& an
 
     // Advance to next keyframe if we've driven to that %
     if (curr_keyframe_index < keyframes.size()-1 &&
-        curr_distance_error >= target_deg * keyframes[curr_keyframe_index+1].pct) {
+        curr_distance >= (target_deg * keyframes[curr_keyframe_index+1].pct)) {
             curr_keyframe_index++;
     }
 
-    float curr_segment_error = curr_distance_error - (target_deg * keyframes[curr_keyframe_index].pct);
+    float curr_segment_distance = curr_distance - (target_deg * keyframes[curr_keyframe_index].pct);
     float segment_pct_length = (curr_keyframe_index == keyframes.size()-1) ? 1.0-keyframes[curr_keyframe_index].pct 
                                                                            : keyframes[curr_keyframe_index+1].pct - keyframes[curr_keyframe_index].pct;
-    float curr_segment_pct_driven = curr_segment_error / (target_deg * segment_pct_length);
-    float curr_segment_smoothing_pct = curr_segment_pct_driven / keyframes[curr_keyframe_index].smooth_pct;
+    float curr_segment_pct_driven = curr_segment_distance / (target_deg * segment_pct_length);
+    float curr_segment_smoothing_pct = BlackMagic::Utils::clamp(curr_segment_pct_driven / keyframes[curr_keyframe_index].smooth_pct, 0.0f, 1.0f);
 
     float curr_heading_error = curr_segment_smoothing_pct * Utils::getShortestAngleBetween(drive_state.heading, keyframes[curr_keyframe_index].heading);
-    float prev_linear_speed = linear_speed;
 
     linear_speed = linear_pid.getNextValue(curr_distance_error);
     angular_speed = angular_pid.getNextValue(curr_heading_error);
