@@ -13,7 +13,7 @@ void RadialArcMode::setTarget(float radius_inches, Angle target_heading) {
     this->settling_prev_heading = 0;
     this->settling_total_heading_change = 0;
 
-    setArcTargets(radius_inches);
+    setArcTarget(radius_inches, target_heading);
 }
 
 void RadialArcMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
@@ -51,8 +51,8 @@ void RadialArcMode::setArcTarget(float target_radius_inches, Angle target_angle)
     target_arc_length_deg = arc_length * (360.0 / (WHEEL_DIAM_INCHES * M_PI));
 }
 
-float RadialArcMode::getCurrentTargetAngle(float arc_radius, float driven_arc_length) {
-    return (driven_arc_length * 360.0) / (2 * M_PI * arc_radius);
+Angle RadialArcMode::getCurrentTargetAngle(float arc_radius, float driven_arc_length) {
+    return { (driven_arc_length * 360.0) / (2 * M_PI * arc_radius), BlackMagic::Angle::Unit::DEG };
 }
 
 
