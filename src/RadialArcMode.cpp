@@ -48,7 +48,7 @@ DriveSpeeds RadialArcMode::getSpeeds() {
 void RadialArcMode::setArcTarget(float target_radius_inches, Angle target_angle) {
     float arc_length_inches = 2 * M_PI * target_radius_inches * (target_angle/360.0f);
 
-    target_arc_length_deg = arc_length * (360.0 / (WHEEL_DIAM_INCHES * M_PI));
+    target_arc_length_deg = arc_length_inches * (360.0 / (WHEEL_DIAM_INCHES * M_PI));
 }
 
 Angle RadialArcMode::getCurrentTargetAngle(float arc_radius, float driven_arc_length) {
