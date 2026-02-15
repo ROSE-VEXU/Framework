@@ -53,11 +53,11 @@ public:
     void driveStraight(float inches, PID linear_pid, PID angular_pid);
     void driveTurn(Angle heading, float max_speed, PID angular_pid);
     void driveTurn(Angle heading, PID angular_pid);
-    void driveSimpleArc(float inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid);
-    void driveSimpleArc(float inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid);
-    void driveSimpleArc(float inches, Angle end_angle, PID linear_pid, PID angular_pid);
-    void driveRadialArc(float radius_inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid);
-    void driveRadialArc(float radius_inches, Angle end_angle, PID linear_pid, PID angular_pid);
+    void driveArcSimple(float inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid);
+    void driveArcSimple(float inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid);
+    void driveArcSimple(float inches, Angle end_angle, PID linear_pid, PID angular_pid);
+    void driveArcRadial(float radius_inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid);
+    void driveArcRadial(float radius_inches, Angle end_angle, PID linear_pid, PID angular_pid);
     void driveCurve(float inches, std::vector<CurveKeyframe> keyframes, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid);
     void driveCurve(float inches, std::vector<CurveKeyframe> keyframes, PID linear_pid, PID angular_pid);
     void drivePipeline(Pose target_pose, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid);

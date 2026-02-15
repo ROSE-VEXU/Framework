@@ -97,7 +97,7 @@ void Drivetrain::driveTurn(Angle heading, PID angular_pid) {
     driveTurn(heading, 100.0, angular_pid);
 }
 
-void Drivetrain::driveSimpleArc(float inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveArcSimple(float inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
     prepareMove();
 
     linear_pid.setMaxSpeed(linear_max_speed);
@@ -111,15 +111,15 @@ void Drivetrain::driveSimpleArc(float inches, Angle end_angle, ArcSettings arc_s
     cancelMove();
 }
 
-void Drivetrain::driveSimpleArc(float inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveArcSimple(float inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
     driveSimpleArc(inches, end_angle, { 0.0f, 0.001f }, linear_max_speed, angular_max_speed, linear_pid, angular_pid); // instant mix by default
 }
 
-void Drivetrain::driveSimpleArc(float inches, Angle end_angle, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveArcSimple(float inches, Angle end_angle, PID linear_pid, PID angular_pid) {
     driveSimpleArc(inches, end_angle, { 0.0f, 0.001f }, 100.0, 100.0, linear_pid, angular_pid); // instant mix by default
 }
 
-void Drivetrain::driveRadialArc(float radius_inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveArcRadial(float radius_inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
     prepareMove();
 
     linear_pid.setMaxSpeed(linear_max_speed);
@@ -133,7 +133,7 @@ void Drivetrain::driveRadialArc(float radius_inches, Angle end_angle, ArcSetting
     cancelMove();
 }
 
-void Drivetrain::driveRadialArc(float radius_inches, Angle end_angle, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveArcRadial(float radius_inches, Angle end_angle, PID linear_pid, PID angular_pid) {
     driveArc(radius_inches, end_angle, 100.0, 100.0, linear_pid, angular_pid);
 }
 
