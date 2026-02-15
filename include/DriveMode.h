@@ -61,9 +61,9 @@ struct ArcSettings {
     float arc_length_pct;
 };
 
-class ArcMode: public IDriveMode {
+class SimpleArcMode: public IDriveMode {
 public:
-    ArcMode();
+    SimpleArcMode();
 
     void setTarget(float target_inches, Angle target_heading, ArcSettings arc_settings);
     void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) override;
@@ -79,6 +79,27 @@ private:
     float settling_prev_right;
     float settling_total_left;
     float settling_total_right;
+};
+
+class RadialArcMode: public IDriveMode {
+public:
+    RadialArcMode();
+
+    void setTarget(float radius_inches, Angle target_heading);
+    void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) override;
+    bool hasSettled(const DrivetrainState& drive_state) override;
+    DriveSpeeds getSpeeds() override;
+private:
+    float radius_deg;
+    float target_arc_length_deg;
+    Angle target_heading;
+    float linear_speed;
+    float angular_speed;
+    float settling_prev_heading;
+    float settling_total_heading_change;
+
+    void setArcTargets(float target_radius_inches);
+    float getCurrentTargetAngle(float driven_arc_length);
 };
 
 struct CurveKeyframe {

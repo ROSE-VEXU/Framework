@@ -97,26 +97,44 @@ void Drivetrain::driveTurn(Angle heading, PID angular_pid) {
     driveTurn(heading, 100.0, angular_pid);
 }
 
-void Drivetrain::driveArc(float inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveSimpleArc(float inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
     prepareMove();
 
     linear_pid.setMaxSpeed(linear_max_speed);
     angular_pid.setMaxSpeed(angular_max_speed);
     setPIDs(linear_pid, angular_pid);
-    std::shared_ptr<ArcMode> arc_mode = std::static_pointer_cast<ArcMode>(drive_modes[ARC_MODE]);
-    arc_mode->setTarget(inches, end_angle, arc_settings);
-    selected_drive_mode = ARC_MODE;
+    std::shared_ptr<SimpleArcMode> simple_arc_mode = std::static_pointer_cast<SimpleArcMode>(drive_modes[SIMPLE_ARC_MODE]);
+    simple_arc_mode->setTarget(inches, end_angle, arc_settings);
+    selected_drive_mode = SIMPLE_ARC_MODE;
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
 
     cancelMove();
 }
 
-void Drivetrain::driveArc(float inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
-    driveArc(inches, end_angle, { 0.0f, 0.001f }, linear_max_speed, angular_max_speed, linear_pid, angular_pid); // instant mix by default
+void Drivetrain::driveSimpleArc(float inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
+    driveSimpleArc(inches, end_angle, { 0.0f, 0.001f }, linear_max_speed, angular_max_speed, linear_pid, angular_pid); // instant mix by default
 }
 
-void Drivetrain::driveArc(float inches, Angle end_angle, PID linear_pid, PID angular_pid) {
-    driveArc(inches, end_angle, { 0.0f, 0.001f }, 100.0, 100.0, linear_pid, angular_pid); // instant mix by default
+void Drivetrain::driveSimpleArc(float inches, Angle end_angle, PID linear_pid, PID angular_pid) {
+    driveSimpleArc(inches, end_angle, { 0.0f, 0.001f }, 100.0, 100.0, linear_pid, angular_pid); // instant mix by default
+}
+
+void Drivetrain::driveRadialArc(float radius_inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
+    prepareMove();
+
+    linear_pid.setMaxSpeed(linear_max_speed);
+    angular_pid.setMaxSpeed(angular_max_speed);
+    setPIDs(linear_pid, angular_pid);
+    std::shared_ptr<RadialArcMode> radial_arc_mode = std::static_pointer_cast<RadialArcMode>(drive_modes[RADIAL_ARC_MODE]);
+    radial_arc_mode->setTarget(radius_inches, end_angle);
+    selected_drive_mode = RADIAL_ARC_MODE;
+    while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
+
+    cancelMove();
+}
+
+void Drivetrain::driveRadialArc(float radius_inches, Angle end_angle, PID linear_pid, PID angular_pid) {
+    driveArc(radius_inches, end_angle, 100.0, 100.0, linear_pid, angular_pid);
 }
 
 void Drivetrain::driveCurve(float inches, std::vector<CurveKeyframe> keyframes, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {

@@ -2,9 +2,9 @@
 
 namespace BlackMagic {
 
-ArcMode::ArcMode() {}
+SimpleArcMode::SimpleArcMode() {}
 
-void ArcMode::setTarget(float target_inches, Angle target_heading, ArcSettings arc_settings) {
+void SimpleArcMode::setTarget(float target_inches, Angle target_heading, ArcSettings arc_settings) {
     this->target_deg = target_inches * (360.0 / (WHEEL_DIAM_INCHES * M_PI));
     this->target_heading = target_heading;
     this->arc_settings = arc_settings;
@@ -17,7 +17,7 @@ void ArcMode::setTarget(float target_inches, Angle target_heading, ArcSettings a
     this->settling_total_right = 0;
 }
 
-void ArcMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
+void SimpleArcMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
     float curr_distance = drive_state.left_degrees;
     float curr_distance_error = target_deg - curr_distance;
 
@@ -25,13 +25,12 @@ void ArcMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angu
     float pct_to_mix_heading = BlackMagic::Utils::clamp((pct_distance_traveled-arc_settings.start_arc_pct)/arc_settings.arc_length_pct, 0.0f, 1.0f);
 
     float curr_heading_error = pct_to_mix_heading * Utils::getShortestAngleBetween(drive_state.heading, target_heading);
-    float prev_linear_speed = linear_speed;
 
     linear_speed = linear_pid.getNextValue(curr_distance_error);
     angular_speed = angular_pid.getNextValue(curr_heading_error);
 }
 
-bool ArcMode::hasSettled(const DrivetrainState& drive_state) {
+bool SimpleArcMode::hasSettled(const DrivetrainState& drive_state) {
     float curr_left = drive_state.left_degrees;
     float curr_right = drive_state.right_degrees;
 
@@ -52,7 +51,7 @@ bool ArcMode::hasSettled(const DrivetrainState& drive_state) {
     return (settle_count > STRAIGHT_DRIVE_SETTLE_COUNT) ? true : false;
 }
 
-DriveSpeeds ArcMode::getSpeeds() {
+DriveSpeeds SimpleArcMode::getSpeeds() {
     return BlackMagic::Utils::desaturateSpeeds(linear_speed, angular_speed);
 }
 

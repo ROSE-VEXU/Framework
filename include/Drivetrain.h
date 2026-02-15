@@ -13,9 +13,10 @@
 
 #define STRAIGHT_MODE 0
 #define TURN_MODE 1
-#define ARC_MODE 2
-#define CURVE_MODE 3
-#define PIPELINE_MODE 4
+#define SIMPLE_ARC_MODE 2
+#define RADIAL_ARC_MODE 3
+#define CURVE_MODE 4
+#define PIPELINE_MODE 5
 #define DISABLED_MODE -1
 
 namespace BlackMagic {
@@ -52,9 +53,11 @@ public:
     void driveStraight(float inches, PID linear_pid, PID angular_pid);
     void driveTurn(Angle heading, float max_speed, PID angular_pid);
     void driveTurn(Angle heading, PID angular_pid);
-    void driveArc(float inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid);
-    void driveArc(float inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid);
-    void driveArc(float inches, Angle end_angle, PID linear_pid, PID angular_pid);
+    void driveSimpleArc(float inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid);
+    void driveSimpleArc(float inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid);
+    void driveSimpleArc(float inches, Angle end_angle, PID linear_pid, PID angular_pid);
+    void driveRadialArc(float radius_inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid);
+    void driveRadialArc(float radius_inches, Angle end_angle, PID linear_pid, PID angular_pid);
     void driveCurve(float inches, std::vector<CurveKeyframe> keyframes, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid);
     void driveCurve(float inches, std::vector<CurveKeyframe> keyframes, PID linear_pid, PID angular_pid);
     void drivePipeline(Pose target_pose, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid);
@@ -86,7 +89,7 @@ private:
     PID current_linear_pid;
     PID current_angular_pid;
 
-    std::shared_ptr<IDriveMode> drive_modes[5] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<ArcMode>(), std::make_shared<CurveMode>(), std::make_shared<PipelineMode>() };
+    std::shared_ptr<IDriveMode> drive_modes[5] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<SimpleArcMode>(), std::make_shared<RadialArcMode>(), std::make_shared<CurveMode>(), std::make_shared<PipelineMode>() };
     int selected_drive_mode;
     
     bool drive_task_enabled;
