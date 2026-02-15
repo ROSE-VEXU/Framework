@@ -119,7 +119,7 @@ void Drivetrain::driveArcSimple(float inches, Angle end_angle, PID linear_pid, P
     driveArcSimple(inches, end_angle, { 0.0f, 0.001f }, 100.0, 100.0, linear_pid, angular_pid); // instant mix by default
 }
 
-void Drivetrain::driveArcRadial(float radius_inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveArcRadial(float radius_inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
     prepareMove();
 
     linear_pid.setMaxSpeed(linear_max_speed);
