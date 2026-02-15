@@ -98,8 +98,8 @@ private:
     float settling_prev_heading;
     float settling_total_heading_change;
 
-    void setArcTargets(float target_radius_inches);
-    float getCurrentTargetAngle(float driven_arc_length);
+    void setArcTarget(float target_radius_inches, Angle target_angle);
+    float getCurrentTargetAngle(float arc_radius, float driven_arc_length);
 };
 
 struct CurveKeyframe {
