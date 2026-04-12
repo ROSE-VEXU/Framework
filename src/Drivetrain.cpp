@@ -186,6 +186,8 @@ void Drivetrain::disableDriveTask() {
 
 int Drivetrain::driveTask() {
     while(drive_task_enabled) {
+        vex::wait(VEX_SLEEP_MSEC_SHORT);
+
         if (selected_drive_mode == DISABLED_MODE) continue;
 
         drive_modes[selected_drive_mode]->run(getDriveState(), current_linear_pid, current_angular_pid);
@@ -193,8 +195,6 @@ int Drivetrain::driveTask() {
 
         driveLeft(speeds.left);
         driveRight(speeds.right);
-
-        vex::wait(VEX_SLEEP_MSEC_SHORT);
     }
 
     return 0;
