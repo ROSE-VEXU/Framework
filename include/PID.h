@@ -19,7 +19,7 @@ struct IntegralConfig {
 
 struct SettleConfig {
     int max_settle_count;
-    int reset_settle_threshold;
+    float reset_settle_threshold;
 };
 
 class PID {
