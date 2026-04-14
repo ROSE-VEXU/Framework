@@ -6,7 +6,8 @@ DriveErrorProvider::DriveErrorProvider(vex::motor_group& left_motors, vex::motor
     left_motors(left_motors), right_motors(right_motors), settle_config(settle_config) {}
 
 float DriveErrorProvider::getError(float target) {
-    return target - getRawValue();
+    float curr_distance = (left_motors.position(vex::positionUnits::deg) + right_motors.position(vex::positionUnits::deg)) / 2.0;
+    return target - curr_distance;
 }
 
 bool DriveErrorProvider::hasSettled() {
