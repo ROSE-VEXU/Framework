@@ -11,7 +11,7 @@ float DriveErrorProvider::getError(float target) {
     return target - averageDistance;
 }
 
-NearestHeadingErrorProvider::DriveErrorProvider(const IHeadingProvider& heading_provider):
+NearestHeadingErrorProvider::NearestHeadingErrorProvider(const IHeadingProvider& heading_provider):
     heading_provider(heading_provider) {}
 
 float NearestHeadingErrorProvider::getError(float target) {
