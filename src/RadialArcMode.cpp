@@ -32,7 +32,7 @@ void RadialArcMode::run(PID& linear_pid, PID& angular_pid) {
 }
 
 bool RadialArcMode::hasSettled() {
-    return linear_error_provider->hasSettled(target_deg) && angular_error_provider->hasSettled(target_heading);
+    return linear_error_provider->hasSettled(target_arc_length_deg) && angular_error_provider->hasSettled(target_heading);
 }
 
 DriveSpeeds RadialArcMode::getSpeeds() {
