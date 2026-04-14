@@ -194,7 +194,7 @@ void Drivetrain::disableDriveTask() {
 
 int Drivetrain::driveTask() {
     while(drive_task_enabled) {
-        vex::wait(VEX_SLEEP_MSEC_SHORT);
+        vex::wait(VEX_SLEEP_MSEC);
 
         if (selected_drive_mode == DISABLED_MODE) continue;
 
