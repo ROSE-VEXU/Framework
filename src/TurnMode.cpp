@@ -29,6 +29,8 @@ void TurnMode::run(PID& linear_pid, PID& angular_pid) {
 }
 
 bool TurnMode::hasSettled() {
+    if (!decelerating) return false;
+
     return error_provider->hasSettled(target_heading);
 }
 

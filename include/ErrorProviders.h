@@ -16,6 +16,8 @@ public:
 private:
     vex::motor_group& left_motors;
     vex::motor_group& right_motors;
+    float settling_prev_distance;
+    float settling_total_distance;
 };
 
 class NearestDegreeErrorProvider: public IErrorProvider {
@@ -26,6 +28,8 @@ public:
     bool hasSettled(float target) override;
 private:
     IHeadingProvider& heading_provider;
+    float settling_prev_heading;
+    float settling_total_heading_change;
 };
 
 };

@@ -11,13 +11,13 @@ struct SettleConfig {
 
 class IErrorProvider {
 public:
-    IErrorProvider(SettleConfig settle_config): settle_config(settle_config), previous_raw_value(0) {}
+    IErrorProvider(SettleConfig settle_config): settle_config(settle_config), settle_count(0) {}
     virtual float getError(float target) = 0;
     virtual float getRawValue() = 0;
     virtual bool hasSettled(float target) = 0;
 private:
     SettleConfig settle_config;
-    float previous_raw_value;
+    int settle_count;
 };
 
 };
