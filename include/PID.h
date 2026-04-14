@@ -22,16 +22,13 @@ struct SettleConfig {
     int reset_settle_threshold;
 };
 
-template <typename ErrorType>
 class PID {
-    static_assert(std::is_convertible<ErrorType, float>::value, "ErrorType must be convertible to float for PID error calculations.");
-
 public:
     static PID ZERO_PID;
 
-    PID(float kP, IntegralConfig cI, float kD, SettleConfig settle_config, IErrorProvider<ErrorType> error_provider);
-    PID(float kP, IntegralConfig cI, float kD, float accel_slew, SettleConfig settle_config, IErrorProvider<ErrorType> error_provider);
-    float getNextValue(ErrorType target);
+    PID(float kP, IntegralConfig cI, float kD, SettleConfig settle_config, IErrorProvider error_provider);
+    PID(float kP, IntegralConfig cI, float kD, float accel_slew, SettleConfig settle_config, IErrorProvider error_provider);
+    float getNextValue(float target);
     void setMaxSpeed(float max_speed);
     float getMaxSpeed();
     void reset();
@@ -41,7 +38,7 @@ private:
     float kD;
     float accel_slew;
     SettleConfig settle_config;
-    IErrorProvider<ErrorType> error_provider;
+    IErrorProvider error_provider;
     float max_speed;
     float total_error;
     float prev_error;
