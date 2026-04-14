@@ -28,7 +28,7 @@ void TurnMode::run(PID& linear_pid, PID& angular_pid) {
     if (fabs(turn_speed) < fabs(prev_turn_speed)) decelerating = true;
 }
 
-bool TurnMode::hasSettled(const DrivetrainState& drive_state) {
+bool TurnMode::hasSettled() {
     return angular_error_provider->hasSettled(target_heading);
 }
 
