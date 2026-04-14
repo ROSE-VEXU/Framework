@@ -1,6 +1,7 @@
 #ifndef PID_H
 #define PID_H
 
+#include "Drivetrain.h"
 #include "ErrorProvider.h"
 #include <regex>
 #include <type_traits>
@@ -17,27 +18,22 @@ struct IntegralConfig {
     IntegralConfig(float kI, float max_integral, float start_integral_threshold): kI(kI), max_integral(max_integral), start_integral_threshold(start_integral_threshold) {};
 };
 
-struct SettleConfig {
-    int max_settle_count;
-    float reset_settle_threshold;
-};
-
 class PID {
 public:
     static PID ZERO_PID;
 
-    PID(float kP, IntegralConfig cI, float kD, SettleConfig settle_config, IErrorProvider& error_provider);
-    PID(float kP, IntegralConfig cI, float kD, float accel_slew, SettleConfig settle_config, IErrorProvider& error_provider);
-    float getNextValue(float target);
+    PID(float kP, IntegralConfig cI, float kD, IErrorProvider& error_provider);
+    PID(float kP, IntegralConfig cI, float kD, float accel_slew, IErrorProvider& error_provider);
+    float getNextValue(float err);
     void setMaxSpeed(float max_speed);
     float getMaxSpeed();
+    bool hasSettled();
     void reset();
 private:
     float kP;
     IntegralConfig cI;
     float kD;
     float accel_slew;
-    SettleConfig settle_config;
     IErrorProvider* error_provider;
     float max_speed;
     float total_error;

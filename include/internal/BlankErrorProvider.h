@@ -10,6 +10,7 @@ class BlankErrorProvider: public IErrorProvider {
 public:
     BlankErrorProvider();
     float getError(float target) override;
+    float getRawValue() override;
 };
 
 };

@@ -7,8 +7,11 @@ DriveErrorProvider::DriveErrorProvider(vex::motor_group& left_motors, vex::motor
     right_motors(right_motors) {}
 
 float DriveErrorProvider::getError(float target) {
-    float averageDistance = (left_motors.position(vex::rotationUnits::deg) + right_motors.position(vex::rotationUnits::deg)) / 2.0;
-    return target - averageDistance;
+    return target - getRawValue();
+}
+
+float DriveErrorProvider::getRawValue() {
+    return (left_motors.position(vex::rotationUnits::deg) + right_motors.position(vex::rotationUnits::deg)) / 2.0;
 }
 
 NearestDegreeErrorProvider::NearestDegreeErrorProvider(IHeadingProvider& heading_provider):
@@ -16,7 +19,11 @@ NearestDegreeErrorProvider::NearestDegreeErrorProvider(IHeadingProvider& heading
 
 float NearestDegreeErrorProvider::getError(float target) {
     Angle angle { target, Angle::DEG };
-    return Utils::getShortestAngleBetween(heading_provider.getHeading(), angle);
+    return Utils::getShortestAngleBetween(getRawValue(), angle);
+}
+
+float DriveErrorProvider::getRawValue() {
+    return heading_provider.getHeading();
 }
 
 }

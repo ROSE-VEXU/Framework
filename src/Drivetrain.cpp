@@ -57,7 +57,7 @@ void Drivetrain::cancelMove() {
     stop();
 }
 
-void Drivetrain::driveStraightAsync(float inches, float max_speed, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveStraightAsync(float inches, float max_speed, PID linear_pid, PID angular_pid, IErrorProvider& error_provider) {
     prepareMove();
     
     linear_pid.setMaxSpeed(max_speed);
@@ -65,7 +65,17 @@ void Drivetrain::driveStraightAsync(float inches, float max_speed, PID linear_pi
     setPIDs(linear_pid, angular_pid);
     std::shared_ptr<StraightMode> straight_mode = std::static_pointer_cast<StraightMode>(drive_modes[STRAIGHT_MODE]);
     straight_mode->setTarget(inches, getHeading());
+    straight_mode->setErrorProviders(error_provider);
     selected_drive_mode = STRAIGHT_MODE;
+}
+
+void Drivetrain::driveStraightAsync(float inches, float max_speed, PID linear_pid, PID angular_pid) {
+    driveStraightAsync(inches, max_speed, linear_pid, angular_pid, );
+}
+
+
+void Drivetrain::driveStraight(float inches, float max_speed, PID linear_pid, PID angular_pid, ) {
+
 }
 
 void Drivetrain::driveStraight(float inches, float max_speed, PID linear_pid, PID angular_pid) {
@@ -80,24 +90,29 @@ void Drivetrain::driveStraight(float inches, PID linear_pid, PID angular_pid) {
     driveStraight(inches, 100.0, linear_pid, angular_pid);
 }
 
-void Drivetrain::driveTurn(Angle heading, float max_speed, PID angular_pid) {
+void Drivetrain::driveTurn(Angle heading, float max_speed, PID angular_pid, IErrorProvider& error_provider) {
     prepareMove();
 
     angular_pid.setMaxSpeed(max_speed);
     setPIDs(PID::ZERO_PID, angular_pid);
     std::shared_ptr<TurnMode> turn_mode = std::static_pointer_cast<TurnMode>(drive_modes[TURN_MODE]);
     turn_mode->setTarget(heading);
+    turn_mode->setErrorProviders(error_provider);
     selected_drive_mode = TURN_MODE;
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
 
     cancelMove();
 }
 
+void Drivetrain::driveTurn(Angle heading, float max_speed, PID angular_pid) {
+    driveTurn(heading, max_speed, angular_pid);
+}
+
 void Drivetrain::driveTurn(Angle heading, PID angular_pid) {
     driveTurn(heading, 100.0, angular_pid);
 }
 
-void Drivetrain::driveArcSimple(float inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveArcSimple(float inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider , IErrorProvider& angular_error_provider) {
     prepareMove();
 
     linear_pid.setMaxSpeed(linear_max_speed);
@@ -105,10 +120,15 @@ void Drivetrain::driveArcSimple(float inches, Angle end_angle, ArcSettings arc_s
     setPIDs(linear_pid, angular_pid);
     std::shared_ptr<SimpleArcMode> simple_arc_mode = std::static_pointer_cast<SimpleArcMode>(drive_modes[SIMPLE_ARC_MODE]);
     simple_arc_mode->setTarget(inches, end_angle, arc_settings);
+    simple_arc_mode->setErrorProviders(linear_error_provider, angular_error_provider);
     selected_drive_mode = SIMPLE_ARC_MODE;
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
 
     cancelMove();
+}
+
+void Drivetrain::driveArcSimple(float inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
+    driveArcSimple(inches, end_angle, arc_settings, linear_max_speed, angular_max_speed, linear_pid, angular_pid);
 }
 
 void Drivetrain::driveArcSimple(float inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
@@ -119,7 +139,7 @@ void Drivetrain::driveArcSimple(float inches, Angle end_angle, PID linear_pid, P
     driveArcSimple(inches, end_angle, { 0.0f, 0.001f }, 100.0, 100.0, linear_pid, angular_pid); // instant mix by default
 }
 
-void Drivetrain::driveArcRadial(float radius_inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveArcRadial(float radius_inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider , IErrorProvider& angular_error_provider) {
     prepareMove();
 
     linear_pid.setMaxSpeed(linear_max_speed);
@@ -127,10 +147,15 @@ void Drivetrain::driveArcRadial(float radius_inches, Angle end_angle, float line
     setPIDs(linear_pid, angular_pid);
     std::shared_ptr<RadialArcMode> radial_arc_mode = std::static_pointer_cast<RadialArcMode>(drive_modes[RADIAL_ARC_MODE]);
     radial_arc_mode->setTarget(radius_inches, end_angle);
+    radial_arc_mode->setErrorProviders(linear_error_provider, angular_error_provider);
     selected_drive_mode = RADIAL_ARC_MODE;
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
 
     cancelMove();
+}
+
+void Drivetrain::driveArcRadial(float radius_inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
+    driveArcRadial(radius_inches, end_angle, linear_max_speed, angular_max_speed, linear_pid, angular_pid);
 }
 
 void Drivetrain::driveArcRadial(float radius_inches, Angle end_angle, PID linear_pid, PID angular_pid) {

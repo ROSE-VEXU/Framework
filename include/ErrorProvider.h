@@ -7,6 +7,7 @@ namespace BlackMagic {
 class IErrorProvider {
 public:
     virtual float getError(float target) = 0;
+    virtual float getRawValue() = 0;
 };
 
 };

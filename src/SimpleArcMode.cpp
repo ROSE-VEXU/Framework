@@ -17,14 +17,20 @@ void SimpleArcMode::setTarget(float target_inches, Angle target_heading, ArcSett
     this->settling_total_right = 0;
 }
 
+void SimpleArcMode::setErrorProviders(const IErrorProvider& linear_error_provider, const IErrorProvider& angular_error_provider) {
+    this->linear_error_provider = linear_error_provider;
+    this->angular_error_provider = angular_error_provider
+}
+
+
 void SimpleArcMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
     // float pct_distance_traveled = curr_distance/target_deg;
     // float pct_to_mix_heading = BlackMagic::Utils::clamp((pct_distance_traveled-arc_settings.start_arc_pct)/arc_settings.arc_length_pct, 0.0f, 1.0f);
 
-    // float curr_heading_error = pct_to_mix_heading * Utils::getShortestAngleBetween(drive_state.heading, target_heading);
+    float curr_heading_error = pct_to_mix_heading * angular_error_provider.getError(target_heading);
 
-    linear_speed = linear_pid.getNextValue(target_deg);
-    angular_speed = angular_pid.getNextValue(target_heading);
+    linear_speed = linear_pid.getNextValue(linear_error_provider.getError(target_deg));
+    angular_speed = angular_pid.getNextValue(curr_heading_error);
 }
 
 bool SimpleArcMode::hasSettled(const DrivetrainState& drive_state) {

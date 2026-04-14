@@ -11,6 +11,7 @@ class DriveErrorProvider: public IErrorProvider {
 public:
     DriveErrorProvider(vex::motor_group& left_motors, vex::motor_group& right_motors);
     float getError(float target) override;
+    float getRawValue() override;
 private:
     vex::motor_group& left_motors;
     vex::motor_group& right_motors;
@@ -20,6 +21,7 @@ class NearestDegreeErrorProvider: public IErrorProvider {
 public:
     NearestDegreeErrorProvider(IHeadingProvider& heading_provider);
     float getError(float target) override;
+    float getRawValue() override;
 private:
     IHeadingProvider& heading_provider;
 };

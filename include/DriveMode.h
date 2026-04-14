@@ -26,12 +26,15 @@ public:
     StraightMode();
 
     void setTarget(float target_inches, Angle target_heading);
+    void setErrorProviders(IErrorProvider& linear_error_provider, IErrorProvider& angular_error_provider);
     void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) override;
     bool hasSettled(const DrivetrainState& drive_state) override;
     DriveSpeeds getSpeeds() override;
 private:
     float target_deg;
     Angle target_heading;
+    IErrorProvider& linear_error_provider;
+    IErrorProvider& angular_error_provider;
     float linear_speed;
     float angular_speed;
     float settling_prev_left;
@@ -45,11 +48,13 @@ public:
     TurnMode();
 
     void setTarget(Angle target_heading);
+    void setErrorProviders(IErrorProvider& error_provider);
     void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) override;
     bool hasSettled(const DrivetrainState& drive_state) override;
     DriveSpeeds getSpeeds() override;
 private:
     Angle target_heading;
+    IErrorProvider& error_provider;
     bool decelerating;
     float left_speed;
     float right_speed;
@@ -67,6 +72,7 @@ public:
     SimpleArcMode();
 
     void setTarget(float target_inches, Angle target_heading, ArcSettings arc_settings);
+    void setErrorProviders(IErrorProvider& linear_error_provider, IErrorProvider& angular_error_provider);
     void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) override;
     bool hasSettled(const DrivetrainState& drive_state) override;
     DriveSpeeds getSpeeds() override;
@@ -74,6 +80,8 @@ private:
     float target_deg;
     Angle target_heading;
     ArcSettings arc_settings;
+    IErrorProvider& linear_error_provider;
+    IErrorProvider& angular_error_provider;
     float linear_speed;
     float angular_speed;
     float settling_prev_left;
@@ -87,6 +95,7 @@ public:
     RadialArcMode();
 
     void setTarget(float radius_inches, Angle target_heading);
+    void setErrorProviders(IErrorProvider& linear_error_provider, IErrorProvider& angular_error_provider);
     void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) override;
     bool hasSettled(const DrivetrainState& drive_state) override;
     DriveSpeeds getSpeeds() override;
@@ -94,6 +103,8 @@ private:
     float radius_deg;
     float target_arc_length_deg;
     Angle target_heading;
+    IErrorProvider& linear_error_provider;
+    IErrorProvider& angular_error_provider;
     float linear_speed;
     float angular_speed;
     float settling_prev_heading;

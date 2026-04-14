@@ -13,8 +13,12 @@ void TurnMode::setTarget(Angle target_heading) {
     this->settling_total_heading_change = 0;
 }
 
+void TurnMode::setErrorProviders(IErrorProvider& error_provider) {
+    this->error_provider = error_provider;
+}
+
 void TurnMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
-    float turn_speed = angular_pid.getNextValue(this->target_heading);
+    float turn_speed = angular_pid.getNextValue(error_provider.getError(target_heading));
     float prev_turn_speed = left_speed;
 
     left_speed = Utils::sign(turn_speed) * fabs(turn_speed);
