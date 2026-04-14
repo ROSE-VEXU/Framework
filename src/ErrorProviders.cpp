@@ -2,29 +2,27 @@
 
 namespace BlackMagic {
 
-DriveErrorProvider::DriveErrorProvider(vex::motor_group& left_motors, vex::motor_group& right_motors):
-    left_motors(left_motors),
-    right_motors(right_motors) {}
+DriveErrorProvider::DriveErrorProvider(vex::motor_group& left_motors, vex::motor_group& right_motors, SettleConfig settle_config):
+    left_motors(left_motors), right_motors(right_motors), settle_config(settle_config) {}
 
 float DriveErrorProvider::getError(float target) {
     return target - getRawValue();
 }
 
-float DriveErrorProvider::getRawValue() {
-    return (left_motors.position(vex::rotationUnits::deg) + right_motors.position(vex::rotationUnits::deg)) / 2.0;
+bool DriveErrorProvider::hasSettled() {
+    return true;
 }
 
-NearestDegreeErrorProvider::NearestDegreeErrorProvider(IHeadingProvider& heading_provider):
-    heading_provider(heading_provider) {}
+NearestDegreeErrorProvider::NearestDegreeErrorProvider(IHeadingProvider& heading_provider, SettleConfig settle_config):
+    heading_provider(heading_provider), settle_config(settle_config) {}
 
 float NearestDegreeErrorProvider::getError(float target) {
-    Angle current_angle { getRawValue(), Angle::DEG };
     Angle target_angle { target, Angle::DEG };
-    return Utils::getShortestAngleBetween(current_angle, target_angle);
+    return Utils::getShortestAngleBetween(heading_provider.getHeading(), target_angle);
 }
 
-float NearestDegreeErrorProvider::getRawValue() {
-    return heading_provider.getHeading().asDegrees();
+bool NearestDegreeErrorProvider::hasSettled() {
+    return true;
 }
 
 }

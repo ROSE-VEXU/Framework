@@ -8,8 +8,8 @@ float BlankErrorProvider::getError(float target) {
     return 0.0;
 }
 
-float BlankErrorProvider::getRawValue() {
-    return 0.0;
+bool BlankErrorProvider::hasSettled() {
+    return true;
 }
 
 }

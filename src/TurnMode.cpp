@@ -44,7 +44,7 @@ bool TurnMode::hasSettled(const DrivetrainState& drive_state) {
 
     // return (settle_count > TURN_DRIVE_SETTLE_COUNT) ? true : false;
 
-    return true;
+    return angular_error_provider->hasSettled();
 }
 
 DriveSpeeds TurnMode::getSpeeds() {

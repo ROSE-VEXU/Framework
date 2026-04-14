@@ -54,7 +54,7 @@ bool SimpleArcMode::hasSettled(const DrivetrainState& drive_state) {
     // settling_prev_right = curr_right;
 
     // return (settle_count > STRAIGHT_DRIVE_SETTLE_COUNT) ? true : false;
-    return true;
+    return linear_error_provider->hasSettled() && angular_error_provider->hasSettled();
 }
 
 DriveSpeeds SimpleArcMode::getSpeeds() {

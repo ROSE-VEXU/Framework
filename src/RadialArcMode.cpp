@@ -44,7 +44,7 @@ bool RadialArcMode::hasSettled(const DrivetrainState& drive_state) {
     // settling_prev_heading = curr_heading;
 
     // return (settle_count > TURN_DRIVE_SETTLE_COUNT) ? true : false;
-    return true;
+    return linear_error_provider->hasSettled() && angular_error_provider->hasSettled();
 }
 
 DriveSpeeds RadialArcMode::getSpeeds() {
