@@ -54,7 +54,7 @@ public:
     void setTarget(Pose target_pose);
     void setPosition(Position position);
     int runPipeline(PID& linear_pid, PID& angular_pid);
-    bool hasSettled(const DrivetrainState& drive_state);
+    bool hasSettled();
 
     Position getPosition() override;
     DriveSpeeds getSpeeds() override;

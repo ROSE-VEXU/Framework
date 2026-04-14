@@ -29,26 +29,8 @@ void StraightMode::run(PID& linear_pid, PID& angular_pid) {
     angular_speed = angular_pid.getNextValue(curr_angular_error);
 }
 
-bool StraightMode::hasSettled(const DrivetrainState& drive_state) {
-    // float curr_left = drive_state.left_degrees;
-    // float curr_right = drive_state.right_degrees;
-
-    // settling_total_left += fabs(curr_left - settling_prev_left);
-    // settling_total_right += fabs(curr_right - settling_prev_right);
-
-    // if (settling_total_left < STRAIGHT_DRIVE_SETTLE_DEG_THRESHOLD &&
-    //     settling_total_right < STRAIGHT_DRIVE_SETTLE_DEG_THRESHOLD) {
-    //     settle_count++;
-    // } else {
-    //     settle_count = 0;
-    //     settling_total_left = 0;
-    //     settling_total_right = 0;
-    // }
-    // settling_prev_left = curr_left;
-    // settling_prev_right = curr_right;
-
-    // return (settle_count > STRAIGHT_DRIVE_SETTLE_COUNT) ? true : false;
-    return linear_error_provider->hasSettled() && angular_error_provider->hasSettled();
+bool StraightMode::hasSettled() {
+    return linear_error_provider->hasSettled(target_deg) && angular_error_provider->hasSettled(target_heading);
 }
 
 DriveSpeeds StraightMode::getSpeeds() {

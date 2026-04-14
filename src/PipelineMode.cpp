@@ -20,9 +20,9 @@ void PipelineMode::setPipeline(std::shared_ptr<AutonomousPipeline> pipeline) {
     this->pipeline = pipeline;
 }
 
-bool PipelineMode::hasSettled(const DrivetrainState& drive_state) {
+bool PipelineMode::hasSettled() {
     if (this->pipeline == nullptr) return true;
-    return this->pipeline->hasSettled(drive_state);
+    return this->pipeline->hasSettled();
 }
 
 DriveSpeeds PipelineMode::getSpeeds() {
