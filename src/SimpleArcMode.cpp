@@ -29,7 +29,7 @@ void SimpleArcMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID
     // float pct_distance_traveled = curr_distance/target_deg;
     // float pct_to_mix_heading = BlackMagic::Utils::clamp((pct_distance_traveled-arc_settings.start_arc_pct)/arc_settings.arc_length_pct, 0.0f, 1.0f);
 
-    float curr_heading_error = pct_to_mix_heading * angular_error_provider->getError(target_heading);
+    float curr_heading_error = 100.0 * angular_error_provider->getError(target_heading);
 
     linear_speed = linear_pid.getNextValue(curr_linear_error);
     angular_speed = angular_pid.getNextValue(curr_heading_error);
