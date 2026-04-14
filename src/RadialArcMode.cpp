@@ -17,15 +17,18 @@ void RadialArcMode::setTarget(float radius_inches, Angle target_heading) {
 }
 
 void RadialArcMode::setErrorProviders(IErrorProvider& linear_error_provider, IErrorProvider& angular_error_provider) {
-    this->linear_error_provider = linear_error_provider;
-    this->angular_error_provider = angular_error_provider;
+    this->linear_error_provider = &linear_error_provider;
+    this->angular_error_provider = &angular_error_provider;
 }
 
 void RadialArcMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
     float curr_distance = (drive_state.left_degrees + drive_state.right_degrees) / 2.0;
 
-    linear_speed = linear_pid.getNextValue(linear_error_provider.getError(target_arc_length_deg));
-    angular_speed = angular_pid.getNextValue(angular_error_provider.getError(getCurrentTargetAngle(radius_deg, curr_distance)));
+    float curr_linear_error = linear_error_provider->getError(target_arc_length_deg);
+    float curr_angular_error = angular_error_provider->getError(getCurrentTargetAngle(radius_deg, curr_distance));
+
+    linear_speed = linear_pid.getNextValue(curr_linear_error);
+    angular_speed = angular_pid.getNextValue(curr_angular_error);
 }
 
 bool RadialArcMode::hasSettled(const DrivetrainState& drive_state) {

@@ -33,8 +33,8 @@ public:
 private:
     float target_deg;
     Angle target_heading;
-    IErrorProvider& linear_error_provider;
-    IErrorProvider& angular_error_provider;
+    IErrorProvider* linear_error_provider;
+    IErrorProvider* angular_error_provider;
     float linear_speed;
     float angular_speed;
     float settling_prev_left;
@@ -54,7 +54,7 @@ public:
     DriveSpeeds getSpeeds() override;
 private:
     Angle target_heading;
-    IErrorProvider& error_provider;
+    IErrorProvider* error_provider;
     bool decelerating;
     float left_speed;
     float right_speed;
@@ -80,8 +80,8 @@ private:
     float target_deg;
     Angle target_heading;
     ArcSettings arc_settings;
-    IErrorProvider& linear_error_provider;
-    IErrorProvider& angular_error_provider;
+    IErrorProvider* linear_error_provider;
+    IErrorProvider* angular_error_provider;
     float linear_speed;
     float angular_speed;
     float settling_prev_left;
@@ -103,8 +103,8 @@ private:
     float radius_deg;
     float target_arc_length_deg;
     Angle target_heading;
-    IErrorProvider& linear_error_provider;
-    IErrorProvider& angular_error_provider;
+    IErrorProvider* linear_error_provider;
+    IErrorProvider* angular_error_provider;
     float linear_speed;
     float angular_speed;
     float settling_prev_heading;

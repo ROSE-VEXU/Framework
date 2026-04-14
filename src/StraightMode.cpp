@@ -17,13 +17,16 @@ void StraightMode::setTarget(float target_inches, Angle target_heading) {
 }
 
 void StraightMode::setErrorProviders(IErrorProvider& linear_error_provider, IErrorProvider& angular_error_provider) {
-    this->linear_error_provider = linear_error_provider;
-    this->angular_error_provider = angular_error_provider;
+    this->linear_error_provider = &linear_error_provider;
+    this->angular_error_provider = &angular_error_provider;
 }
 
 void StraightMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
-    linear_speed = linear_pid.getNextValue(linear_error_provider.getError(target_deg));
-    angular_speed = angular_pid.getNextValue(angular_error_provider.getError(target_heading));
+    float curr_linear_error = linear_error_provider->getError(target_deg);
+    float curr_angular_error = angular_error_provider->getError(target_heading);
+
+    linear_speed = linear_pid.getNextValue(curr_linear_error);
+    angular_speed = angular_pid.getNextValue(curr_angular_error);
 }
 
 bool StraightMode::hasSettled(const DrivetrainState& drive_state) {
