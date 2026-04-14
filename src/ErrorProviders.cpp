@@ -11,11 +11,12 @@ float DriveErrorProvider::getError(float target) {
     return target - averageDistance;
 }
 
-NearestHeadingErrorProvider::NearestHeadingErrorProvider(IHeadingProvider& heading_provider):
+NearestDegreeErrorProvider::NearestDegreeErrorProvider(IHeadingProvider& heading_provider):
     heading_provider(heading_provider) {}
 
-float NearestHeadingErrorProvider::getError(float target) {
-    return Utils::getShortestAngleBetween(heading_provider.getHeading(), target);
+float NearestDegreeErrorProvider::getError(float target) {
+    Angle angle { target, Angle::DEG };
+    return Utils::getShortestAngleBetween(heading_provider.getHeading(), angle);
 }
 
 }
