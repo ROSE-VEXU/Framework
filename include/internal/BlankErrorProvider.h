@@ -7,7 +7,7 @@ namespace BlackMagic {
 
 // Used only as a placeholder for ZERO_PID
 class BlankErrorProvider: public IErrorProvider {
-protected:
+public:
     BlankErrorProvider();
     float getError(float target) override;
 };
