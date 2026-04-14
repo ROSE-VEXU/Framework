@@ -38,7 +38,7 @@ int AutonomousPipeline::runPipeline(PID& linear_pid, PID& angular_pid) {
     return 0;
 }
 
-bool AutonomousPipeline::hasSettled(const DrivetrainState& drive_state) {
+bool AutonomousPipeline::hasSettled() {
     if (speed_controller == nullptr) return true;
     // return speed_controller->hasSettled(drive_state);
 }
