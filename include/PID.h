@@ -26,8 +26,8 @@ class PID {
 public:
     static PID ZERO_PID;
 
-    PID(float kP, IntegralConfig cI, float kD, SettleConfig settle_config, IErrorProvider error_provider);
-    PID(float kP, IntegralConfig cI, float kD, float accel_slew, SettleConfig settle_config, IErrorProvider error_provider);
+    PID(float kP, IntegralConfig cI, float kD, SettleConfig settle_config, IErrorProvider& error_provider);
+    PID(float kP, IntegralConfig cI, float kD, float accel_slew, SettleConfig settle_config, IErrorProvider& error_provider);
     float getNextValue(float target);
     void setMaxSpeed(float max_speed);
     float getMaxSpeed();
@@ -38,7 +38,7 @@ private:
     float kD;
     float accel_slew;
     SettleConfig settle_config;
-    IErrorProvider error_provider;
+    IErrorProvider& error_provider;
     float max_speed;
     float total_error;
     float prev_error;
