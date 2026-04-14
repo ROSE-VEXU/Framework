@@ -16,9 +16,9 @@ private:
     vex::motor_group& right_motors;
 };
 
-class NearestHeadingErrorProvider: public IErrorProvider {
+class NearestDegreeErrorProvider: public IErrorProvider {
 public:
-    NearestHeadingErrorProvider(IHeadingProvider& heading_provider);
+    NearestDegreeErrorProvider(IHeadingProvider& heading_provider);
     float getError(float target) override;
 private:
     IHeadingProvider& heading_provider;
