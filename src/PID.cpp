@@ -1,8 +1,9 @@
+#include "internal/BlankErrorProvider.h"
 #include "vex.h"
 
 namespace BlackMagic {
 
-PID PID::ZERO_PID = { 0.0, { 0.0, 0.0, 0.0 }, 0.0, { 0, 0 }, IErrorProvider() };
+PID PID::ZERO_PID = { 0.0, { 0.0, 0.0, 0.0 }, 0.0, { 0, 0 }, BlankErrorProvider() };
 
 PID::PID(float kP, IntegralConfig cI, float kD, SettleConfig settle_config, IErrorProvider& error_provider):
     kP(kP), cI(cI), kD(kD),
