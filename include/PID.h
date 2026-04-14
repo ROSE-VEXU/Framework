@@ -1,7 +1,6 @@
 #ifndef PID_H
 #define PID_H
 
-#include "Drivetrain.h"
 #include "ErrorProvider.h"
 #include <regex>
 #include <type_traits>
@@ -22,8 +21,8 @@ class PID {
 public:
     static PID ZERO_PID;
 
-    PID(float kP, IntegralConfig cI, float kD, IErrorProvider& error_provider);
-    PID(float kP, IntegralConfig cI, float kD, float accel_slew, IErrorProvider& error_provider);
+    PID(float kP, IntegralConfig cI, float kD);
+    PID(float kP, IntegralConfig cI, float kD, float accel_slew);
     float getNextValue(float err);
     void setMaxSpeed(float max_speed);
     float getMaxSpeed();
@@ -34,7 +33,6 @@ private:
     IntegralConfig cI;
     float kD;
     float accel_slew;
-    IErrorProvider* error_provider;
     float max_speed;
     float total_error;
     float prev_error;
