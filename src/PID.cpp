@@ -6,18 +6,18 @@ namespace BlackMagic {
 
 BlankErrorProvider blank{};
 
-PID PID::ZERO_PID = { 0.0, { 0.0, 0.0, 0.0 }, 0.0, blank };
+PID PID::ZERO_PID = { 0.0, { 0.0, 0.0, 0.0 }, 0.0 };
 
-PID::PID(float kP, IntegralConfig cI, float kD, IErrorProvider& error_provider):
+PID::PID(float kP, IntegralConfig cI, float kD):
     kP(kP), cI(cI), kD(kD),
-    accel_slew(PID_SETTING_DISABLE), error_provider(&error_provider),
+    accel_slew(PID_SETTING_DISABLE),
     max_speed(0.0),
     total_error(0), prev_error(0), prev_output(0) {
 }
 
-PID::PID(float kP, IntegralConfig cI, float kD, float accel_slew, IErrorProvider& error_provider): 
+PID::PID(float kP, IntegralConfig cI, float kD, float accel_slew): 
     kP(kP), cI(cI), kD(kD),
-    accel_slew(accel_slew), error_provider(&error_provider),
+    accel_slew(accel_slew),
     max_speed(0.0),
     total_error(0), prev_error(0), prev_output(0) {
 }

@@ -77,7 +77,7 @@ void Drivetrain::driveStraightAsync(float inches, float max_speed, PID linear_pi
 }
 
 void Drivetrain::driveStraight(float inches, float max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider , IErrorProvider& angular_error_provider) {
-    driveStraightAsync(inches, max_speed, linear_pid, angular_pid, error_provider);
+    driveStraightAsync(inches, max_speed, linear_pid, angular_pid, linear_error_provider, angular_error_provider);
 
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
     

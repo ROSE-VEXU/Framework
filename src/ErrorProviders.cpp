@@ -18,12 +18,13 @@ NearestDegreeErrorProvider::NearestDegreeErrorProvider(IHeadingProvider& heading
     heading_provider(heading_provider) {}
 
 float NearestDegreeErrorProvider::getError(float target) {
-    Angle angle { target, Angle::DEG };
-    return Utils::getShortestAngleBetween(getRawValue(), angle);
+    Angle current_angle { getRawValue(), Angle::DEG };
+    Angle target_angle { target, Angle::DEG };
+    return Utils::getShortestAngleBetween(current_angle, angle);
 }
 
-float DriveErrorProvider::getRawValue() {
-    return heading_provider.getHeading();
+float NearestDegreeErrorProvider::getRawValue() {
+    return heading_provider.getHeading().asDegrees();
 }
 
 }
