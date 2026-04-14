@@ -2,7 +2,7 @@
 
 namespace BlackMagic {
 
-DriveErrorProvider::DriveErrorProvider(const vex::motor_group& left_motors, const vex::motor_group& right_motors):
+DriveErrorProvider::DriveErrorProvider(vex::motor_group& left_motors, vex::motor_group& right_motors):
     left_motors(left_motors),
     right_motors(right_motors) {}
 
@@ -11,7 +11,7 @@ float DriveErrorProvider::getError(float target) {
     return target - averageDistance;
 }
 
-NearestHeadingErrorProvider::NearestHeadingErrorProvider(const IHeadingProvider& heading_provider):
+NearestHeadingErrorProvider::NearestHeadingErrorProvider(IHeadingProvider& heading_provider):
     heading_provider(heading_provider) {}
 
 float NearestHeadingErrorProvider::getError(float target) {
