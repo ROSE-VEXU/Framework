@@ -38,7 +38,7 @@ private:
     float kD;
     float accel_slew;
     SettleConfig settle_config;
-    IErrorProvider& error_provider;
+    IErrorProvider* error_provider;
     float max_speed;
     float total_error;
     float prev_error;

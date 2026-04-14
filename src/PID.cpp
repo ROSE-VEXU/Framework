@@ -6,14 +6,14 @@ PID PID::ZERO_PID = { 0.0, { 0.0, 0.0, 0.0 }, 0.0, { 0, 0 }, IErrorProvider() };
 
 PID::PID(float kP, IntegralConfig cI, float kD, SettleConfig settle_config, IErrorProvider& error_provider):
     kP(kP), cI(cI), kD(kD),
-    accel_slew(PID_SETTING_DISABLE), settle_config(settle_config), error_provider(error_provider),
+    accel_slew(PID_SETTING_DISABLE), settle_config(settle_config), error_provider(&error_provider),
     max_speed(0.0),
     total_error(0), prev_error(0), prev_output(0) {
 }
 
 PID::PID(float kP, IntegralConfig cI, float kD, float accel_slew, SettleConfig settle_config, IErrorProvider& error_provider): 
     kP(kP), cI(cI), kD(kD),
-    accel_slew(accel_slew), settle_config(settle_config), error_provider(error_provider),
+    accel_slew(accel_slew), settle_config(settle_config), error_provider(&error_provider),
     max_speed(0.0),
     total_error(0), prev_error(0), prev_output(0) {
 }
