@@ -11,10 +11,9 @@
 
 namespace BlackMagic {
 
-template<typename ErrorType>
 class IDriveMode: IDriveSpeedProvider {
 public:
-    virtual void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid, IErrorProvider<ErrorType> error_provider) = 0;
+    virtual void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) = 0;
     virtual bool hasSettled(const DrivetrainState& drive_state) = 0;
     DriveSpeeds getSpeeds() = 0;
 
@@ -22,12 +21,12 @@ protected:
     int settle_count;
 };
 
-class StraightMode: public IDriveMode<float> {
+class StraightMode: public IDriveMode {
 public:
     StraightMode();
 
     void setTarget(float target_inches, Angle target_heading);
-    void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid, IErrorProvider<float> error_provider) override;
+    void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) override;
     bool hasSettled(const DrivetrainState& drive_state) override;
     DriveSpeeds getSpeeds() override;
 private:
@@ -41,12 +40,12 @@ private:
     float settling_total_right;
 };
 
-class TurnMode: public IDriveMode<Angle> {
+class TurnMode: public IDriveMode {
 public:
     TurnMode();
 
     void setTarget(Angle target_heading);
-    void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid, IErrorProvider<Angle> error_provider) override;
+    void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) override;
     bool hasSettled(const DrivetrainState& drive_state) override;
     DriveSpeeds getSpeeds() override;
 private:
