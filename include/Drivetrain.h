@@ -5,6 +5,7 @@
 #include "DriveControllerMovement.h"
 #include "DriveMode.h"
 #include "DriveStates.h"
+#include "ErrorProviders.h"
 #include "PID.h"
 #include "PositionProvider.h"
 #include "Subsystem.h"
@@ -90,6 +91,9 @@ private:
 
     PID current_linear_pid;
     PID current_angular_pid;
+
+    DriveErrorProvider simple_linear_error_provider;
+    NearestDegreeErrorProvider simple_angular_error_provider;
 
     std::shared_ptr<IDriveMode> drive_modes[5] = { std::make_shared<StraightMode>(), std::make_shared<TurnMode>(), std::make_shared<SimpleArcMode>(), std::make_shared<RadialArcMode>(), std::make_shared<PipelineMode>() };
     int selected_drive_mode;

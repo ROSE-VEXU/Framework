@@ -14,6 +14,8 @@ Drivetrain::Drivetrain(vex::motor_group& left_motors, vex::motor_group& right_mo
     current_angular_pid(PID::ZERO_PID),
     selected_drive_mode(STRAIGHT_MODE),
     drive_task_enabled(false) {
+    simple_linear_error_provider = BlackMagic::DriveErrorProvider{ left_motors, right_motors, { STRAIGHT_DRIVE_SETTLE_COUNT, STRAIGHT_DRIVE_SETTLE_DEG_THRESHOLD } };
+    simple_angular_error_provider = BlackMagic::NearestDegreeErrorProvider{ heading_provider, { TURN_DRIVE_SETTLE_COUNT, TURN_DRIVE_SETTLE_HEADING_THRESHOLD } };
 }
 
 void Drivetrain::opControl() {
@@ -85,10 +87,7 @@ void Drivetrain::driveStraight(float inches, float max_speed, PID linear_pid, PI
 }
 
 void Drivetrain::driveStraight(float inches, float max_speed, PID linear_pid, PID angular_pid) {
-    BlackMagic::DriveErrorProvider linear_error_provider{ left_motors, right_motors };
-    BlackMagic::NearestDegreeErrorProvider angular_error_provider{ heading_provider };
-
-    driveStraight(inches, max_speed, linear_pid, angular_pid, linear_error_provider, angular_error_provider);
+    driveStraight(inches, max_speed, linear_pid, angular_pid, simple_linear_error_provider, simple_angular_error_provider);
 }
 
 void Drivetrain::driveStraight(float inches, PID linear_pid, PID angular_pid) {
@@ -110,9 +109,7 @@ void Drivetrain::driveTurn(Angle heading, float max_speed, PID angular_pid, IErr
 }
 
 void Drivetrain::driveTurn(Angle heading, float max_speed, PID angular_pid) {
-    BlackMagic::NearestDegreeErrorProvider angular_error_provider{ heading_provider };
-
-    driveTurn(heading, max_speed, angular_pid, angular_error_provider);
+    driveTurn(heading, max_speed, angular_pid, simple_angular_error_provider);
 }
 
 void Drivetrain::driveTurn(Angle heading, PID angular_pid) {
@@ -135,10 +132,7 @@ void Drivetrain::driveArcSimple(float inches, Angle end_angle, ArcSettings arc_s
 }
 
 void Drivetrain::driveArcSimple(float inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
-    BlackMagic::DriveErrorProvider linear_error_provider{ left_motors, right_motors };
-    BlackMagic::NearestDegreeErrorProvider angular_error_provider{ heading_provider };
-
-    driveArcSimple(inches, end_angle, arc_settings, linear_max_speed, angular_max_speed, linear_pid, angular_pid, linear_error_provider, angular_error_provider);
+    driveArcSimple(inches, end_angle, arc_settings, linear_max_speed, angular_max_speed, linear_pid, angular_pid, simple_linear_error_provider, simple_angular_error_provider);
 }
 
 void Drivetrain::driveArcSimple(float inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
@@ -165,10 +159,7 @@ void Drivetrain::driveArcRadial(float radius_inches, Angle end_angle, float line
 }
 
 void Drivetrain::driveArcRadial(float radius_inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
-    BlackMagic::DriveErrorProvider linear_error_provider{ left_motors, right_motors };
-    BlackMagic::NearestDegreeErrorProvider angular_error_provider{ heading_provider };
-    
-    driveArcRadial(radius_inches, end_angle, linear_max_speed, angular_max_speed, linear_pid, angular_pid, linear_error_provider, angular_error_provider);
+    driveArcRadial(radius_inches, end_angle, linear_max_speed, angular_max_speed, linear_pid, angular_pid, simple_linear_error_provider, simple_angular_error_provider);
 }
 
 void Drivetrain::driveArcRadial(float radius_inches, Angle end_angle, PID linear_pid, PID angular_pid) {
