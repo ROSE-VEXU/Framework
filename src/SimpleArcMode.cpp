@@ -19,7 +19,7 @@ void SimpleArcMode::setTarget(float target_inches, Angle target_heading, ArcSett
 
 void SimpleArcMode::setErrorProviders(IErrorProvider& linear_error_provider, IErrorProvider& angular_error_provider) {
     this->linear_error_provider = &linear_error_provider;
-    this->angular_error_provider = &angular_error_provider
+    this->angular_error_provider = &angular_error_provider;
 }
 
 
