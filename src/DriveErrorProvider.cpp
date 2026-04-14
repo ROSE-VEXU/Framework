@@ -1,0 +1,21 @@
+#include "vex.h"
+
+namespace BlackMagic {
+
+DriveErrorProvider::DriveErrorProvider(const vex::motor_group& left_motors, const vex::motor_group& right_motors):
+    left_motors(left_motors),
+    right_motors(right_motors) {}
+
+float DriveErrorProvider::getError(float target) {
+    float averageDistance = (left_motors.position(vex::rotationUnits::deg) + right_motors.position(vex::rotationUnits::deg)) / 2.0;
+    return target - averageDistance;
+}
+
+NearestHeadingErrorProvider::DriveErrorProvider(const IHeadingProvider& heading_provider):
+    heading_provider(heading_provider) {}
+
+float NearestHeadingErrorProvider::getError(Angle target) {
+    return Utils::getShortestAngleBetween(heading_provider.getHeading(), target);
+}
+
+}

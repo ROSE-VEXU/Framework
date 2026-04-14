@@ -118,7 +118,6 @@ private:
     std::shared_ptr<AutonomousPipeline> pipeline;
 };
 
-
 };
 
 #endif

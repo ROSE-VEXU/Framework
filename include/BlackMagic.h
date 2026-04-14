@@ -13,6 +13,8 @@
 #include "DriveMode.h"
 #include "DriveSpeedProvider.h"
 #include "Subsystem.h"
+#include "ErrorProvider.h"
+#include "ErrorProviders.h"
 #include "PID.h"
 #include "PositionProvider.h"
 
@@ -27,6 +29,7 @@
 #include "Drivetrain.h"
 #include "Robot.h"
 
+#include "Units.h"
 #include "Utils.h"
 
 #endif

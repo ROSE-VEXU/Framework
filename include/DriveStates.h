@@ -73,13 +73,4 @@ struct Pose {
 
 }; // namespace BlackMagic
 
-constexpr BlackMagic::Angle operator""_deg(long double value) {
-    return { static_cast<float>(value), BlackMagic::Angle::Unit::DEG };
-}
-
-constexpr BlackMagic::Angle operator""_rad(long double value) {
-    return { static_cast<float>(value), BlackMagic::Angle::Unit::RAD };
-}
-
-
 #endif
