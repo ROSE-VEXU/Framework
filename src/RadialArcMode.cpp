@@ -22,7 +22,7 @@ void RadialArcMode::setErrorProviders(IErrorProvider& linear_error_provider, IEr
 }
 
 void RadialArcMode::run(PID& linear_pid, PID& angular_pid) {
-    float curr_distance = (drive_state.left_degrees + drive_state.right_degrees) / 2.0;
+    float curr_distance = linear_error_provider->getRawValue();
 
     float curr_linear_error = linear_error_provider->getError(target_arc_length_deg);
     float curr_angular_error = angular_error_provider->getError(getCurrentTargetAngle(radius_deg, curr_distance));
