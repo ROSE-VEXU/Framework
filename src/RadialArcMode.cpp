@@ -22,18 +22,19 @@ void RadialArcMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID
 }
 
 bool RadialArcMode::hasSettled(const DrivetrainState& drive_state) {
-    float curr_heading = Utils::getShortestAngleBetween(drive_state.heading, this->target_heading);
-    settling_total_heading_change += fabs(curr_heading - settling_prev_heading);
+    // float curr_heading = Utils::getShortestAngleBetween(drive_state.heading, this->target_heading);
+    // settling_total_heading_change += fabs(curr_heading - settling_prev_heading);
 
-    if (fabs(settling_total_heading_change) < TURN_DRIVE_SETTLE_HEADING_THRESHOLD) {
-        settle_count++;
-    } else {
-        settle_count = 0;
-        settling_total_heading_change = 0;
-    }
-    settling_prev_heading = curr_heading;
+    // if (fabs(settling_total_heading_change) < TURN_DRIVE_SETTLE_HEADING_THRESHOLD) {
+    //     settle_count++;
+    // } else {
+    //     settle_count = 0;
+    //     settling_total_heading_change = 0;
+    // }
+    // settling_prev_heading = curr_heading;
 
-    return (settle_count > TURN_DRIVE_SETTLE_COUNT) ? true : false;
+    // return (settle_count > TURN_DRIVE_SETTLE_COUNT) ? true : false;
+    return true;
 }
 
 DriveSpeeds RadialArcMode::getSpeeds() {
