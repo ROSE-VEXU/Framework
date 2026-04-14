@@ -2,7 +2,7 @@
 
 namespace BlackMagic {
 
-BlankErrorProvider::BlankErrorProvider() {}
+BlankErrorProvider::BlankErrorProvider(): IErrorProvider({ 0, 0.0 }) {}
 
 float BlankErrorProvider::getError(float target) {
     return 0.0;

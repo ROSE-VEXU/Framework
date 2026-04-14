@@ -11,6 +11,7 @@ struct SettleConfig {
 
 class IErrorProvider {
 public:
+    IErrorProvider(SettleConfig settle_config): settle_config(settle_config), previous_raw_value(0) {}
     virtual float getError(float target) = 0;
     virtual bool hasSettled() = 0;
     // virtual float getRawValue() = 0;
