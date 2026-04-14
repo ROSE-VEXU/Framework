@@ -8,6 +8,7 @@
 namespace BlackMagic {
 
 class DriveErrorProvider: public IErrorProvider {
+public:
     DriveErrorProvider(const vex::motor_group& left_motors, const vex::motor_group& right_motors);
     float getError(float target) override;
 private:
@@ -16,6 +17,7 @@ private:
 };
 
 class NearestHeadingErrorProvider: public IErrorProvider {
+public:
     NearestHeadingErrorProvider(const IHeadingProvider& heading_provider);
     float getError(float target) override;
 private:
