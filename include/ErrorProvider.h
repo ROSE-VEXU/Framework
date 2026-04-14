@@ -15,7 +15,7 @@ public:
     virtual float getError(float target) = 0;
     virtual float getRawValue() = 0;
     virtual bool hasSettled(float target) = 0;
-private:
+protected:
     SettleConfig settle_config;
     int settle_count;
 };
