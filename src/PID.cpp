@@ -35,7 +35,7 @@ float PID::slew(float prev_value, float value) {
 }
 
 float PID::getNextValue(float target) {
-    float err = error_provider.getError(target);
+    float err = error_provider->getError(target);
     float result = kP*err + kD*(err-prev_error);
 
     if (fabs(err) < cI.start_integral_threshold) {
