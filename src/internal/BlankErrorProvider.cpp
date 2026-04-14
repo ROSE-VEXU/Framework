@@ -12,7 +12,7 @@ float BlankErrorProvider::getRawValue() {
     return 0.0;
 }
 
-bool BlankErrorProvider::hasSettled() {
+bool BlankErrorProvider::hasSettled(float target) {
     return true;
 }
 

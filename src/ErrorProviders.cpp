@@ -14,7 +14,7 @@ float DriveErrorProvider::getRawValue() {
     return (left_motors.position(vex::rotationUnits::deg) + right_motors.position(vex::rotationUnits::deg)) / 2.0;
 }
 
-bool DriveErrorProvider::hasSettled() {
+bool DriveErrorProvider::hasSettled(float target) {
     return true;
 }
 
@@ -32,7 +32,7 @@ float NearestDegreeErrorProvider::getRawValue() {
     return heading_provider.getHeading();
 }
 
-bool NearestDegreeErrorProvider::hasSettled() {
+bool NearestDegreeErrorProvider::hasSettled(float target) {
     return true;
 }
 

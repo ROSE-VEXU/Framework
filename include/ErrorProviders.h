@@ -12,7 +12,7 @@ public:
     DriveErrorProvider(vex::motor_group& left_motors, vex::motor_group& right_motors, SettleConfig settle_config);
     float getError(float target) override;
     float getRawValue() override;
-    bool hasSettled() override;
+    bool hasSettled(float target) override;
 private:
     vex::motor_group& left_motors;
     vex::motor_group& right_motors;
@@ -23,7 +23,7 @@ public:
     NearestDegreeErrorProvider(IHeadingProvider& heading_provider, SettleConfig settle_config);
     float getError(float target) override;
     float getRawValue() override;
-    bool hasSettled() override;
+    bool hasSettled(float target) override;
 private:
     IHeadingProvider& heading_provider;
 };
