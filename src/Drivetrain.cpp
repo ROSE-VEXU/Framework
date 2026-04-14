@@ -57,7 +57,7 @@ void Drivetrain::cancelMove() {
     stop();
 }
 
-void Drivetrain::driveStraightAsync(float inches, float max_speed, PID linear_pid, PID angular_pid, IErrorProvider& error_provider) {
+void Drivetrain::driveStraightAsync(float inches, float max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider , IErrorProvider& angular_error_provider) {
     prepareMove();
     
     linear_pid.setMaxSpeed(max_speed);
@@ -65,16 +65,18 @@ void Drivetrain::driveStraightAsync(float inches, float max_speed, PID linear_pi
     setPIDs(linear_pid, angular_pid);
     std::shared_ptr<StraightMode> straight_mode = std::static_pointer_cast<StraightMode>(drive_modes[STRAIGHT_MODE]);
     straight_mode->setTarget(inches, getHeading());
-    straight_mode->setErrorProviders(error_provider);
+    straight_mode->setErrorProviders(linear_error_provider, angular_error_provider);
     selected_drive_mode = STRAIGHT_MODE;
 }
 
 void Drivetrain::driveStraightAsync(float inches, float max_speed, PID linear_pid, PID angular_pid) {
-    driveStraightAsync(inches, max_speed, linear_pid, angular_pid, );
+    BlackMagic::DriveErrorProvider linear_error_provider{ left_motors, right_motors };
+    BlackMagic::NearestDegreeErrorProvider angular_error_provider{ heading_provider };
+
+    driveStraightAsync(inches, max_speed, linear_pid, angular_pid, linear_error_provider, angular_error_provider);
 }
 
-
-void Drivetrain::driveStraight(float inches, float max_speed, PID linear_pid, PID angular_pid, IErrorProvider& error_provider) {
+void Drivetrain::driveStraight(float inches, float max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider , IErrorProvider& angular_error_provider) {
     driveStraightAsync(inches, max_speed, linear_pid, angular_pid, error_provider);
 
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
