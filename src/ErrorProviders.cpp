@@ -20,7 +20,7 @@ NearestDegreeErrorProvider::NearestDegreeErrorProvider(IHeadingProvider& heading
 float NearestDegreeErrorProvider::getError(float target) {
     Angle current_angle { getRawValue(), Angle::DEG };
     Angle target_angle { target, Angle::DEG };
-    return Utils::getShortestAngleBetween(current_angle, angle);
+    return Utils::getShortestAngleBetween(current_angle, target_angle);
 }
 
 float NearestDegreeErrorProvider::getRawValue() {
