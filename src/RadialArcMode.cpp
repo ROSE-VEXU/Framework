@@ -17,13 +17,8 @@ void RadialArcMode::setTarget(float radius_inches, Angle target_heading) {
 }
 
 void RadialArcMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
-    float curr_distance = (drive_state.left_degrees + drive_state.right_degrees) / 2.0f;
-    float curr_distance_error = target_arc_length_deg - curr_distance;
-
-    float curr_heading_error = Utils::getShortestAngleBetween(drive_state.heading, getCurrentTargetAngle(radius_deg, curr_distance));
-
-    linear_speed = linear_pid.getNextValue(curr_distance_error);
-    angular_speed = angular_pid.getNextValue(curr_heading_error);
+    linear_speed = linear_pid.getNextValue(target_arc_length_deg);
+    angular_speed = angular_pid.getNextValue(getCurrentTargetAngle(radius_deg, curr_distance));
 }
 
 bool RadialArcMode::hasSettled(const DrivetrainState& drive_state) {

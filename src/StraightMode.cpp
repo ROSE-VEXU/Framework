@@ -17,12 +17,8 @@ void StraightMode::setTarget(float target_inches, Angle target_heading) {
 }
 
 void StraightMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
-    float curr_distance = (drive_state.left_degrees + drive_state.right_degrees) / 2.0;
-    float curr_distance_error = target_deg - curr_distance;
-    float curr_heading_error = Utils::getShortestAngleBetween(drive_state.heading, target_heading);
-
-    linear_speed = linear_pid.getNextValue(curr_distance_error);
-    angular_speed = angular_pid.getNextValue(curr_heading_error);
+    linear_speed = linear_pid.getNextValue(target_deg);
+    angular_speed = angular_pid.getNextValue(target_heading);
 }
 
 bool StraightMode::hasSettled(const DrivetrainState& drive_state) {

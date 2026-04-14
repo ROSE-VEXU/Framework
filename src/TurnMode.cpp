@@ -14,8 +14,7 @@ void TurnMode::setTarget(Angle target_heading) {
 }
 
 void TurnMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
-    float curr_error = Utils::getShortestAngleBetween(drive_state.heading, this->target_heading);
-    float turn_speed = angular_pid.getNextValue(curr_error);
+    float turn_speed = angular_pid.getNextValue(this->target_heading);
     float prev_turn_speed = left_speed;
 
     left_speed = Utils::sign(turn_speed) * fabs(turn_speed);
