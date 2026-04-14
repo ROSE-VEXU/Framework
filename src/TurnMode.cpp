@@ -17,7 +17,7 @@ void TurnMode::setErrorProviders(IErrorProvider& error_provider) {
     this->error_provider = &error_provider;
 }
 
-void TurnMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
+void TurnMode::run(PID& linear_pid, PID& angular_pid) {
     float curr_angular_error = error_provider->getError(target_heading);
     float turn_speed = angular_pid.getNextValue(curr_angular_error);
     float prev_turn_speed = left_speed;

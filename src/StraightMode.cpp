@@ -21,7 +21,7 @@ void StraightMode::setErrorProviders(IErrorProvider& linear_error_provider, IErr
     this->angular_error_provider = &angular_error_provider;
 }
 
-void StraightMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
+void StraightMode::run(PID& linear_pid, PID& angular_pid) {
     float curr_linear_error = linear_error_provider->getError(target_deg);
     float curr_angular_error = angular_error_provider->getError(target_heading);
 

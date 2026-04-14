@@ -10,10 +10,10 @@ void PipelineMode::setTarget(Pose target_pose) {
     this->pipeline->setTarget(target_pose);
 }
 
-void PipelineMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
+void PipelineMode::run(PID& linear_pid, PID& angular_pid) {
     if (this->pipeline == nullptr) return;
 
-    this->pipeline->runPipeline(drive_state, linear_pid, angular_pid);
+    this->pipeline->runPipeline(linear_pid, angular_pid);
 }
 
 void PipelineMode::setPipeline(std::shared_ptr<AutonomousPipeline> pipeline) {

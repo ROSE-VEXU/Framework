@@ -23,7 +23,7 @@ void SimpleArcMode::setErrorProviders(IErrorProvider& linear_error_provider, IEr
 }
 
 
-void SimpleArcMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
+void SimpleArcMode::run(PID& linear_pid, PID& angular_pid) {
     float curr_linear_error = linear_error_provider->getError(target_deg);
 
     // float pct_distance_traveled = curr_distance/target_deg;

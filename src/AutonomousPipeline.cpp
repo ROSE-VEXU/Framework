@@ -18,21 +18,21 @@ void AutonomousPipeline::setPosition(Position position) {
     odom_position = position;
 }
 
-int AutonomousPipeline::runPipeline(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
+int AutonomousPipeline::runPipeline(PID& linear_pid, PID& angular_pid) {
     // while(true) {
-        if (odometry_source == nullptr) return 1;//continue;
-        odometry_source->update();
-        odom_position = odometry_source->getPosition();
+    //     vex::wait(VEX_SLEEP_MSEC);
 
-        if (localization_source != nullptr) {
-            localized_position = localization_source->getPosition();
-        }
+    //     if (odometry_source == nullptr) continue;
+    //     odometry_source->update();
+    //     odom_position = odometry_source->getPosition();
 
-        if (speed_controller == nullptr) return 1;//continue;
-        Pose current_pose = { getPosition(), drive_state.heading };
-        speed_controller->update(current_pose, drive_state, linear_pid, angular_pid);
+    //     if (localization_source != nullptr) {
+    //         localized_position = localization_source->getPosition();
+    //     }
 
-        // vex::wait(VEX_SLEEP_MSEC);
+    //     if (speed_controller == nullptr) continue;
+    //     Pose current_pose = { getPosition(), drive_state.heading };
+    //     speed_controller->update(current_pose, drive_state, linear_pid, angular_pid);
     // }
 
     return 0;

@@ -21,7 +21,7 @@ void RadialArcMode::setErrorProviders(IErrorProvider& linear_error_provider, IEr
     this->angular_error_provider = &angular_error_provider;
 }
 
-void RadialArcMode::run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) {
+void RadialArcMode::run(PID& linear_pid, PID& angular_pid) {
     float curr_distance = (drive_state.left_degrees + drive_state.right_degrees) / 2.0;
 
     float curr_linear_error = linear_error_provider->getError(target_arc_length_deg);
