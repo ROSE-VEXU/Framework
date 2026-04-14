@@ -209,7 +209,7 @@ int Drivetrain::driveTask() {
 }
 
 bool Drivetrain::hasSettled() {
-    return drive_modes[selected_drive_mode]->hasSettled(getDriveState());
+    return drive_modes[selected_drive_mode]->hasSettled();
 }
 
 void Drivetrain::resetEncoders() {
