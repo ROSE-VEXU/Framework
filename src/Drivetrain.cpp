@@ -210,7 +210,7 @@ int Drivetrain::driveTask() {
 
         if (selected_drive_mode == DISABLED_MODE) continue;
 
-        drive_modes[selected_drive_mode]->run(getDriveState(), current_linear_pid, current_angular_pid);
+        drive_modes[selected_drive_mode]->run(current_linear_pid, current_angular_pid);
         DriveSpeeds speeds = drive_modes[selected_drive_mode]->getSpeeds();
 
         driveLeft(speeds.left);
