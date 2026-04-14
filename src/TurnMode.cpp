@@ -29,7 +29,7 @@ void TurnMode::run(PID& linear_pid, PID& angular_pid) {
 }
 
 bool TurnMode::hasSettled() {
-    return angular_error_provider->hasSettled(target_heading);
+    return error_provider->hasSettled(target_heading);
 }
 
 DriveSpeeds TurnMode::getSpeeds() {
