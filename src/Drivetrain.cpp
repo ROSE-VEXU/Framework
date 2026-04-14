@@ -72,10 +72,7 @@ void Drivetrain::driveStraightAsync(float inches, float max_speed, PID linear_pi
 }
 
 void Drivetrain::driveStraightAsync(float inches, float max_speed, PID linear_pid, PID angular_pid) {
-    BlackMagic::DriveErrorProvider linear_error_provider{ left_motors, right_motors };
-    BlackMagic::NearestDegreeErrorProvider angular_error_provider{ heading_provider };
-
-    driveStraightAsync(inches, max_speed, linear_pid, angular_pid, linear_error_provider, angular_error_provider);
+    driveStraightAsync(inches, max_speed, linear_pid, angular_pid, simple_linear_error_provider, simple_angular_error_provider);
 }
 
 void Drivetrain::driveStraight(float inches, float max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider , IErrorProvider& angular_error_provider) {
