@@ -59,7 +59,7 @@ void Drivetrain::cancelMove() {
     stop();
 }
 
-void Drivetrain::driveStraightAsync(float inches, float max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider , IErrorProvider& angular_error_provider) {
+void Drivetrain::driveStraightAsync(float target_distance, float max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider , IErrorProvider& angular_error_provider) {
     prepareMove();
     
     linear_pid.setMaxSpeed(max_speed);
@@ -71,11 +71,11 @@ void Drivetrain::driveStraightAsync(float inches, float max_speed, PID linear_pi
     selected_drive_mode = STRAIGHT_MODE;
 }
 
-void Drivetrain::driveStraightAsync(float inches, float max_speed, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveStraightAsync(float target_distance, float max_speed, PID linear_pid, PID angular_pid) {
     driveStraightAsync(inches, max_speed, linear_pid, angular_pid, simple_linear_error_provider, simple_angular_error_provider);
 }
 
-void Drivetrain::driveStraight(float inches, float max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider , IErrorProvider& angular_error_provider) {
+void Drivetrain::driveStraight(float target_distance, float max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider , IErrorProvider& angular_error_provider) {
     driveStraightAsync(inches, max_speed, linear_pid, angular_pid, linear_error_provider, angular_error_provider);
 
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
@@ -83,11 +83,11 @@ void Drivetrain::driveStraight(float inches, float max_speed, PID linear_pid, PI
     cancelMove();
 }
 
-void Drivetrain::driveStraight(float inches, float max_speed, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveStraight(float target_distance, float max_speed, PID linear_pid, PID angular_pid) {
     driveStraight(inches, max_speed, linear_pid, angular_pid, simple_linear_error_provider, simple_angular_error_provider);
 }
 
-void Drivetrain::driveStraight(float inches, PID linear_pid, PID angular_pid) {
+void Drivetrain::driveStraight(float target_distance, PID linear_pid, PID angular_pid) {
     driveStraight(inches, 100.0, linear_pid, angular_pid);
 }
 

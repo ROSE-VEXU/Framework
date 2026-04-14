@@ -4,8 +4,8 @@ namespace BlackMagic {
 
 StraightMode::StraightMode() {}
 
-void StraightMode::setTarget(float target_inches, Angle target_heading) {
-    this->target_deg = target_inches * (360.0 / (WHEEL_DIAM_INCHES * M_PI));
+void StraightMode::setTarget(float target_distance, Angle target_heading) {
+    this->target_distance = target_distance;
     this->target_heading = target_heading;
     this->linear_speed = 0;
     this->angular_speed = 0;
@@ -22,7 +22,7 @@ void StraightMode::setErrorProviders(IErrorProvider& linear_error_provider, IErr
 }
 
 void StraightMode::run(PID& linear_pid, PID& angular_pid) {
-    float curr_linear_error = linear_error_provider->getError(target_deg);
+    float curr_linear_error = linear_error_provider->getError(target_distance);
     float curr_angular_error = angular_error_provider->getError(target_heading);
 
     linear_speed = linear_pid.getNextValue(curr_linear_error);
@@ -30,7 +30,7 @@ void StraightMode::run(PID& linear_pid, PID& angular_pid) {
 }
 
 bool StraightMode::hasSettled() {
-    return linear_error_provider->hasSettled(target_deg) && angular_error_provider->hasSettled(target_heading);
+    return linear_error_provider->hasSettled(target_distance) && angular_error_provider->hasSettled(target_heading);
 }
 
 DriveSpeeds StraightMode::getSpeeds() {

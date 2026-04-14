@@ -25,13 +25,13 @@ class StraightMode: public IDriveMode {
 public:
     StraightMode();
 
-    void setTarget(float target_inches, Angle target_heading);
+    void setTarget(float target_distance, Angle target_heading);
     void setErrorProviders(IErrorProvider& linear_error_provider, IErrorProvider& angular_error_provider);
     void run(PID& linear_pid, PID& angular_pid) override;
     bool hasSettled() override;
     DriveSpeeds getSpeeds() override;
 private:
-    float target_deg;
+    float target_distance;
     Angle target_heading;
     IErrorProvider* linear_error_provider;
     IErrorProvider* angular_error_provider;

@@ -48,11 +48,11 @@ public:
     void driveRight(float speed_percent);
     void prepareMove();
     void cancelMove();
-    void driveStraightAsync(float inches, float max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider, IErrorProvider& angular_error_provider);
-    void driveStraightAsync(float inches, float max_speed, PID linear_pid, PID angular_pid);
-    void driveStraight(float inches, float max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider, IErrorProvider& angular_error_provider);
-    void driveStraight(float inches, float max_speed, PID linear_pid, PID angular_pid);
-    void driveStraight(float inches, PID linear_pid, PID angular_pid);
+    void driveStraightAsync(float target_distance, float max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider, IErrorProvider& angular_error_provider);
+    void driveStraightAsync(float target_distance, float max_speed, PID linear_pid, PID angular_pid);
+    void driveStraight(float target_distance, float max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider, IErrorProvider& angular_error_provider);
+    void driveStraight(float target_distance, float max_speed, PID linear_pid, PID angular_pid);
+    void driveStraight(float target_distance, PID linear_pid, PID angular_pid);
     void driveTurn(Angle heading, float max_speed, PID angular_pid, IErrorProvider& error_provider);
     void driveTurn(Angle heading, float max_speed, PID angular_pid);
     void driveTurn(Angle heading, PID angular_pid);
