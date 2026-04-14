@@ -12,10 +12,10 @@ Drivetrain::Drivetrain(vex::motor_group& left_motors, vex::motor_group& right_mo
     brake_mode(brake_mode),
     current_linear_pid(PID::ZERO_PID),
     current_angular_pid(PID::ZERO_PID),
+    simple_linear_error_provider(left_motors, right_motors, { STRAIGHT_DRIVE_SETTLE_COUNT, STRAIGHT_DRIVE_SETTLE_DEG_THRESHOLD }),
+    simple_angular_error_provider(heading_provider, { TURN_DRIVE_SETTLE_COUNT, TURN_DRIVE_SETTLE_HEADING_THRESHOLD }),
     selected_drive_mode(STRAIGHT_MODE),
     drive_task_enabled(false) {
-    simple_linear_error_provider = BlackMagic::DriveErrorProvider{ left_motors, right_motors, { STRAIGHT_DRIVE_SETTLE_COUNT, STRAIGHT_DRIVE_SETTLE_DEG_THRESHOLD } };
-    simple_angular_error_provider = BlackMagic::NearestDegreeErrorProvider{ heading_provider, { TURN_DRIVE_SETTLE_COUNT, TURN_DRIVE_SETTLE_HEADING_THRESHOLD } };
 }
 
 void Drivetrain::opControl() {
