@@ -3,6 +3,7 @@
 
 #include "AutonomousPipeline.h"
 #include "DriveSpeedProvider.h"
+#include "ErrorProvider.h"
 #include "PID.h"
 #include <functional>
 #include <memory>
@@ -10,9 +11,10 @@
 
 namespace BlackMagic {
 
+template<typename ErrorType>
 class IDriveMode: IDriveSpeedProvider {
 public:
-    virtual void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) = 0;
+    virtual void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid, IErrorProvider<ErrorType> error_provider) = 0;
     virtual bool hasSettled(const DrivetrainState& drive_state) = 0;
     DriveSpeeds getSpeeds() = 0;
 
@@ -20,12 +22,12 @@ protected:
     int settle_count;
 };
 
-class StraightMode: public IDriveMode {
+class StraightMode: public IDriveMode<float> {
 public:
     StraightMode();
 
     void setTarget(float target_inches, Angle target_heading);
-    void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) override;
+    void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid, IErrorProvider<float> error_provider) override;
     bool hasSettled(const DrivetrainState& drive_state) override;
     DriveSpeeds getSpeeds() override;
 private:
@@ -39,12 +41,12 @@ private:
     float settling_total_right;
 };
 
-class TurnMode: public IDriveMode {
+class TurnMode: public IDriveMode<Angle> {
 public:
     TurnMode();
 
     void setTarget(Angle target_heading);
-    void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) override;
+    void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid, IErrorProvider<Angle> error_provider) override;
     bool hasSettled(const DrivetrainState& drive_state) override;
     DriveSpeeds getSpeeds() override;
 private:
@@ -100,32 +102,6 @@ private:
 
     void setArcTarget(float target_radius_inches, Angle target_angle);
     Angle getCurrentTargetAngle(float arc_radius, float driven_arc_length);
-};
-
-struct CurveKeyframe {
-    float pct;
-    Angle heading;
-    float smooth_pct;
-};
-
-class CurveMode: public IDriveMode {
-public:
-    CurveMode();
-
-    void setTarget(float target_inches, std::vector<CurveKeyframe> keyframes);
-    void run(const DrivetrainState& drive_state, PID& linear_pid, PID& angular_pid) override;
-    bool hasSettled(const DrivetrainState& drive_state) override;
-    DriveSpeeds getSpeeds() override;
-private:
-    float target_deg;
-    std::vector<CurveKeyframe> keyframes;
-    int curr_keyframe_index;
-    float linear_speed;
-    float angular_speed;
-    float settling_prev_left;
-    float settling_prev_right;
-    float settling_total_left;
-    float settling_total_right;
 };
 
 class PipelineMode: public IDriveMode {
