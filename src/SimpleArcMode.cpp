@@ -5,7 +5,7 @@ namespace BlackMagic {
 SimpleArcMode::SimpleArcMode() {}
 
 void SimpleArcMode::setTarget(float target_distance, Angle target_heading, ArcSettings arc_settings) {
-    this->target_distance = target_distance * (360.0 / (WHEEL_DIAM_INCHES * M_PI));
+    this->target_distance = target_distance;
     this->target_heading = target_heading;
     this->arc_settings = arc_settings;
     this->linear_speed = 0;
