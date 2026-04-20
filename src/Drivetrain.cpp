@@ -52,11 +52,13 @@ void Drivetrain::prepareMove() {
     stop();
     resetEncoders();
     setBrake(vex::brakeType::hold);
+    settle_cooldown = MOVEMENT_TIME_BEFORE_SETTLE_CHECK_MS;
 }
 
 void Drivetrain::cancelMove() {
     selected_drive_mode = DISABLED_MODE;
     stop();
+    settle_cooldown = 0;
 }
 
 void Drivetrain::driveStraightAsync(float target_distance, float max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider , IErrorProvider& angular_error_provider) {
@@ -113,14 +115,14 @@ void Drivetrain::driveTurn(Angle heading, PID angular_pid) {
     driveTurn(heading, 100.0, angular_pid);
 }
 
-void Drivetrain::driveArcSimple(float inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider , IErrorProvider& angular_error_provider) {
+void Drivetrain::driveArcSimple(float target_distance, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider , IErrorProvider& angular_error_provider) {
     prepareMove();
 
     linear_pid.setMaxSpeed(linear_max_speed);
     angular_pid.setMaxSpeed(angular_max_speed);
     setPIDs(linear_pid, angular_pid);
     std::shared_ptr<SimpleArcMode> simple_arc_mode = std::static_pointer_cast<SimpleArcMode>(drive_modes[SIMPLE_ARC_MODE]);
-    simple_arc_mode->setTarget(inches, end_angle, arc_settings);
+    simple_arc_mode->setTarget(target_distance, end_angle, arc_settings);
     simple_arc_mode->setErrorProviders(linear_error_provider, angular_error_provider);
     selected_drive_mode = SIMPLE_ARC_MODE;
     while(!hasSettled()) vex::wait(VEX_SLEEP_MSEC_SHORT);
@@ -128,16 +130,16 @@ void Drivetrain::driveArcSimple(float inches, Angle end_angle, ArcSettings arc_s
     cancelMove();
 }
 
-void Drivetrain::driveArcSimple(float inches, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
-    driveArcSimple(inches, end_angle, arc_settings, linear_max_speed, angular_max_speed, linear_pid, angular_pid, simple_linear_error_provider, simple_angular_error_provider);
+void Drivetrain::driveArcSimple(float target_distance, Angle end_angle, ArcSettings arc_settings, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
+    driveArcSimple(target_distance, end_angle, arc_settings, linear_max_speed, angular_max_speed, linear_pid, angular_pid, simple_linear_error_provider, simple_angular_error_provider);
 }
 
-void Drivetrain::driveArcSimple(float inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
-    driveArcSimple(inches, end_angle, { 0.0f, 0.001f }, linear_max_speed, angular_max_speed, linear_pid, angular_pid); // instant mix by default
+void Drivetrain::driveArcSimple(float target_distance, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid) {
+    driveArcSimple(target_distance, end_angle, { 0.0f, 0.001f }, linear_max_speed, angular_max_speed, linear_pid, angular_pid); // instant mix by default
 }
 
-void Drivetrain::driveArcSimple(float inches, Angle end_angle, PID linear_pid, PID angular_pid) {
-    driveArcSimple(inches, end_angle, { 0.0f, 0.001f }, 100.0, 100.0, linear_pid, angular_pid); // instant mix by default
+void Drivetrain::driveArcSimple(float target_distance, Angle end_angle, PID linear_pid, PID angular_pid) {
+    driveArcSimple(target_distance, end_angle, { 0.0f, 0.001f }, 100.0, 100.0, linear_pid, angular_pid); // instant mix by default
 }
 
 void Drivetrain::driveArcRadial(float radius_inches, Angle end_angle, float linear_max_speed, float angular_max_speed, PID linear_pid, PID angular_pid, IErrorProvider& linear_error_provider , IErrorProvider& angular_error_provider) {
@@ -209,7 +211,12 @@ int Drivetrain::driveTask() {
 }
 
 bool Drivetrain::hasSettled() {
-    return drive_modes[selected_drive_mode]->hasSettled();
+    if (settle_cooldown <= 0) {
+        return drive_modes[selected_drive_mode]->hasSettled();
+    } else {
+        settle_cooldown -= DRIVE_LOOP_MS;
+        return false;
+    }
 }
 
 void Drivetrain::resetEncoders() {
